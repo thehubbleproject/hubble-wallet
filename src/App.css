@@ -1,38 +1,241 @@
+:root {
+  --theme-blue: #6177e5;
+  --theme-blue-darker: #10549c88;
+  --theme-blue-darker3: #0e1731;
+  --theme-blue-darker2: #0b3a6d;
+  --theme-red: rgb(209, 66, 66);
+  --theme-red-darker: rgb(173, 37, 37);
+  --default-border-gray: rgba(0, 0, 0, 0.1);
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
+  width: 100vw;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  background: var(--theme-blue-darker3);
+}
+
+.MainCard {
+  display: flex;
+  min-height: 45rem;
+  width: 75rem;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.MainCardLeft {
+  background: var(--theme-blue);
   color: white;
+  width: 20rem;
+  padding: 2rem;
 }
 
-.App-link {
-  color: #61dafb;
+.MainCardLeft > .QRCodeContainer {
+  margin: 1rem 0 2rem 0;
+  max-height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.MainCardLeft > .ButtonContainer {
+  margin: auto;
+  margin-top: 1rem;
+}
+
+.MainCardRight {
+  width: 100%;
+  background: #fff;
+}
+
+.MainCardRight > .tabs {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid var(--default-border-gray);
+}
+
+.MainCardRight > .tabs > .tab {
+  padding: 1rem 3rem;
+  text-align: center;
+  width: 100%;
+}
+
+.MainCardRight > .tabs > .active {
+  border-bottom: 3px solid var(--theme-blue);
+}
+
+.MainCardRight > .title {
+  padding: 1rem 3rem;
+  border-bottom: 1px solid var(--default-border-gray);
+}
+
+.MainCardRight > .title > p {
+  margin: 0;
+  padding: 0.2rem 0;
+  color: #555555;
+  font-size: 90%;
+}
+
+.MainCardRight > .title > h2 {
+  padding: 0;
+  margin: 0;
+}
+
+.MainCardRight > .balance {
+  padding: 2rem 3rem;
+  max-height: 35rem;
+  overflow-y: scroll;
+}
+
+.MainCardRight > .transactions {
+  padding: 2rem 3rem;
+  max-height: 35rem;
+  overflow-y: scroll;
+}
+
+.MainCardRight > .transactions > .records {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+  justify-content: space-between;
+}
+
+.MainCardRight > .transactions > .records > .id {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.MainCardRight > .balance > h5 {
+  margin: 0;
+}
+
+.MainCardRight > .balance > .amount {
+  display: flex;
+  padding: 1.4rem 0;
+  color: #555555;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.MainCardRight > .balance > .amount > .name {
+  font-size: 3rem;
+  line-height: 3rem;
+}
+
+.MainCardRight > .balance > .amount > .value {
+  font-size: 5rem;
+  line-height: 5rem;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: #fff;
+  background-image: none;
+}
+select::-ms-expand {
+  display: none;
+}
+.select {
+  font-family: "Lato";
+  position: relative;
+  display: flex;
+  width: 222px;
+  height: 2.5rem;
+  line-height: 2.5;
+  font-size: 90%;
+  font-weight: bold;
+  background: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 0.25em;
+}
+select {
+  flex: 1;
+  padding: 0 1rem;
+  color: rgb(58, 58, 58);
+  cursor: pointer;
+}
+
+.customButton {
+  font-size: 0.8rem !important;
+  padding: 0.8rem 0.4rem !important;
+  color: white !important;
+  background: var(--theme-blue-darker) !important;
+}
+
+.customButton:active {
+  background: var(--theme-blue-darker2) !important;
+}
+
+.burn {
+  background: var(--theme-red) !important;
+}
+
+.burn:active {
+  background: var(--theme-red-darker) !important;
+}
+
+/* ################### MOBILE STYLE OVERRIDES ################### */
+@media (max-width: 500px) {
+  .MainCard {
+    min-height: 100vh;
+    width: 100vw;
+    border-radius: 0;
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+
+  .MainCardLeft {
+    width: 100%;
+  }
+
+  .MainCardRight {
+    width: 100%;
+    min-height: 100%;
+  }
+
+  .MainCardLeft > .QRCodeContainer {
+    max-height: 350px;
+    margin: 2rem 0;
+  }
+
+  .select {
+    width: 100%;
+  }
+
+  .customButton {
+    font-size: 1rem !important;
+    padding: 1.2rem 0.5rem !important;
+  }
+
+  .MainCardRight > .balance {
+    max-height: none;
+    min-height: 50rem;
+    overflow-y: hidden;
+  }
+
+  .MainCardRight > .transactions {
+    max-height: none;
+    min-height: 50rem;
+    overflow-y: hidden;
+  }
+
+  .MainCardRight > .balance > .amount > .name {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
+
+  .MainCardRight > .balance > .amount > .value {
+    font-size: 3rem;
+    line-height: 3rem;
   }
 }

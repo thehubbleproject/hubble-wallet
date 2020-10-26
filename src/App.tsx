@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { createStore, StoreProvider } from "easy-peasy";
 
-function App() {
+// hooks and services
+
+// components, styles and UI
+import "./app.css";
+import "semantic-ui-css/semantic.min.css";
+import AccountActions from "./components/MainCard/AccountActions";
+import AccountDetails from "./components/MainCard/AccountDetails";
+
+// store
+import globalStore, { IGlobalStore } from "./store/globalStore";
+const store = createStore<IGlobalStore>(globalStore);
+
+const App: React.FunctionComponent = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <StoreProvider store={store}>
+      <div className="App">
+        <div className="MainCard">
+          <AccountActions />
+          <AccountDetails />
+        </div>
+      </div>
+    </StoreProvider>
   );
-}
+};
 
 export default App;
