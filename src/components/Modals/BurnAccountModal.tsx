@@ -16,7 +16,7 @@ const BurnAccountModal: React.FunctionComponent<BurnAccountModalProps> = () => {
   const currentAccount = useStoreState((state) => state.currentAccount);
 
   const closeAccountForUser = (): void => {
-    burnAccount(currentAccount.publicKey);
+    burnAccount(currentAccount.combinedPublicKey);
     setModalOpen(false);
   };
 

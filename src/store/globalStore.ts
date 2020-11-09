@@ -1,5 +1,11 @@
-import { IWalletAccount } from "../hooks/useWalletAccounts";
 import { Action, action, createTypedHooks } from "easy-peasy";
+import * as mcl from "react-hubble-bls/dist/mcl";
+
+export interface IWalletAccount {
+  publicKey: mcl.PublicKey | null;
+  combinedPublicKey: string | "";
+  reducedSecretKey: string | "";
+}
 
 export interface IGlobalStore {
   walletAccounts: (IWalletAccount | null)[];
@@ -12,7 +18,11 @@ export interface IGlobalStore {
 
 const globalStore: IGlobalStore = {
   walletAccounts: [],
-  currentAccount: { privateKey: "", publicKey: "" },
+  currentAccount: {
+    publicKey: null,
+    combinedPublicKey: "",
+    reducedSecretKey: "",
+  },
 
   // actions
   setWalletAccounts: action((state, payload: IWalletAccount[]) => {
@@ -20,8 +30,9 @@ const globalStore: IGlobalStore = {
   }),
 
   setCurrentAccount: action((state, payload: IWalletAccount) => {
-    state.currentAccount.privateKey = payload.privateKey;
     state.currentAccount.publicKey = payload.publicKey;
+    state.currentAccount.combinedPublicKey = payload.combinedPublicKey;
+    state.currentAccount.reducedSecretKey = payload.reducedSecretKey;
   }),
 };
 

@@ -1,10 +1,5 @@
-import { useStoreActions } from "../store/globalStore";
-import * as mcl from "react-hubble-bls/dist/mcl";
-
-export interface IWalletAccount {
-  publicKey: string;
-  privateKey: string;
-}
+import { IWalletAccount, useStoreActions } from "../store/globalStore";
+import useBls from "./useBls";
 
 const useWalletAccounts = () => {
   const setCurrentAccountGlobal = useStoreActions(
@@ -13,6 +8,8 @@ const useWalletAccounts = () => {
   const setWalletAccountsGlobal = useStoreActions(
     (actions) => actions.setWalletAccounts
   );
+
+  const { getNewKeyPair } = useBls();
 
   /**
    * fetches a list of accounts from the localstorage
@@ -27,29 +24,6 @@ const useWalletAccounts = () => {
   };
 
   /**
-   * updates redux state for current and all accounts
-   * @param walletAccounts
-   */
-  const updateGlobalState = (walletAccounts: IWalletAccount[]): void => {
-    setWalletAccountsGlobal(walletAccounts);
-    setCurrentAccountGlobal({
-      privateKey: walletAccounts[walletAccounts.length - 1].privateKey,
-      publicKey: walletAccounts[walletAccounts.length - 1].publicKey,
-    });
-  };
-
-  const setCurrentAccountUser = (publicKey: string): void => {
-    let localAccounts = getLocalAccounts();
-    const newAccount = localAccounts.filter(
-      (account) => account.publicKey === publicKey
-    )[0];
-    setCurrentAccountGlobal({
-      privateKey: newAccount.privateKey,
-      publicKey: newAccount.publicKey,
-    });
-  };
-
-  /**
    * saves an array of walletAccounts to local storage
    * @param walletAccounts array of accounts
    */
@@ -58,10 +32,31 @@ const useWalletAccounts = () => {
     updateGlobalState(walletAccounts);
   };
 
-  const getKeyPair = async (): Promise<any> => {
-    await mcl.init();
-    let keys = await mcl.newKeyPair();
-    return keys;
+  /**
+   * updates redux state for current and all accounts
+   * @param walletAccounts
+   */
+  const updateGlobalState = (walletAccounts: IWalletAccount[]): void => {
+    setWalletAccountsGlobal(walletAccounts);
+    setCurrentAccountGlobal({
+      publicKey: walletAccounts[walletAccounts.length - 1].publicKey,
+      combinedPublicKey:
+        walletAccounts[walletAccounts.length - 1].combinedPublicKey,
+      reducedSecretKey:
+        walletAccounts[walletAccounts.length - 1].reducedSecretKey,
+    });
+  };
+
+  const setCurrentAccountUser = (combinedPublicKey: string): void => {
+    let localAccounts = getLocalAccounts();
+    const newAccount = localAccounts.filter(
+      (account) => account.combinedPublicKey === combinedPublicKey
+    )[0];
+    setCurrentAccountGlobal({
+      publicKey: newAccount.publicKey,
+      combinedPublicKey: newAccount.combinedPublicKey,
+      reducedSecretKey: newAccount.reducedSecretKey,
+    });
   };
 
   /**
@@ -80,16 +75,15 @@ const useWalletAccounts = () => {
    * a new account is created for the user
    */
   const createFirstAccount = () => {
-    getKeyPair().then((keys) => {
-      let newAccount: IWalletAccount = {
-        publicKey: JSON.stringify(keys.pubkey),
-        privateKey: JSON.stringify(Object.values(keys.secret.a_)),
-      };
-      console.log(newAccount);
-      let walletAccounts = Array<IWalletAccount>();
-      walletAccounts.push(newAccount);
-      setLocalAccounts(walletAccounts);
-    });
+    const newKeys = getNewKeyPair();
+    let newAccount: IWalletAccount = {
+      publicKey: newKeys.publicKey,
+      combinedPublicKey: newKeys.combinedPublicKey,
+      reducedSecretKey: newKeys.reducedSecretKey,
+    };
+    let walletAccounts = Array<IWalletAccount>();
+    walletAccounts.push(newAccount);
+    setLocalAccounts(walletAccounts);
   };
 
   /**
@@ -97,15 +91,15 @@ const useWalletAccounts = () => {
    * @param walletAccount object with private and public key
    */
   const createNewAccount = (): void => {
-    getKeyPair().then((keys) => {
-      let newAccount: IWalletAccount = {
-        publicKey: JSON.stringify(keys.pubkey),
-        privateKey: JSON.stringify(Object.values(keys.secret.a_)),
-      };
-      let localAccounts = getLocalAccounts();
-      localAccounts.push(newAccount);
-      setLocalAccounts(localAccounts);
-    });
+    const newKeys = getNewKeyPair();
+    let newAccount: IWalletAccount = {
+      publicKey: newKeys.publicKey,
+      combinedPublicKey: newKeys.combinedPublicKey,
+      reducedSecretKey: newKeys.reducedSecretKey,
+    };
+    let localAccounts = getLocalAccounts();
+    localAccounts.push(newAccount);
+    setLocalAccounts(localAccounts);
   };
 
   /**
@@ -114,10 +108,10 @@ const useWalletAccounts = () => {
    * then a new account is created
    * @param publicKey of the account to be deleted
    */
-  const burnAccount = (publicKey: string): void => {
+  const burnAccount = (combinedPublicKey: string): void => {
     let localAccounts = getLocalAccounts();
     let updatedAccounts = localAccounts.filter(
-      (account) => account.publicKey !== publicKey
+      (account) => account.combinedPublicKey !== combinedPublicKey
     );
     if (updatedAccounts.length === 0) {
       createFirstAccount();

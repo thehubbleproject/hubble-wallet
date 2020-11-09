@@ -10,6 +10,7 @@ import NewAccountModal from "../Modals/NewAccountModal";
 import SendTokenModal from "../Modals/SendTokenModal";
 import QRCodeGenerator from "../QRCode/QRCodeGenerator";
 import DropdownAccounts from "./DropdownAccounts";
+import SignWordsModal from "../Modals/SignWordsModal";
 
 // interfaces
 export interface AccountActionsProps {}
@@ -27,9 +28,10 @@ const AccountActions: React.FunctionComponent<AccountActionsProps> = () => {
       <br />
       <DropdownAccounts />
 
-      <QRCodeGenerator address={currentAccount.publicKey} />
+      <QRCodeGenerator address={JSON.stringify(currentAccount.publicKey)} />
 
       <SendTokenModal />
+      <SignWordsModal />
       <NewAccountModal />
       <BurnAccountModal />
     </div>

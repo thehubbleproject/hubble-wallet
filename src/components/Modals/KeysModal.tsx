@@ -13,19 +13,25 @@ const KeysModal: React.FunctionComponent<KeysModalProps> = () => {
   const currentAccount = useStoreState((state) => state.currentAccount);
 
   return (
-    <Modal closeIcon size="tiny" trigger={<Icon name="key" />}>
+    <Modal closeIcon size="small" trigger={<Icon name="key" />}>
       <Modal.Header>Account Keys</Modal.Header>
       <Modal.Content>
         <Modal.Description>
           <p>
-            <strong>Public Key</strong>
+            <strong>Public Keys</strong>
             <br />
-            {currentAccount.publicKey}
+            <pre className="pre">
+              [
+              {currentAccount.publicKey?.map((key, index) => (
+                <div key={index}> {key},</div>
+              ))}
+              ]
+            </pre>
           </p>
           <p style={{ wordWrap: "break-word" }}>
-            <strong>Private Key</strong>
+            <strong>Secret Key string</strong>
             <br />
-            {currentAccount.privateKey}
+            <pre className="pre">{currentAccount.reducedSecretKey}</pre>
           </p>
         </Modal.Description>
       </Modal.Content>

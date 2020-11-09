@@ -34,7 +34,7 @@ const AccountDetails: React.FunctionComponent<AccountDetailsProps> = () => {
         <h2>
           Current Account <KeysModal />
         </h2>
-        <p>{currentAccount.publicKey}</p>
+        <p>{currentAccount.combinedPublicKey}</p>
       </div>
 
       <Tabs />

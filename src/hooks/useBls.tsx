@@ -1,41 +1,85 @@
-import { useEffect, useState } from "react";
 import * as mcl from "react-hubble-bls/dist/mcl";
-import { BytesLike } from "ethers";
-import { hexlify } from "ethers/lib/utils";
+import { formatBytes32String, keccak256, toUtf8Bytes } from "ethers/lib/utils";
+import { useStoreState } from "../store/globalStore";
 
 const useBls = () => {
-  const [mclwasm, setMclWasm] = useState<any>(null);
+  /**
+   * gets the reduced secret key from the current selected account
+   */
+  const reducedSecretKey = useStoreState(
+    (state) => state.currentAccount.reducedSecretKey
+  );
 
-  useEffect(() => {
-    const initializeMcl = async () => {
-      await mcl.init();
+  /**
+   * gets the current initialized instance of mcl-wasm
+   */
+  const mclwasm = mcl.getMclInstance();
+
+  /**
+   * hashes 4 public keys into a single hash so that
+   * it is easier to verify addresses while sending and
+   * receiving tokens from the wallet
+   *
+   * @param keysArray array of public keys
+   */
+  const combinePublicKeys = (keysArray: mcl.PublicKey | string[]): string => {
+    return keccak256(toUtf8Bytes(keysArray.join()));
+  };
+
+  /**
+   * reduces the complete secret key into a single string
+   * which can be restored and rebuilt. This is done to
+   * easily store the secret key
+   *
+   * @param secretKey entire exports.Fr object
+   */
+  const reduceSecretKey = (secretKey: mcl.SecretKey): string => {
+    return secretKey.getStr();
+  };
+
+  /**
+   * takes in the reduced secret key and rebuilds the exports.Fr object
+   * of the mcl-wasm library
+   *
+   * @param reducedSecretKey reduced secret key string
+   */
+  const rebuildSecretKey = (reducedSecretKey: string): mcl.SecretKey => {
+    const secretKey = new mclwasm.Fr();
+    secretKey.setStr(reducedSecretKey);
+    return secretKey;
+  };
+
+  /**
+   * returns a signed object using secret key
+   *
+   * @param message any message string
+   */
+  const signMessageString = (
+    message: string
+  ): {
+    signature: mcl.Signature;
+    M: mcl.Message;
+  } => {
+    const secretKey = rebuildSecretKey(reducedSecretKey);
+    return mcl.sign(formatBytes32String(message), secretKey);
+  };
+
+  /**
+   * creates a new key pair for the user
+   */
+  const getNewKeyPair = () => {
+    const { pubkey, secret } = mcl.newKeyPair();
+    const combinedPublicKey = combinePublicKeys(pubkey);
+    const reducedSecretKey = reduceSecretKey(secret);
+
+    return {
+      publicKey: pubkey,
+      combinedPublicKey,
+      reducedSecretKey,
     };
-
-    initializeMcl();
-    setMclWasm(mcl.getMclInstance());
-  }, []);
-
-  const getSecret = (key: string): mcl.SecretKey => {
-    const hexKey = hexlify(key);
-    if (hexKey.length !== 66) {
-      throw new Error(
-        "BLS private key should be 32 bytes. Did you include 0x at the start?"
-      );
-    }
-    const fr = mclwasm.deserializeHexStrToFr(key.slice(2));
-    console.log(fr.serializeToHexStr());
-    return fr;
   };
 
-  const getKeyPair = (key: BytesLike): mcl.keyPair => {
-    const secret: mcl.SecretKey = getSecret(key.toString());
-    const mclPubkey: mcl.PublicKey = mclwasm.mul(mcl.g2(), secret);
-    const normalized = mclwasm.normalize(mclPubkey);
-    const pubkey = mcl.g2ToHex(normalized);
-    return { pubkey, secret };
-  };
-
-  return { getKeyPair };
+  return { getNewKeyPair, signMessageString, combinePublicKeys };
 };
 
 export default useBls;
