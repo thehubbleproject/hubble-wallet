@@ -1,4 +1,5 @@
 import { useStoreActions } from "../store/globalStore";
+import * as mcl from "react-hubble-bls/dist/mcl";
 
 export interface IWalletAccount {
   publicKey: string;
@@ -57,22 +58,10 @@ const useWalletAccounts = () => {
     updateGlobalState(walletAccounts);
   };
 
-  const randomString = (length: number): string => {
-    var result = "";
-    var characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  };
-
-  const getKeyPair = (): IWalletAccount => {
-    return {
-      privateKey: "0x" + randomString(128),
-      publicKey: "0x" + randomString(32),
-    };
+  const getKeyPair = async (): Promise<any> => {
+    await mcl.init();
+    let keys = await mcl.newKeyPair();
+    return keys;
   };
 
   /**
@@ -91,10 +80,16 @@ const useWalletAccounts = () => {
    * a new account is created for the user
    */
   const createFirstAccount = () => {
-    const newAccount = getKeyPair();
-    let walletAccounts = Array<IWalletAccount>();
-    walletAccounts.push(newAccount);
-    setLocalAccounts(walletAccounts);
+    getKeyPair().then((keys) => {
+      let newAccount: IWalletAccount = {
+        publicKey: JSON.stringify(keys.pubkey),
+        privateKey: JSON.stringify(Object.values(keys.secret.a_)),
+      };
+      console.log(newAccount);
+      let walletAccounts = Array<IWalletAccount>();
+      walletAccounts.push(newAccount);
+      setLocalAccounts(walletAccounts);
+    });
   };
 
   /**
@@ -102,10 +97,15 @@ const useWalletAccounts = () => {
    * @param walletAccount object with private and public key
    */
   const createNewAccount = (): void => {
-    const newAccount = getKeyPair();
-    let localAccounts = getLocalAccounts();
-    localAccounts.push(newAccount);
-    setLocalAccounts(localAccounts);
+    getKeyPair().then((keys) => {
+      let newAccount: IWalletAccount = {
+        publicKey: JSON.stringify(keys.pubkey),
+        privateKey: JSON.stringify(Object.values(keys.secret.a_)),
+      };
+      let localAccounts = getLocalAccounts();
+      localAccounts.push(newAccount);
+      setLocalAccounts(localAccounts);
+    });
   };
 
   /**

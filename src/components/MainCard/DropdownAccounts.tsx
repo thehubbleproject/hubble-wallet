@@ -22,13 +22,10 @@ const DropdownAccounts: React.FunctionComponent<DropdownAccountsProps> = () => {
         id="accounts"
         className="select"
         onChange={(e) => setCurrentAccountUser(e.target.value)}
+        value={currentAccount.publicKey}
       >
         {walletAccounts.map((account) => (
-          <option
-            key={account?.publicKey}
-            value={account?.publicKey}
-            selected={account?.publicKey === currentAccount.publicKey}
-          >
+          <option key={account?.publicKey} value={account?.publicKey}>
             {account?.publicKey}
           </option>
         ))}
