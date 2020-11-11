@@ -17,7 +17,7 @@ const KeysModal: React.FunctionComponent<KeysModalProps> = () => {
       <Modal.Header>Account Keys</Modal.Header>
       <Modal.Content>
         <Modal.Description>
-          <p>
+          <div>
             <strong>Public Keys</strong>
             <br />
             <pre className="pre">
@@ -27,12 +27,12 @@ const KeysModal: React.FunctionComponent<KeysModalProps> = () => {
               ))}
               ]
             </pre>
-          </p>
-          <p style={{ wordWrap: "break-word" }}>
+          </div>
+          <div>
             <strong>Secret Key string</strong>
             <br />
             <pre className="pre">{currentAccount.reducedSecretKey}</pre>
-          </p>
+          </div>
         </Modal.Description>
       </Modal.Content>
     </Modal>
