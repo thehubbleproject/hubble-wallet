@@ -87,21 +87,21 @@ const useBls = () => {
       signer
     );
 
-    let DepositManager = new ethers.Contract(
-      DepositManagerContract.address,
-      DepositManagerContract.abi,
-      signer
-    );
+    // let DepositManager = new ethers.Contract(
+    //   DepositManagerContract.address,
+    //   DepositManagerContract.abi,
+    //   signer
+    // );
 
     let tx1 = await BLSAccountRegistry.register(pubkey);
     await tx1.wait();
 
-    const makePayment = async (add: any) => {
-      let tx2 = await DepositManager.depositFor(add, 100, 1);
-      await tx2.wait();
+    // const makePayment = async (add: any) => {
+    //   let tx2 = await DepositManager.depositFor(add, 100, 1);
+    //   await tx2.wait();
 
-      console.log("tx2", tx2.hash);
-    };
+    //   console.log("tx2", tx2.hash);
+    // };
 
     provider.once(tx1.hash, (receipt) => {
       let decoder = new AbiCoder();
@@ -109,9 +109,10 @@ const useBls = () => {
         ["uint256[4]", "uint256"],
         receipt.logs[0].data
       );
-      console.log(decoded);
+      console.log(decoded, receipt);
+      //   console.log(decoded);
 
-      makePayment(16);
+      //   makePayment(16);
     });
   };
 
