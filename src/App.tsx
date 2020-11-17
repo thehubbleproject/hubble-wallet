@@ -6,7 +6,7 @@ import { keccak256 } from "ethers/lib/utils";
 // hooks and services
 
 // components, styles and UI
-import "./app.css";
+import "./App.css";
 import "semantic-ui-css/semantic.min.css";
 import BLSAccountCard from "./components/MainCard/BLSAccountCard";
 import EthereumAccountCard from "./components/MainCard/EthereumAccountCard";
