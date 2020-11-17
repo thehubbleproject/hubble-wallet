@@ -11,9 +11,9 @@ import QRCodeGenerator from "../QRCode/QRCodeGenerator";
 import DropdownAccounts from "./DropdownAccounts";
 
 // interfaces
-export interface AccountActionsProps {}
+export interface BLSAccountCardProps {}
 
-const AccountActions: React.FunctionComponent<AccountActionsProps> = () => {
+const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
   const currentAccount = useStoreState((state) => state.currentAccount);
 
   return (
@@ -36,4 +36,4 @@ const AccountActions: React.FunctionComponent<AccountActionsProps> = () => {
   );
 };
 
-export default AccountActions;
+export default BLSAccountCard;

@@ -8,8 +8,8 @@ import { keccak256 } from "ethers/lib/utils";
 // components, styles and UI
 import "./app.css";
 import "semantic-ui-css/semantic.min.css";
-import AccountActions from "./components/MainCard/AccountActions";
-import AccountDetails from "./components/MainCard/AccountDetails";
+import BLSAccountCard from "./components/MainCard/BLSAccountCard";
+import EthereumAccountCard from "./components/MainCard/EthereumAccountCard";
 
 // store
 import globalStore, { IGlobalStore } from "./store/globalStore";
@@ -36,8 +36,8 @@ const App: React.FunctionComponent = () => {
     <StoreProvider store={store}>
       <div className="App">
         <div className="main-card">
-          <AccountActions />
-          <AccountDetails />
+          <BLSAccountCard />
+          <EthereumAccountCard />
         </div>
       </div>
     </StoreProvider>

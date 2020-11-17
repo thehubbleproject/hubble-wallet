@@ -57,7 +57,7 @@ body {
   display: flex;
   align-items: center;
   min-height: 40rem;
-  width: 75rem;
+  width: 62rem;
 }
 
 .main-card-left {
@@ -67,6 +67,8 @@ body {
   padding: 2rem;
   border-radius: 1rem;
   overflow: hidden;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  z-index: 100;
 }
 
 .main-card-left > .QRCodeContainer {
@@ -102,94 +104,106 @@ body {
   color: yellow;
 }
 
-.MainCardRight {
-  width: 48rem;
+.main-card-right {
+  width: 35rem;
   min-height: 35rem;
   border-radius: 0 0.5rem 0.5rem 0;
   background: #f7f8fc;
 }
 
-.MainCardRight > .tabs {
+/* .main-card-right > .tabs {
   cursor: pointer;
   display: flex;
   justify-content: space-around;
   border-bottom: 1px solid var(--default-border-gray);
 }
 
-.MainCardRight > .tabs > .tab {
+.main-card-right > .tabs > .tab {
   padding: 1rem 3rem;
   text-align: center;
   width: 100%;
 }
 
-.MainCardRight > .tabs > .active {
+.main-card-right > .tabs > .active {
   border-bottom: 3px solid var(--theme-blue);
-}
+} */
 
-.MainCardRight > .title {
+.main-card-right > .header {
   padding: 1rem 2rem;
   border-bottom: 1px solid var(--default-border-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.MainCardRight > .title > p {
+.main-card-right > .header > .account-details > p {
+  font-family: "Manrope" !important;
+  font-weight: 600;
   margin: 0;
   padding: 0.2rem 0;
-  color: #555555;
+  color: #747474;
   font-size: 90%;
   overflow-x: hidden;
   text-overflow: ellipsis;
+  max-width: 25rem;
 }
 
-.MainCardRight > .title > h2 {
+.main-card-right > .header > .account-details > h4 {
   padding: 0;
   margin: 0;
 }
 
-.MainCardRight > .balance {
+.main-card-right > .balance {
+  padding: 2rem 2rem;
+  font-family: "Manrope";
+  /* max-height: 35rem;
+  overflow-y: scroll; */
+}
+/* 
+.main-card-right > .transactions {
   padding: 2rem 3rem;
   max-height: 35rem;
   overflow-y: scroll;
 }
 
-.MainCardRight > .transactions {
-  padding: 2rem 3rem;
-  max-height: 35rem;
-  overflow-y: scroll;
-}
-
-.MainCardRight > .transactions > .records {
+.main-card-right > .transactions > .records {
   display: flex;
   flex-wrap: wrap;
   padding: 0.5rem 0;
   justify-content: space-between;
 }
 
-.MainCardRight > .transactions > .records > .id {
+.main-card-right > .transactions > .records > .id {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-}
+} */
 
-.MainCardRight > .balance > h5 {
+.main-card-right > .balance > h5 {
   margin: 0;
 }
 
-.MainCardRight > .balance > .amount {
+.main-card-right > .balance > .amount {
   display: flex;
   padding: 1.4rem 0;
   color: #555555;
-  align-items: flex-end;
+  gap: 2rem;
+  align-items: center;
   justify-content: space-between;
 }
 
-.MainCardRight > .balance > .amount > .name {
-  font-size: 3rem;
+.main-card-right > .balance > .amount > .name {
+  font-size: 2rem;
   line-height: 3rem;
 }
 
-.MainCardRight > .balance > .amount > .value {
+.main-card-right > .balance > .amount > .value {
   font-size: 5rem;
   line-height: 5rem;
+}
+
+.main-card-right > .balance > .deposit-form {
+  padding-top: 3rem;
 }
 
 select {
@@ -254,22 +268,31 @@ select {
 
 /* ################### MOBILE STYLE OVERRIDES ################### */
 @media (max-width: 500px) {
-  .MainCard {
+  .main-card {
     min-height: 100vh;
     width: 100vw;
     border-radius: 0;
     flex-direction: column;
-    background: #f7f8fc;
+    background: var(--theme-blue);
   }
 
   .main-card-left {
     width: 100%;
-    border-radius: 0 0 2rem 2rem;
+    border-radius: 0;
+    box-shadow: none;
+    position: fixed;
   }
 
-  .MainCardRight {
+  .main-card-right {
+    margin-top: 80vh;
     width: 100%;
-    min-height: 100%;
+    height: 90vh;
+    z-index: 500;
+    border-radius: 2rem 2rem 0 0;
+  }
+
+  .main-card-right > .header {
+    padding: 1.8rem 2rem;
   }
 
   .main-card-left > .QRCodeContainer {
@@ -286,25 +309,30 @@ select {
     padding: 1.2rem 0.5rem !important;
   }
 
-  .MainCardRight > .balance {
+  .main-card-right > .balance {
+    max-height: none;
+    min-height: 30rem;
+    overflow-y: hidden;
+  }
+
+  .main-card-right > .transactions {
     max-height: none;
     min-height: 50rem;
     overflow-y: hidden;
   }
 
-  .MainCardRight > .transactions {
-    max-height: none;
-    min-height: 50rem;
-    overflow-y: hidden;
+  .main-card-right > .balance > .amount {
+    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .MainCardRight > .balance > .amount > .name {
+  .main-card-right > .balance > .amount > .name {
     font-size: 2rem;
-    line-height: 2rem;
   }
 
-  .MainCardRight > .balance > .amount > .value {
-    font-size: 3rem;
-    line-height: 3rem;
+  .main-card-right > .balance > .amount > .value {
+    font-size: 6rem;
+    line-height: 6rem;
   }
 }

@@ -3,6 +3,7 @@ import React from "react";
 // hooks and services
 import useWalletAccounts from "../../hooks/useWalletAccounts";
 import { useStoreState } from "../../store/globalStore";
+import { formatAccountString } from "../../utils/utils";
 import KeysModal from "../Modals/KeysModal";
 
 // components, styles and UI
@@ -33,7 +34,7 @@ const DropdownAccounts: React.FunctionComponent<DropdownAccountsProps> = () => {
             key={account?.combinedPublicKey}
             value={account?.combinedPublicKey}
           >
-            {account?.combinedPublicKey}
+            {formatAccountString(account?.combinedPublicKey)}
           </option>
         ))}
       </select>

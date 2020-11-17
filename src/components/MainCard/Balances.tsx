@@ -1,4 +1,5 @@
 import React from "react";
+import DepositTokenForm from "../Forms/DepositTokenForm";
 
 // hooks and services
 
@@ -13,13 +14,11 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
       <h5>BALANCE</h5>
 
       <div className="amount">
-        <div className="name">DAI</div>
         <div className="value">20.00</div>
+        <div className="name">TEST_HUBBLE</div>
       </div>
-      <div className="amount">
-        <div className="name">ETH</div>
-        <div className="value">0.05</div>
-      </div>
+
+      <DepositTokenForm />
     </div>
   );
 };
