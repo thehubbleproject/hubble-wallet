@@ -25,17 +25,15 @@ const BurnAccountModal: React.FunctionComponent<BurnAccountModalProps> = () => {
       open={modalOpen}
       size="tiny"
       trigger={
-        <div className="ButtonContainer">
-          <Button
-            className="customButton burn"
-            content="close account"
-            icon="fire"
-            labelPosition="left"
-            size="large"
-            fluid
-            onClick={() => setModalOpen(true)}
-          />
-        </div>
+        <Button
+          className="customButton burn"
+          content="delete"
+          icon="close"
+          labelPosition="right"
+          size="large"
+          floated="right"
+          onClick={() => setModalOpen(true)}
+        />
       }
     >
       <Modal.Header>Confirmation</Modal.Header>

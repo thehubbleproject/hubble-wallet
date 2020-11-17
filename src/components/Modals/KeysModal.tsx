@@ -13,7 +13,16 @@ const KeysModal: React.FunctionComponent<KeysModalProps> = () => {
   const currentAccount = useStoreState((state) => state.currentAccount);
 
   return (
-    <Modal closeIcon size="small" trigger={<Icon name="key" />}>
+    <Modal
+      closeIcon
+      size="small"
+      trigger={
+        <span className="show-keys">
+          <Icon name="key" />
+          show keys
+        </span>
+      }
+    >
       <Modal.Header>Account Keys</Modal.Header>
       <Modal.Content>
         <Modal.Description>

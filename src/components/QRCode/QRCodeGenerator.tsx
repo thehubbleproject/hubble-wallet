@@ -13,13 +13,7 @@ export interface QRCodeProps {
 const QRCodeGenerator: React.FunctionComponent<QRCodeProps> = ({ address }) => {
   return (
     <div className="QRCodeContainer">
-      <QRCodeModule
-        level="H"
-        renderAs="svg"
-        size={350}
-        includeMargin
-        value={address}
-      />
+      <QRCodeModule level="H" renderAs="svg" size={285} value={address} />
     </div>
   );
 };

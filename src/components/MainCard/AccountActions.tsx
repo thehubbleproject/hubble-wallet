@@ -7,10 +7,8 @@ import { useStoreState } from "../../store/globalStore";
 import { Icon } from "semantic-ui-react";
 import BurnAccountModal from "../Modals/BurnAccountModal";
 import NewAccountModal from "../Modals/NewAccountModal";
-import SendTokenModal from "../Modals/SendTokenModal";
 import QRCodeGenerator from "../QRCode/QRCodeGenerator";
 import DropdownAccounts from "./DropdownAccounts";
-import SignWordsModal from "../Modals/SignWordsModal";
 
 // interfaces
 export interface AccountActionsProps {}
@@ -19,10 +17,10 @@ const AccountActions: React.FunctionComponent<AccountActionsProps> = () => {
   const currentAccount = useStoreState((state) => state.currentAccount);
 
   return (
-    <div className="MainCardLeft">
-      <h3>
+    <div className="main-card-left">
+      <h3 className="app-title">
+        <span>Hubble Wallet</span>
         <Icon name="binoculars" />
-        Hubble Wallet
       </h3>
 
       <br />
@@ -30,10 +28,10 @@ const AccountActions: React.FunctionComponent<AccountActionsProps> = () => {
 
       <QRCodeGenerator address={JSON.stringify(currentAccount.publicKey)} />
 
-      <SendTokenModal />
-      <SignWordsModal />
-      <NewAccountModal />
-      <BurnAccountModal />
+      <div className="button-group">
+        <NewAccountModal />
+        <BurnAccountModal />
+      </div>
     </div>
   );
 };

@@ -5,8 +5,6 @@ import { useStoreState } from "../../store/globalStore";
 import useWalletAccounts from "../../hooks/useWalletAccounts";
 
 // components, styles and UI
-import KeysModal from "../Modals/KeysModal";
-import Tabs from "./Tabs";
 
 // interfaces
 export interface AccountDetailsProps {}
@@ -31,13 +29,9 @@ const AccountDetails: React.FunctionComponent<AccountDetailsProps> = () => {
   return (
     <div className="MainCardRight">
       <div className="title">
-        <h2>
-          Current Account <KeysModal />
-        </h2>
+        <h2>Current Account</h2>
         <p>{currentAccount.combinedPublicKey}</p>
       </div>
-
-      <Tabs />
     </div>
   );
 };

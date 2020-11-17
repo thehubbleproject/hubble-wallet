@@ -23,17 +23,15 @@ const NewAccountModal: React.FunctionComponent<NewAccountModalProps> = () => {
       size="tiny"
       open={modalOpen}
       trigger={
-        <div className="ButtonContainer">
-          <Button
-            className="customButton"
-            content="new account"
-            icon="plus"
-            labelPosition="left"
-            size="large"
-            fluid
-            onClick={() => setModalOpen(true)}
-          />
-        </div>
+        <Button
+          className="customButton"
+          content="new BLS account"
+          icon="plus"
+          fluid
+          labelPosition="left"
+          size="large"
+          onClick={() => setModalOpen(true)}
+        />
       }
     >
       <Modal.Header>Confirmation</Modal.Header>

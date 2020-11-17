@@ -1,11 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;600&display=swap");
+
 :root {
+  --theme-blue-dark: #0e1731;
+  --theme-blue-dark-active: #1f2f63;
   --theme-blue: #6177e5;
-  --theme-blue-darker: #10549c88;
-  --theme-blue-darker3: #0e1731;
-  --theme-blue-darker2: #0b3a6d;
-  --theme-red: rgb(209, 66, 66);
-  --theme-red-darker: rgb(173, 37, 37);
+  --theme-gray: #f7f8fc;
+  --theme-black: rgb(100, 100, 100);
+  --theme-black-darker: rgb(70, 70, 70);
   --default-border-gray: rgba(0, 0, 0, 0.1);
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  font-family: "Syne", sans-serif !important;
+}
+
+body {
+  background: var(--theme-blue-dark) !important;
+}
+
+.initializing {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  font-size: 2rem;
 }
 
 .pre {
@@ -20,40 +50,63 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--theme-blue-darker3);
+  background: var(--theme-blue-dark);
 }
 
-.MainCard {
+.main-card {
   display: flex;
-  min-height: 45rem;
+  align-items: center;
+  min-height: 40rem;
   width: 75rem;
+}
+
+.main-card-left {
+  background: var(--theme-blue);
+  color: white;
+  width: 27rem;
+  padding: 2rem;
   border-radius: 1rem;
   overflow: hidden;
 }
 
-.MainCardLeft {
-  background: var(--theme-blue);
-  color: white;
-  width: 20rem;
-  padding: 2rem;
-}
-
-.MainCardLeft > .QRCodeContainer {
-  margin: 1rem 0 2rem 0;
-  max-height: 250px;
+.main-card-left > .QRCodeContainer {
+  width: 100%;
+  padding: 2rem 0;
+  margin: 2rem 0;
+  background: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 0.5rem;
 }
 
-.MainCardLeft > .ButtonContainer {
+.main-card-left > .app-title {
+  font-size: 2rem;
+  line-height: 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-card-left > .dropdown-container-title {
   margin: auto;
   margin-top: 1rem;
 }
 
+.main-card-left > .dropdown-container > .dropdown-container-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-card-left > .dropdown-container > .dropdown-container-title > .show-keys {
+  cursor: pointer;
+  color: yellow;
+}
+
 .MainCardRight {
-  width: 100%;
-  background: #fff;
+  width: 48rem;
+  min-height: 35rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: #f7f8fc;
 }
 
 .MainCardRight > .tabs {
@@ -157,7 +210,7 @@ select::-ms-expand {
   font-family: "Lato";
   position: relative;
   display: flex;
-  width: 222px;
+  width: 100%;
   height: 2.5rem;
   line-height: 2.5;
   font-size: 90%;
@@ -174,23 +227,29 @@ select {
   cursor: pointer;
 }
 
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
 .customButton {
+  font-family: "Syne", sans-serif !important;
   font-size: 0.8rem !important;
-  padding: 0.8rem 0.4rem !important;
+  padding: 0.8rem 1rem !important;
   color: white !important;
-  background: var(--theme-blue-darker) !important;
+  background: var(--theme-blue-dark) !important;
 }
 
 .customButton:active {
-  background: var(--theme-blue-darker2) !important;
+  background: var(--theme-blue-dark-active) !important;
 }
 
 .burn {
-  background: var(--theme-red) !important;
+  background: #ff5147 !important;
 }
 
 .burn:active {
-  background: var(--theme-red-darker) !important;
+  background: #ff392e !important;
 }
 
 /* ################### MOBILE STYLE OVERRIDES ################### */
@@ -200,10 +259,12 @@ select {
     width: 100vw;
     border-radius: 0;
     flex-direction: column;
+    background: #f7f8fc;
   }
 
-  .MainCardLeft {
+  .main-card-left {
     width: 100%;
+    border-radius: 0 0 2rem 2rem;
   }
 
   .MainCardRight {
@@ -211,7 +272,7 @@ select {
     min-height: 100%;
   }
 
-  .MainCardLeft > .QRCodeContainer {
+  .main-card-left > .QRCodeContainer {
     max-height: 350px;
     margin: 2rem 0;
   }

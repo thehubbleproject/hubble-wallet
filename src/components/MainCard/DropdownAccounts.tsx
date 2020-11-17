@@ -3,6 +3,7 @@ import React from "react";
 // hooks and services
 import useWalletAccounts from "../../hooks/useWalletAccounts";
 import { useStoreState } from "../../store/globalStore";
+import KeysModal from "../Modals/KeysModal";
 
 // components, styles and UI
 
@@ -15,8 +16,11 @@ const DropdownAccounts: React.FunctionComponent<DropdownAccountsProps> = () => {
 
   const { setCurrentAccountUser } = useWalletAccounts();
   return (
-    <div className="ButtonContainer">
-      <h4>change account</h4>
+    <div className="dropdown-container">
+      <div className="dropdown-container-title">
+        <h4>BLS account</h4>
+        <KeysModal />
+      </div>
       <select
         name="accounts"
         id="accounts"

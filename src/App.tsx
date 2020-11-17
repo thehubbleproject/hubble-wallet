@@ -13,6 +13,7 @@ import AccountDetails from "./components/MainCard/AccountDetails";
 
 // store
 import globalStore, { IGlobalStore } from "./store/globalStore";
+import Initializing from "./components/MainCard/Initializing";
 const store = createStore<IGlobalStore>(globalStore);
 
 const App: React.FunctionComponent = () => {
@@ -30,11 +31,11 @@ const App: React.FunctionComponent = () => {
   }, []);
 
   return loading ? (
-    <div>Initializing</div>
+    <Initializing />
   ) : (
     <StoreProvider store={store}>
       <div className="App">
-        <div className="MainCard">
+        <div className="main-card">
           <AccountActions />
           <AccountDetails />
         </div>
