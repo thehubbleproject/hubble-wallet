@@ -1,8 +1,7 @@
-import { BigNumber } from "ethers";
 import React, { useState } from "react";
 import { Button, Input } from "semantic-ui-react";
 import useContracts from "../../hooks/useContracts";
-import { useStoreActions, useStoreState } from "../../store/globalStore";
+import { useStoreState } from "../../store/globalStore";
 
 // hooks and services
 

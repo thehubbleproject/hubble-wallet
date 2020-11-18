@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { AbiCoder } from "ethers/lib/utils";
 import * as mcl from "react-hubble-bls/dist/mcl";
 

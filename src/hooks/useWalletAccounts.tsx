@@ -5,7 +5,6 @@ import {
   useStoreState,
 } from "../store/globalStore";
 import useBls from "./useBls";
-import useContracts from "./useContracts";
 
 const useWalletAccounts = () => {
   const setCurrentAccountGlobal = useStoreActions(
@@ -14,10 +13,9 @@ const useWalletAccounts = () => {
   const setWalletAccountsGlobal = useStoreActions(
     (actions) => actions.setWalletAccounts
   );
-  const { web3, walletAccounts } = useStoreState((state) => state);
+  const { walletAccounts } = useStoreState((state) => state);
 
   const { getNewKeyPair } = useBls();
-  const { createNewBLSAccountRegistry } = useContracts();
 
   /**
    * fetches a list of accounts from the localstorage
