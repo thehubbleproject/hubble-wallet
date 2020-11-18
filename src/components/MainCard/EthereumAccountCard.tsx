@@ -7,6 +7,7 @@ import { Button } from "semantic-ui-react";
 import { formatAccountString } from "../../utils/utils";
 import Balances from "./Balances";
 import { useStoreActions, useStoreState } from "../../store/globalStore";
+import useContracts from "../../hooks/useContracts";
 
 // components, styles and UI
 
@@ -18,7 +19,11 @@ const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = (
     (actions) => actions
   );
 
-  const { web3, account, network, connected } = useStoreState((state) => state);
+  const { web3, account, network, connected, currentAccount } = useStoreState(
+    (state) => state
+  );
+
+  const { createNewBLSAccountRegistry } = useContracts();
 
   const providerOptions = {};
   const web3Modal = new Web3Modal({
@@ -66,9 +71,16 @@ const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = (
     if (web3Modal.cachedProvider) {
       onConnect();
     }
-
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (!currentAccount.registered && web3 && account) {
+      let pkey = currentAccount.publicKey || ["", "", "", ""];
+      createNewBLSAccountRegistry(pkey);
+    }
+    // eslint-disable-next-line
+  }, [web3, account]);
 
   return (
     <div className="main-card-right">

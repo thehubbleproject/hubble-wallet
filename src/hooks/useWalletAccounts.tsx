@@ -1,5 +1,11 @@
-import { IWalletAccount, useStoreActions } from "../store/globalStore";
+import { useEffect } from "react";
+import {
+  IWalletAccount,
+  useStoreActions,
+  useStoreState,
+} from "../store/globalStore";
 import useBls from "./useBls";
+import useContracts from "./useContracts";
 
 const useWalletAccounts = () => {
   const setCurrentAccountGlobal = useStoreActions(
@@ -8,8 +14,10 @@ const useWalletAccounts = () => {
   const setWalletAccountsGlobal = useStoreActions(
     (actions) => actions.setWalletAccounts
   );
+  const { web3, walletAccounts } = useStoreState((state) => state);
 
   const { getNewKeyPair } = useBls();
+  const { createNewBLSAccountRegistry } = useContracts();
 
   /**
    * fetches a list of accounts from the localstorage
@@ -32,6 +40,13 @@ const useWalletAccounts = () => {
     updateGlobalState(walletAccounts);
   };
 
+  useEffect(() => {
+    // @ts-ignore
+    if (walletAccounts.length) {
+      localStorage.setItem("walletAccounts", JSON.stringify(walletAccounts));
+    }
+  }, [walletAccounts]);
+
   /**
    * updates redux state for current and all accounts
    * @param walletAccounts
@@ -44,6 +59,8 @@ const useWalletAccounts = () => {
         walletAccounts[walletAccounts.length - 1].combinedPublicKey,
       reducedSecretKey:
         walletAccounts[walletAccounts.length - 1].reducedSecretKey,
+      registered: walletAccounts[walletAccounts.length - 1].registered,
+      accountAddress: walletAccounts[walletAccounts.length - 1].accountAddress,
     });
   };
 
@@ -56,6 +73,8 @@ const useWalletAccounts = () => {
       publicKey: newAccount.publicKey,
       combinedPublicKey: newAccount.combinedPublicKey,
       reducedSecretKey: newAccount.reducedSecretKey,
+      registered: newAccount.registered,
+      accountAddress: newAccount.accountAddress,
     });
   };
 
@@ -81,10 +100,13 @@ const useWalletAccounts = () => {
       publicKey: newKeys.publicKey,
       combinedPublicKey: newKeys.combinedPublicKey,
       reducedSecretKey: newKeys.reducedSecretKey,
+      registered: false,
+      accountAddress: null,
     };
     let walletAccounts = Array<IWalletAccount>();
     walletAccounts.push(newAccount);
     setLocalAccounts(walletAccounts);
+    console.log(web3);
   };
 
   /**
@@ -97,10 +119,13 @@ const useWalletAccounts = () => {
       publicKey: newKeys.publicKey,
       combinedPublicKey: newKeys.combinedPublicKey,
       reducedSecretKey: newKeys.reducedSecretKey,
+      registered: false,
+      accountAddress: null,
     };
     let localAccounts = getLocalAccounts();
     localAccounts.push(newAccount);
     setLocalAccounts(localAccounts);
+    createNewBLSAccountRegistry(newKeys.publicKey);
   };
 
   /**

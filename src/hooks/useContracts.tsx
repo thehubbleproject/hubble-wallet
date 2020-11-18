@@ -2,67 +2,119 @@ import { ethers } from "ethers";
 import { AbiCoder } from "ethers/lib/utils";
 import * as mcl from "react-hubble-bls/dist/mcl";
 
-import BLSAccountRegistryContract from "../contracts/BLSAccountRegistryContract.json";
-import { useStoreActions } from "../store/globalStore";
-// import DepositManagerContract from "../contracts/DepositManagerContract.json";
-// import TestTokenContract from "../contracts/TestTokenContract.json";
+import { AddressesList } from "../utils/addresses";
+import { cleanDecimal } from "../utils/utils";
 
-declare const window: any;
+import { useStoreState, useStoreActions } from "../store/globalStore";
+
+import DepositManagerContract from "../contracts/DepositManagerContract.json";
+import BLSAccountRegistryContract from "../contracts/BLSAccountRegistryContract.json";
+import TestTokenContract from "../contracts/TestTokenContract.json";
 
 const useContracts = () => {
-  //   const ApproveToken = async () => {
-  //     const provider = await initializeWeb3();
-  //     const signer = provider.getSigner(0);
+  const { web3, account } = useStoreState((state) => state);
+  const { updateCurrentAccount } = useStoreActions((action) => action);
 
-  //     let TestToken = new ethers.Contract(
-  //       TestTokenContract.address,
-  //       TestTokenContract.abi,
-  //       signer
-  //     );
+  const approveToken = async () => {
+    let maxValue =
+      "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
-  //     let tx = await TestToken.approve(DepositManagerContract.address, 100);
-  //     await tx.wait();
+    let TestTokenContractInstance = new web3.eth.Contract(
+      TestTokenContract.abi,
+      TestTokenContract.address
+    );
 
-  //     console.log("approve done");
-  //   };
+    TestTokenContractInstance.methods
+      .approve(AddressesList.tokens.test_hubble.toLowerCase(), maxValue)
+      .send({
+        from: account,
+      })
+      .on("transactionHash", function (hash: any) {
+        console.log(hash);
+      })
+      .on("receipt", function (receipt: any) {
+        console.log(receipt);
+      });
+  };
 
-  //   const performDeposit = async (add: number) => {
-  //     const provider = await initializeWeb3();
-  //     const signer = provider.getSigner(0);
+  const checkBalance = async () => {
+    let TestTokenContractInstance = new web3.eth.Contract(
+      TestTokenContract.abi,
+      TestTokenContract.address
+    );
 
-  //     let DepositManager = new ethers.Contract(
-  //       DepositManagerContract.address,
-  //       DepositManagerContract.abi,
-  //       signer
-  //     );
+    let bal = await TestTokenContractInstance.methods.balanceOf(account).call();
+    bal = bal > 0 ? cleanDecimal(bal / 10 ** 8, 2) : 0;
 
-  //     let tx = await DepositManager.depositFor(add, 200, 1);
-  //     await tx.wait();
-  //     console.log("tx2", tx.hash);
-  //   };
+    return bal;
+  };
+
+  const checkAllowance = async () => {
+    let TestTokenContractInstance = new web3.eth.Contract(
+      TestTokenContract.abi,
+      TestTokenContract.address
+    );
+
+    let allowance = await TestTokenContractInstance.methods
+      .allowance(account, AddressesList.tokens.test_hubble.toLowerCase())
+      .call();
+    if (allowance > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const performDeposit = async () => {
+    let DepositManagerContractInstance = new web3.eth.Contract(
+      DepositManagerContract.abi,
+      DepositManagerContract.address
+    );
+
+    DepositManagerContractInstance.methods
+      .depositFor(100, 100, 1)
+      .send({
+        from: account,
+      })
+      .on("transactionHash", function (hash: any) {
+        console.log(hash);
+      })
+      .on("confirmation", function (confirmationNumber: any, receipt: any) {
+        console.log(receipt);
+      });
+  };
 
   const createNewBLSAccountRegistry = async (pubkey: mcl.PublicKey) => {
-    // const provider = await initializeWeb3();
-    // const signer = provider.getSigner(0);
-    // let BLSAccountRegistry = new ethers.Contract(
-    //   BLSAccountRegistryContract.address,
-    //   BLSAccountRegistryContract.abi,
-    //   signer
-    // );
-    // let tx = await BLSAccountRegistry.register(pubkey);
-    // await tx.wait();
-    // provider.once(tx.hash, async (receipt) => {
-    //   let decoder = new AbiCoder();
-    //   let decoded = decoder.decode(
-    //     ["uint256[4]", "uint256"],
-    //     receipt.logs[0].data
-    //   );
-    //   console.log(parseInt(decoded[1]), receipt);
-    //   //   await ApproveToken();
-    //   //   await performDeposit(parseInt(decoded[1]));
-    // });
+    let BLSAccountRegistryContractInstance = new web3.eth.Contract(
+      BLSAccountRegistryContract.abi,
+      BLSAccountRegistryContract.address
+    );
+
+    BLSAccountRegistryContractInstance.methods
+      .register(pubkey)
+      .send({
+        from: account,
+      })
+      .on("transactionHash", function (hash: any) {
+        console.log(hash);
+      })
+      .on("receipt", function (receipt: any) {
+        let decoder = new AbiCoder();
+        let decoded = decoder.decode(
+          ["uint256[4]", "uint256"],
+          receipt.events[0].raw.data
+        );
+        console.log(parseInt(decoded[1]));
+        updateCurrentAccount(decoded[1].hex);
+      });
   };
-  return { createNewBLSAccountRegistry };
+
+  return {
+    approveToken,
+    checkAllowance,
+    performDeposit,
+    createNewBLSAccountRegistry,
+  };
 };
 
 export default useContracts;

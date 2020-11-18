@@ -5,6 +5,8 @@ export interface IWalletAccount {
   publicKey: mcl.PublicKey | null;
   combinedPublicKey: string | "";
   reducedSecretKey: string | "";
+  registered: boolean;
+  accountAddress: string | null;
 }
 
 export interface IGlobalStore {
@@ -22,6 +24,7 @@ export interface IGlobalStore {
   setConnected: Action<IGlobalStore, boolean>;
   setWalletAccounts: Action<IGlobalStore, IWalletAccount[]>;
   setCurrentAccount: Action<IGlobalStore, object>;
+  updateCurrentAccount: Action<IGlobalStore, string>;
 }
 
 const globalStore: IGlobalStore = {
@@ -34,6 +37,8 @@ const globalStore: IGlobalStore = {
     publicKey: null,
     combinedPublicKey: "",
     reducedSecretKey: "",
+    registered: false,
+    accountAddress: null,
   },
 
   // actions
@@ -61,6 +66,21 @@ const globalStore: IGlobalStore = {
     state.currentAccount.publicKey = payload.publicKey;
     state.currentAccount.combinedPublicKey = payload.combinedPublicKey;
     state.currentAccount.reducedSecretKey = payload.reducedSecretKey;
+    state.currentAccount.registered = payload.registered;
+    state.currentAccount.accountAddress = payload.accountAddress;
+  }),
+
+  updateCurrentAccount: action((state, payload: string) => {
+    state.currentAccount.registered = true;
+    state.currentAccount.accountAddress = payload;
+
+    let walletAccountsUpdated = state.walletAccounts.filter(
+      (account) =>
+        account?.combinedPublicKey !== state.currentAccount.combinedPublicKey
+    );
+    walletAccountsUpdated.push(state.currentAccount);
+
+    state.walletAccounts = walletAccountsUpdated;
   }),
 };
 

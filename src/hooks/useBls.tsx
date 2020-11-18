@@ -11,8 +11,6 @@ const useBls = () => {
     (state) => state.currentAccount.reducedSecretKey
   );
 
-  const { createNewBLSAccountRegistry } = useContracts();
-
   /**
    * gets the current initialized instance of mcl-wasm
    */
@@ -74,8 +72,6 @@ const useBls = () => {
     const { pubkey, secret } = mcl.newKeyPair();
     const combinedPublicKey = combinePublicKeys(pubkey);
     const reducedSecretKey = reduceSecretKey(secret);
-
-    createNewBLSAccountRegistry(pubkey);
 
     return {
       publicKey: pubkey,
