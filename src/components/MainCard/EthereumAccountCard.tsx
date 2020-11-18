@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import Web3Modal from "web3modal";
+import Web3 from "web3";
 
 // hooks and services
-import { useStoreState } from "../../store/globalStore";
-import useWalletAccounts from "../../hooks/useWalletAccounts";
 import { Button } from "semantic-ui-react";
 import { formatAccountString } from "../../utils/utils";
 import Balances from "./Balances";
+import { useStoreActions, useStoreState } from "../../store/globalStore";
 
 // components, styles and UI
 
@@ -13,19 +14,59 @@ import Balances from "./Balances";
 export interface EthereumAccountCardProps {}
 
 const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = () => {
-  const { checkExistingAccounts } = useWalletAccounts();
-  const currentAccount = useStoreState((state) => state.currentAccount);
+  const { setAccount, setNetwork, setWeb3, setConnected } = useStoreActions(
+    (actions) => actions
+  );
 
-  const [loading, setLoading] = useState<boolean>(true); //eslint-disable-line
+  const { web3, account, network, connected } = useStoreState((state) => state);
+
+  const providerOptions = {};
+  const web3Modal = new Web3Modal({
+    cacheProvider: true,
+    providerOptions,
+  });
+
+  const resetApp = async () => {
+    if (web3 && web3.currentProvider && web3.currentProvider.close) {
+      await web3.currentProvider.close();
+    }
+    await web3Modal.clearCachedProvider();
+    setAccount("");
+    setWeb3(null);
+    setNetwork("");
+    setConnected(false);
+  };
+
+  const subscribeProvider = async (provider: any) => {
+    if (!provider.on) {
+      return;
+    }
+    provider.on("close", () => resetApp());
+    provider.on("accountsChanged", async (accounts: string[]) => {
+      await setAccount(accounts[0]);
+    });
+  };
+
+  const onConnect = async () => {
+    const provider = await web3Modal.connect();
+    await subscribeProvider(provider);
+    const web3: any = new Web3(provider);
+
+    const accounts = await web3.eth.getAccounts();
+    const address = accounts[0];
+    const network = await web3.eth.net.getNetworkType();
+
+    await setWeb3(web3);
+    await setAccount(address);
+    await setNetwork(network);
+    await setConnected(true);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await checkExistingAccounts();
-      setLoading(false);
-    };
+    if (web3Modal.cachedProvider) {
+      onConnect();
+    }
 
-    fetchData();
     // eslint-disable-next-line
   }, []);
 
@@ -34,14 +75,19 @@ const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = (
       <div className="header">
         <div className="account-details">
           <h4>Ethereum Account</h4>
-          <p>
-            (ropsten) {formatAccountString(currentAccount.combinedPublicKey)}
-          </p>
+          {connected ? (
+            <p>
+              ({network}) {formatAccountString(account)}
+            </p>
+          ) : (
+            <p>Wallet not connected</p>
+          )}
         </div>
 
         <Button
+          onClick={connected ? resetApp : onConnect}
           className="customButton"
-          content="connect wallet"
+          content={connected ? "disconnect" : "connect wallet"}
           size="small"
           compact
         />

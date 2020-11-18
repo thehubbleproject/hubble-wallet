@@ -66,8 +66,9 @@ const useWalletAccounts = () => {
     let walletAccounts = getLocalAccounts();
     if (walletAccounts.length === 0) {
       createFirstAccount();
+    } else {
+      updateGlobalState(walletAccounts);
     }
-    updateGlobalState(walletAccounts);
   };
 
   /**

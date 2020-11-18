@@ -8,15 +8,27 @@ export interface IWalletAccount {
 }
 
 export interface IGlobalStore {
+  web3: any;
+  account: string;
+  network: string;
+  connected: boolean;
   walletAccounts: (IWalletAccount | null)[];
   currentAccount: IWalletAccount;
 
   // actions
+  setWeb3: Action<IGlobalStore, any>;
+  setAccount: Action<IGlobalStore, string>;
+  setNetwork: Action<IGlobalStore, string>;
+  setConnected: Action<IGlobalStore, boolean>;
   setWalletAccounts: Action<IGlobalStore, IWalletAccount[]>;
   setCurrentAccount: Action<IGlobalStore, object>;
 }
 
 const globalStore: IGlobalStore = {
+  web3: null,
+  account: "",
+  network: "",
+  connected: false,
   walletAccounts: [],
   currentAccount: {
     publicKey: null,
@@ -25,6 +37,22 @@ const globalStore: IGlobalStore = {
   },
 
   // actions
+  setWeb3: action((state, payload: any) => {
+    state.web3 = payload;
+  }),
+
+  setAccount: action((state, payload: string) => {
+    state.account = payload;
+  }),
+
+  setNetwork: action((state, payload: string) => {
+    state.network = payload;
+  }),
+
+  setConnected: action((state, payload: boolean) => {
+    state.connected = payload;
+  }),
+
   setWalletAccounts: action((state, payload: IWalletAccount[]) => {
     state.walletAccounts = payload;
   }),
