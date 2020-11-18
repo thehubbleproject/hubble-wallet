@@ -34,6 +34,7 @@ const useContracts = () => {
       })
       .on("receipt", function (receipt: any) {
         console.log(receipt);
+        setShouldUpdate(true);
       });
   };
 
