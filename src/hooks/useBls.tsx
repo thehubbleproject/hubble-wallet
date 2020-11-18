@@ -1,7 +1,6 @@
 import * as mcl from "react-hubble-bls/dist/mcl";
 import { formatBytes32String, keccak256, toUtf8Bytes } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
-import useContracts from "./useContracts";
 
 const useBls = () => {
   /**
@@ -10,11 +9,6 @@ const useBls = () => {
   const reducedSecretKey = useStoreState(
     (state) => state.currentAccount.reducedSecretKey
   );
-
-  /**
-   * gets the current initialized instance of mcl-wasm
-   */
-  const mclwasm = mcl.getMclInstance();
 
   /**
    * hashes 4 public keys into a single hash so that
@@ -45,6 +39,10 @@ const useBls = () => {
    * @param reducedSecretKey reduced secret key string
    */
   const rebuildSecretKey = (reducedSecretKey: string): mcl.SecretKey => {
+    /**
+     * gets the current initialized instance of mcl-wasm
+     */
+    const mclwasm = mcl.getMclInstance();
     const secretKey = new mclwasm.Fr();
     secretKey.setStr(reducedSecretKey);
     return secretKey;

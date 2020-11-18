@@ -1,8 +1,7 @@
-import { ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { AbiCoder } from "ethers/lib/utils";
 import * as mcl from "react-hubble-bls/dist/mcl";
 
-import { AddressesList } from "../utils/addresses";
 import { cleanDecimal } from "../utils/utils";
 
 import { useStoreState, useStoreActions } from "../store/globalStore";
@@ -13,7 +12,9 @@ import TestTokenContract from "../contracts/TestTokenContract.json";
 
 const useContracts = () => {
   const { web3, account } = useStoreState((state) => state);
-  const { updateCurrentAccount } = useStoreActions((action) => action);
+  const { updateCurrentAccount, setShouldUpdate } = useStoreActions(
+    (action) => action
+  );
 
   const approveToken = async () => {
     let maxValue =
@@ -25,7 +26,7 @@ const useContracts = () => {
     );
 
     TestTokenContractInstance.methods
-      .approve(AddressesList.tokens.test_hubble.toLowerCase(), maxValue)
+      .approve(DepositManagerContract.address, maxValue)
       .send({
         from: account,
       })
@@ -56,7 +57,7 @@ const useContracts = () => {
     );
 
     let allowance = await TestTokenContractInstance.methods
-      .allowance(account, AddressesList.tokens.test_hubble.toLowerCase())
+      .allowance(account, DepositManagerContract.address)
       .call();
     if (allowance > 0) {
       return true;
@@ -65,22 +66,25 @@ const useContracts = () => {
     }
   };
 
-  const performDeposit = async () => {
+  const performDeposit = async (blsAddress: string, amount: number) => {
     let DepositManagerContractInstance = new web3.eth.Contract(
       DepositManagerContract.abi,
       DepositManagerContract.address
     );
 
+    let valueInWei = String((Number(amount) * 10 ** 18).toFixed(0));
+
     DepositManagerContractInstance.methods
-      .depositFor(100, 100, 1)
+      .depositFor(blsAddress, valueInWei, 1)
       .send({
         from: account,
       })
       .on("transactionHash", function (hash: any) {
         console.log(hash);
       })
-      .on("confirmation", function (confirmationNumber: any, receipt: any) {
+      .on("receipt", function (receipt: any) {
         console.log(receipt);
+        setShouldUpdate(true);
       });
   };
 
@@ -104,8 +108,7 @@ const useContracts = () => {
           ["uint256[4]", "uint256"],
           receipt.events[0].raw.data
         );
-        console.log(parseInt(decoded[1]));
-        updateCurrentAccount(decoded[1].hex);
+        updateCurrentAccount(decoded[1]._hex);
       });
   };
 
@@ -114,6 +117,7 @@ const useContracts = () => {
     checkAllowance,
     performDeposit,
     createNewBLSAccountRegistry,
+    checkBalance,
   };
 };
 

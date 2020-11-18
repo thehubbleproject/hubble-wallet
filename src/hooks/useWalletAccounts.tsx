@@ -106,7 +106,6 @@ const useWalletAccounts = () => {
     let walletAccounts = Array<IWalletAccount>();
     walletAccounts.push(newAccount);
     setLocalAccounts(walletAccounts);
-    console.log(web3);
   };
 
   /**
@@ -125,7 +124,6 @@ const useWalletAccounts = () => {
     let localAccounts = getLocalAccounts();
     localAccounts.push(newAccount);
     setLocalAccounts(localAccounts);
-    createNewBLSAccountRegistry(newKeys.publicKey);
   };
 
   /**

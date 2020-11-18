@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Web3Modal from "web3modal";
 import Web3 from "web3";
 
@@ -80,7 +80,7 @@ const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = (
       createNewBLSAccountRegistry(pkey);
     }
     // eslint-disable-next-line
-  }, [web3, account]);
+  }, [web3, connected, currentAccount]);
 
   return (
     <div className="main-card-right">

@@ -1,5 +1,7 @@
-import React from "react";
-import { useStoreState } from "../../store/globalStore";
+import React, { useEffect, useState } from "react";
+import useContracts from "../../hooks/useContracts";
+import { useStoreActions, useStoreState } from "../../store/globalStore";
+import { cleanDecimal } from "../../utils/utils";
 import DepositTokenForm from "../Forms/DepositTokenForm";
 
 // hooks and services
@@ -10,7 +12,44 @@ import DepositTokenForm from "../Forms/DepositTokenForm";
 export interface BalancesProps {}
 
 const Balances: React.FunctionComponent<BalancesProps> = () => {
-  const { connected } = useStoreState((state) => state);
+  const { connected, shouldUpdate } = useStoreState((state) => state);
+  const { setShouldUpdate } = useStoreActions((action) => action);
+
+  const { checkAllowance, checkBalance } = useContracts();
+
+  const [balance, setBalance] = useState<number>(0);
+  const [isAllowed, setIsAllowed] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkStuff = async () => {
+      if (connected) {
+        let balance = await checkBalance();
+        let allowance = await checkAllowance();
+
+        let bal = balance > 0 ? cleanDecimal(balance / 10 ** 10, 3) : 0;
+        setBalance(bal);
+        setIsAllowed(allowance);
+      }
+    };
+
+    checkStuff();
+    // eslint-disable-next-line
+  }, [connected]);
+
+  useEffect(() => {
+    const checkStuff = async () => {
+      if (shouldUpdate) {
+        let balance = await checkBalance();
+
+        let bal = balance > 0 ? cleanDecimal(balance / 10 ** 10, 3) : 0;
+        setBalance(bal);
+        setShouldUpdate(false);
+      }
+    };
+
+    checkStuff();
+    // eslint-disable-next-line
+  }, [shouldUpdate]);
 
   return (
     <div className="balance">
@@ -23,11 +62,11 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
           <h5>BALANCE</h5>
 
           <div className="amount">
-            <div className="value">20.00</div>
+            <div className="value">{balance}</div>
             <div className="name">TEST_HUBBLE</div>
           </div>
 
-          <DepositTokenForm />
+          <DepositTokenForm isAllowed={isAllowed} />
         </>
       )}
     </div>

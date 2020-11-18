@@ -202,13 +202,13 @@ body {
 }
 
 .main-card-right > .balance > .amount > .name {
-  font-size: 2rem;
-  line-height: 3rem;
+  font-size: 1.6rem;
+  line-height: 2.2rem;
 }
 
 .main-card-right > .balance > .amount > .value {
-  font-size: 5rem;
-  line-height: 5rem;
+  font-size: 4rem;
+  line-height: 4rem;
 }
 
 .main-card-right > .balance > .deposit-form {

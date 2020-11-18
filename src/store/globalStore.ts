@@ -16,6 +16,7 @@ export interface IGlobalStore {
   connected: boolean;
   walletAccounts: (IWalletAccount | null)[];
   currentAccount: IWalletAccount;
+  shouldUpdate: boolean;
 
   // actions
   setWeb3: Action<IGlobalStore, any>;
@@ -25,6 +26,7 @@ export interface IGlobalStore {
   setWalletAccounts: Action<IGlobalStore, IWalletAccount[]>;
   setCurrentAccount: Action<IGlobalStore, object>;
   updateCurrentAccount: Action<IGlobalStore, string>;
+  setShouldUpdate: Action<IGlobalStore, boolean>;
 }
 
 const globalStore: IGlobalStore = {
@@ -40,6 +42,7 @@ const globalStore: IGlobalStore = {
     registered: false,
     accountAddress: null,
   },
+  shouldUpdate: false,
 
   // actions
   setWeb3: action((state, payload: any) => {
@@ -81,6 +84,10 @@ const globalStore: IGlobalStore = {
     walletAccountsUpdated.push(state.currentAccount);
 
     state.walletAccounts = walletAccountsUpdated;
+  }),
+
+  setShouldUpdate: action((state, payload: boolean) => {
+    state.shouldUpdate = payload;
   }),
 };
 
