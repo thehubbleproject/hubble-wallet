@@ -40,9 +40,11 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
     const checkStuff = async () => {
       if (shouldUpdate) {
         let balance = await checkBalance();
+        let allowance = await checkAllowance();
 
         let bal = balance > 0 ? cleanDecimal(balance / 10 ** 10, 3) : 0;
         setBalance(bal);
+        setIsAllowed(allowance);
         setShouldUpdate(false);
       }
     };
