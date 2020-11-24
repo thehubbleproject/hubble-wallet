@@ -20,7 +20,7 @@ const DropdownAccounts: React.FunctionComponent<DropdownAccountsProps> = () => {
     <div className="dropdown-container">
       <div className="dropdown-container-title">
         <h4>
-          BLS account {currentAccount.registered ? "(linked)" : "(not linked)"}
+          L2 account {currentAccount.registered ? "(linked)" : "(not linked)"}
         </h4>
         <KeysModal />
       </div>

@@ -40,7 +40,7 @@ const BurnAccountModal: React.FunctionComponent<BurnAccountModalProps> = () => {
       <Modal.Content>
         <Modal.Description>
           <p>Are you sure you want to close this account?</p>
-          <h3>Remaining value: 100 DAI</h3>
+
           <strong>
             The remaining value in the account will NEVER be recovered
           </strong>

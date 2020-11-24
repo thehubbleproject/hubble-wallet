@@ -41,7 +41,7 @@ const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
       {loading ? (
         <div className="loading-bls">
           <Loader active inline size="big" />
-          <h4>Loading BLS Accounts...</h4>
+          <h4>Loading L2 Accounts...</h4>
         </div>
       ) : (
         <>
