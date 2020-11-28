@@ -15,11 +15,15 @@ export interface DepositTokenFormProps {
 const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
   isAllowed,
 }) => {
-  const { currentAccount } = useStoreState((state) => state);
+  const { currentAccount, account } = useStoreState((state) => state);
 
   const [amount, setAmount] = useState<string>("");
 
-  const { approveToken, performDeposit } = useContracts();
+  const {
+    approveToken,
+    performDeposit,
+    createNewBLSAccountRegistry,
+  } = useContracts();
 
   const handleDeposit = async () => {
     if (amount) {
@@ -32,6 +36,13 @@ const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
     }
   };
 
+  const handleConnectL2 = async () => {
+    if (!currentAccount.registered && account) {
+      let pkey = currentAccount.publicKey || ["", "", "", ""];
+      createNewBLSAccountRegistry(pkey);
+    }
+  };
+
   return (
     <div className="deposit-form">
       <h4>Deposit Tokens</h4>
@@ -41,8 +52,17 @@ const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
         onChange={(e) => setAmount(e.target.value)}
         type="number"
         value={amount}
+        disabled={!isAllowed}
       />
-      <br />
+      {!currentAccount.registered && (
+        <Button
+          className="customButton form-button"
+          fluid
+          onClick={handleConnectL2}
+        >
+          Link L2 account
+        </Button>
+      )}
       {!isAllowed && (
         <Button
           className="customButton form-button"
@@ -52,11 +72,10 @@ const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
           approve
         </Button>
       )}
-      <br />
       <Button
         className="customButton form-button"
         fluid
-        disabled={!isAllowed}
+        disabled={!isAllowed || !currentAccount.registered}
         onClick={handleDeposit}
       >
         deposit

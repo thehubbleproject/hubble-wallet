@@ -267,6 +267,10 @@ select {
   background: var(--theme-blue-dark-active) !important;
 }
 
+.form-button {
+  margin-top: 1rem !important;
+}
+
 .burn {
   background: #ff5147 !important;
 }
