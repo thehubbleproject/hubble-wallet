@@ -65,7 +65,7 @@ body {
   background: var(--theme-blue);
   color: white;
   width: 27rem;
-  padding: 2rem;
+  padding: 2rem 2rem;
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
@@ -83,7 +83,7 @@ body {
 .main-card-left > .QRCodeContainer {
   width: 100%;
   padding: 2rem 0;
-  margin: 2rem 0;
+  margin: 0 0 2rem 0;
   background: white;
   display: flex;
   justify-content: center;
@@ -98,9 +98,8 @@ body {
   justify-content: space-between;
 }
 
-.main-card-left > .dropdown-container-title {
+.main-card-left > .dropdown-container {
   margin: auto;
-  margin-top: 1rem;
 }
 
 .main-card-left > .dropdown-container > .dropdown-container-title {
@@ -284,6 +283,16 @@ select {
   text-align: center;
 }
 
+.toggle-container {
+  margin-top: 0.5rem;
+  padding: 0.8rem 0;
+}
+
+.toggle-mode > label {
+  color: white !important;
+  font-weight: bold;
+}
+
 /* ################### MOBILE STYLE OVERRIDES ################### */
 @media (max-width: 500px) {
   .main-card {
@@ -302,7 +311,7 @@ select {
   }
 
   .main-card-right {
-    margin-top: 80vh;
+    margin-top: 84vh;
     width: 100%;
     min-height: 90vh;
     z-index: 500;
@@ -310,12 +319,12 @@ select {
   }
 
   .main-card-right > .header {
-    padding: 1.8rem 2rem;
+    padding: 1.2rem 2rem;
   }
 
   .main-card-left > .QRCodeContainer {
     max-height: 350px;
-    margin: 2rem 0;
+    margin: 0 0 2rem 0;
   }
 
   .select {

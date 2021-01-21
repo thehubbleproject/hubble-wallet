@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useStoreState } from "../../store/globalStore";
 
 // components, styles and UI
-import { Icon, Loader } from "semantic-ui-react";
+import { Icon, Loader, Radio } from "semantic-ui-react";
 import BurnAccountModal from "../Modals/BurnAccountModal";
 import NewAccountModal from "../Modals/NewAccountModal";
 import QRCodeGenerator from "../QRCode/QRCodeGenerator";
@@ -20,6 +20,15 @@ const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
   const { checkExistingAccounts } = useWalletAccounts();
 
   const [loading, setLoading] = useState<boolean>(true); //eslint-disable-line
+  const [mode, setMode] = useState<string>("publicKey");
+
+  const handleChangeMode = () => {
+    if (mode === "publicKey") {
+      setMode("sequenceId");
+    } else {
+      setMode("publicKey");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +58,24 @@ const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
           <br />
           <DropdownAccounts />
 
-          <QRCodeGenerator address={JSON.stringify(currentAccount.publicKey)} />
+          <div className="toggle-container">
+            <Radio
+              toggle
+              label={`show ${
+                mode === "publicKey" ? "Sequence ID" : "Public Key"
+              }`}
+              value={mode}
+              className="toggle-mode"
+              onChange={handleChangeMode}
+            />
+          </div>
+          <QRCodeGenerator
+            address={
+              mode === "publicKey"
+                ? JSON.stringify(currentAccount.publicKey)
+                : "235"
+            }
+          />
 
           <PickModeOfSendingModal />
           <div className="button-group">
