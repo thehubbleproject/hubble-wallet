@@ -251,6 +251,7 @@ select {
 }
 
 .button-group {
+  margin-top: 0.5rem;
   display: flex;
   justify-content: space-between;
 }
@@ -277,6 +278,10 @@ select {
 
 .burn:active {
   background: #ff392e !important;
+}
+
+.modal-content-center {
+  text-align: center;
 }
 
 /* ################### MOBILE STYLE OVERRIDES ################### */

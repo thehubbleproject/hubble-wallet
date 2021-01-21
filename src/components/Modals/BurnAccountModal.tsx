@@ -27,16 +27,15 @@ const BurnAccountModal: React.FunctionComponent<BurnAccountModalProps> = () => {
       trigger={
         <Button
           className="customButton burn"
-          content="delete"
+          content="delete account"
           icon="close"
-          labelPosition="right"
+          labelPosition="left"
+          fluid
           size="large"
-          floated="right"
           onClick={() => setModalOpen(true)}
         />
       }
     >
-      <Modal.Header>Confirmation</Modal.Header>
       <Modal.Content>
         <Modal.Description>
           <p>Are you sure you want to close this account?</p>

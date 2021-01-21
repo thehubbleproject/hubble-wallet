@@ -34,7 +34,6 @@ const NewAccountModal: React.FunctionComponent<NewAccountModalProps> = () => {
         />
       }
     >
-      <Modal.Header>Confirmation</Modal.Header>
       <Modal.Content>
         <Modal.Description>
           <p>This will create a new account locally on your device</p>

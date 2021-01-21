@@ -8,9 +8,13 @@ import { Button, Form, Header, Icon, Input, Modal } from "semantic-ui-react";
 import useBls from "../../hooks/useBls";
 
 // interfaces
-export interface SendTokenModalProps {}
+export interface SendTokenModalProps {
+  via: string;
+}
 
-const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
+const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = ({
+  via,
+}) => {
   const [scanSuccess, setScanSuccess] = useState<boolean>(false);
   const [scannedAddress, setScannedAddress] = useState<string | null>(null);
   const [scannedAddressArray, setScannedAddressArray] = useState<string[]>([]);
@@ -35,17 +39,15 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
     <Modal
       size="tiny"
       trigger={
-        <div className="ButtonContainer">
-          <Button
-            onClick={resetScan}
-            className="customButton"
-            content="send tokens"
-            icon="camera"
-            labelPosition="left"
-            size="large"
-            fluid
-          />
-        </div>
+        <Button
+          onClick={resetScan}
+          className="customButton"
+          content={`via ${via}`}
+          size="large"
+          fluid
+          icon={via === "publicKey" ? "key" : "send"}
+          labelPosition="left"
+        />
       }
     >
       <Modal.Content>
@@ -70,16 +72,18 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
         <br />
 
         <Form>
+          {via === "publicKey" ? (
+            <Form.Field>
+              <label>Address Hash</label>
+              <label>
+                {scannedAddressArray.length
+                  ? combinePublicKeys(scannedAddressArray)
+                  : "scan in progress..."}
+              </label>
+            </Form.Field>
+          ) : null}
           <Form.Field>
-            <label>Address Hash</label>
-            <label>
-              {scannedAddressArray.length
-                ? combinePublicKeys(scannedAddressArray)
-                : "scan in progress..."}
-            </label>
-          </Form.Field>
-          <Form.Field>
-            <label>Address</label>
+            <label>{via === "publicKey" ? "Address" : "SequenceID"}</label>
             <Input
               fluid
               labelPosition="right"
