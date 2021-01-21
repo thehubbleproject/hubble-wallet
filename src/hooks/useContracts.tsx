@@ -75,7 +75,7 @@ const useContracts = () => {
     let valueInWei = String((Number(amount) * 10 ** 18).toFixed(0));
 
     DepositManagerContractInstance.methods
-      .depositFor(blsAddress, valueInWei, 1)
+      .depositFor(blsAddress, valueInWei, 0)
       .send({
         from: account,
       })

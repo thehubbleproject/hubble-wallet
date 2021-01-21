@@ -10,6 +10,7 @@ import NewAccountModal from "../Modals/NewAccountModal";
 import QRCodeGenerator from "../QRCode/QRCodeGenerator";
 import DropdownAccounts from "./DropdownAccounts";
 import useWalletAccounts from "../../hooks/useWalletAccounts";
+// import SendTokenModal from "../Modals/SendTokenModal";
 
 // interfaces
 export interface BLSAccountCardProps {}
@@ -53,6 +54,7 @@ const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
           <div className="button-group">
             <NewAccountModal />
             <BurnAccountModal />
+            {/* <SendTokenModal /> */}
           </div>
         </>
       )}
