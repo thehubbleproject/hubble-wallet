@@ -28,10 +28,7 @@ const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
   const handleDeposit = async () => {
     if (amount) {
       // @ts-ignore
-      await performDeposit(
-        currentAccount.accountAddress || "",
-        parseFloat(amount)
-      );
+      await performDeposit(currentAccount.accountId || "", parseFloat(amount));
       setAmount("");
     }
   };

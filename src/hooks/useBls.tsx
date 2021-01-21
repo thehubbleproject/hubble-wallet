@@ -68,12 +68,12 @@ const useBls = () => {
    */
   const getNewKeyPair = () => {
     const { pubkey, secret } = mcl.newKeyPair();
-    const combinedPublicKey = combinePublicKeys(pubkey);
+    const hubbleAddress = combinePublicKeys(pubkey);
     const reducedSecretKey = reduceSecretKey(secret);
 
     return {
       publicKey: pubkey,
-      combinedPublicKey,
+      hubbleAddress,
       reducedSecretKey,
     };
   };

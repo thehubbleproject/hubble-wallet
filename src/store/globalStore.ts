@@ -3,10 +3,10 @@ import * as mcl from "react-hubble-bls/dist/mcl";
 
 export interface IWalletAccount {
   publicKey: mcl.PublicKey | null;
-  combinedPublicKey: string | "";
+  hubbleAddress: string | "";
   reducedSecretKey: string | "";
   registered: boolean;
-  accountAddress: string | null;
+  accountId: string | null;
 }
 
 export interface IGlobalStore {
@@ -37,10 +37,10 @@ const globalStore: IGlobalStore = {
   walletAccounts: [],
   currentAccount: {
     publicKey: null,
-    combinedPublicKey: "",
+    hubbleAddress: "",
     reducedSecretKey: "",
     registered: false,
-    accountAddress: null,
+    accountId: null,
   },
   shouldUpdate: false,
 
@@ -67,19 +67,18 @@ const globalStore: IGlobalStore = {
 
   setCurrentAccount: action((state, payload: IWalletAccount) => {
     state.currentAccount.publicKey = payload.publicKey;
-    state.currentAccount.combinedPublicKey = payload.combinedPublicKey;
+    state.currentAccount.hubbleAddress = payload.hubbleAddress;
     state.currentAccount.reducedSecretKey = payload.reducedSecretKey;
     state.currentAccount.registered = payload.registered;
-    state.currentAccount.accountAddress = payload.accountAddress;
+    state.currentAccount.accountId = payload.accountId;
   }),
 
   updateCurrentAccount: action((state, payload: string) => {
     state.currentAccount.registered = true;
-    state.currentAccount.accountAddress = payload;
+    state.currentAccount.accountId = payload;
 
     let walletAccountsUpdated = state.walletAccounts.filter(
-      (account) =>
-        account?.combinedPublicKey !== state.currentAccount.combinedPublicKey
+      (account) => account?.hubbleAddress !== state.currentAccount.hubbleAddress
     );
     walletAccountsUpdated.push(state.currentAccount);
 

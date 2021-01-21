@@ -53,26 +53,25 @@ const useWalletAccounts = () => {
     setWalletAccountsGlobal(walletAccounts);
     setCurrentAccountGlobal({
       publicKey: walletAccounts[walletAccounts.length - 1].publicKey,
-      combinedPublicKey:
-        walletAccounts[walletAccounts.length - 1].combinedPublicKey,
+      hubbleAddress: walletAccounts[walletAccounts.length - 1].hubbleAddress,
       reducedSecretKey:
         walletAccounts[walletAccounts.length - 1].reducedSecretKey,
       registered: walletAccounts[walletAccounts.length - 1].registered,
-      accountAddress: walletAccounts[walletAccounts.length - 1].accountAddress,
+      accountId: walletAccounts[walletAccounts.length - 1].accountId,
     });
   };
 
-  const setCurrentAccountUser = (combinedPublicKey: string): void => {
+  const setCurrentAccountUser = (hubbleAddress: string): void => {
     let localAccounts = getLocalAccounts();
     const newAccount = localAccounts.filter(
-      (account) => account.combinedPublicKey === combinedPublicKey
+      (account) => account.hubbleAddress === hubbleAddress
     )[0];
     setCurrentAccountGlobal({
       publicKey: newAccount.publicKey,
-      combinedPublicKey: newAccount.combinedPublicKey,
+      hubbleAddress: newAccount.hubbleAddress,
       reducedSecretKey: newAccount.reducedSecretKey,
       registered: newAccount.registered,
-      accountAddress: newAccount.accountAddress,
+      accountId: newAccount.accountId,
     });
   };
 
@@ -96,10 +95,10 @@ const useWalletAccounts = () => {
     const newKeys = getNewKeyPair();
     let newAccount: IWalletAccount = {
       publicKey: newKeys.publicKey,
-      combinedPublicKey: newKeys.combinedPublicKey,
+      hubbleAddress: newKeys.hubbleAddress,
       reducedSecretKey: newKeys.reducedSecretKey,
       registered: false,
-      accountAddress: null,
+      accountId: null,
     };
     let walletAccounts = Array<IWalletAccount>();
     walletAccounts.push(newAccount);
@@ -114,10 +113,10 @@ const useWalletAccounts = () => {
     const newKeys = getNewKeyPair();
     let newAccount: IWalletAccount = {
       publicKey: newKeys.publicKey,
-      combinedPublicKey: newKeys.combinedPublicKey,
+      hubbleAddress: newKeys.hubbleAddress,
       reducedSecretKey: newKeys.reducedSecretKey,
       registered: false,
-      accountAddress: null,
+      accountId: null,
     };
     let localAccounts = getLocalAccounts();
     localAccounts.push(newAccount);
@@ -130,10 +129,10 @@ const useWalletAccounts = () => {
    * then a new account is created
    * @param publicKey of the account to be deleted
    */
-  const burnAccount = (combinedPublicKey: string): void => {
+  const burnAccount = (hubbleAddress: string): void => {
     let localAccounts = getLocalAccounts();
     let updatedAccounts = localAccounts.filter(
-      (account) => account.combinedPublicKey !== combinedPublicKey
+      (account) => account.hubbleAddress !== hubbleAddress
     );
     if (updatedAccounts.length === 0) {
       createFirstAccount();
