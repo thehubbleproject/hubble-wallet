@@ -1,5 +1,5 @@
 import axios from "axios";
-// import * as mcl from "react-hubble-bls/dist/mcl";
+import * as mcl from "react-hubble-bls/dist/mcl";
 
 interface IStateInfoResponse {
   balance: string;
@@ -61,7 +61,7 @@ interface IPerformTransferResponse {
 
 const useCommander = () => {
   // Info Getters
-  const BASE_URL = "https://something.com";
+  const BASE_URL = "http://135.181.199.78:3000";
 
   const getStateInfo = async (id: number): Promise<IStateInfoResponse> => {
     return await axios.get(BASE_URL + `/state/${id}`);
@@ -71,24 +71,22 @@ const useCommander = () => {
     return await axios.get(BASE_URL + `/account/${id}`);
   };
 
-  const getStateFromPubKey = (pubkeyArray: string[]): any => {
-    // const res = await axios.post(BASE_URL + `/user/`, {
-    //   pubkey: pubkeyArray,
-    // });
-    return [
-      {
-        balance: 20,
-        state_id: 20,
-        token_id: 20,
-        nonce: 20,
-      },
-      {
-        balance: 11,
-        state_id: 11,
-        token_id: 11,
-        nonce: 11,
-      },
-    ];
+  const getStateFromPubKey = async (
+    pubkeyArray: string[] | mcl.solG2
+  ): Promise<any> => {
+    let first = pubkeyArray[1];
+    let second = pubkeyArray[0];
+    let third = pubkeyArray[3];
+    let fourth = pubkeyArray[2];
+
+    let finalString =
+      first.split("x")[1] +
+      second.split("x")[1] +
+      third.split("x")[1] +
+      fourth.split("x")[1];
+
+    const res = await axios.get(BASE_URL + `/user/${finalString}`);
+    return res.data;
   };
 
   // Transaction related

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import QrReader from "react-qr-reader";
+import { useStoreState } from "../../store/globalStore";
 
 // hooks and services
 
@@ -20,10 +21,18 @@ import useCommander from "../../hooks/useCommander";
 export interface SendTokenModalProps {}
 
 const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
+  const { combinePublicKeys } = useBls();
+  const { getStateFromPubKey } = useCommander();
+
+  // SCANNING STUFF
   const [scanSuccess, setScanSuccess] = useState<boolean>(false);
   const [scannedAddress, setScannedAddress] = useState<string>("");
-  const [scannedAddressArray, setScannedAddressArray] = useState<string[]>([]);
-  const [availableTokens, setAvailableTokens] = useState<any>([]);
+  const [scannedAddressArray, setScannedAddressArray] = useState<string[]>([
+    "",
+    "",
+    "",
+    "",
+  ]);
 
   const [amount, setAmount] = useState<any>("");
   const [token, setToken] = useState<any>("");
@@ -42,9 +51,24 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
     setScannedAddressArray([]);
   };
 
-  const { combinePublicKeys } = useBls();
+  const handleSubmit = () => {
+    console.log(amount, token);
+  };
 
-  const { getStateFromPubKey } = useCommander();
+  // RECEIVER STUFF
+  const [receiverTokens, setReceiverTokens] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const tokensArray = await getStateFromPubKey(JSON.parse(scannedAddress));
+      setReceiverTokens(getTokenDropdown(tokensArray.states));
+    };
+
+    if (scannedAddress) {
+      fetchData();
+    }
+    // eslint-disable-next-line
+  }, [scannedAddress]);
 
   const getTokenDropdown = (states: any) => {
     return states.map(({ token_id }: any) => ({
@@ -54,21 +78,9 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log(amount, token);
-  };
-
-  useEffect(() => {
-    const fetchData = () => {
-      const tokensArray = getStateFromPubKey(scannedAddressArray);
-      setAvailableTokens(getTokenDropdown(tokensArray));
-    };
-
-    if (scannedAddress) {
-      fetchData();
-    }
-    // eslint-disable-next-line
-  }, [scannedAddress]);
+  // SENDER STUFF
+  const { currentAccount } = useStoreState((state) => state);
+  const [availableTokensSender, setAvailableTokensSender] = useState<any>([]);
 
   return (
     <Modal
@@ -125,7 +137,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
               value={scannedAddress}
             />
           </Form.Field>
-          {availableTokens.length === 0 ? (
+          {receiverTokens.length === 0 ? (
             <p>Fetching Tokens...</p>
           ) : (
             <>
@@ -135,7 +147,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
                   placeholder="Select Token to send"
                   fluid
                   selection
-                  options={availableTokens}
+                  options={receiverTokens}
                   onChange={(e, data) => setToken(data.value)}
                 />
               </Form.Field>

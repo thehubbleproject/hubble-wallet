@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createStore, StoreProvider } from "easy-peasy";
 import * as mcl from "react-hubble-bls/dist/mcl";
 import { keccak256 } from "ethers/lib/utils";
+// import axios from "axios";
 
 // hooks and services
 
@@ -30,6 +31,15 @@ const App: React.FunctionComponent = () => {
     initializeMcl();
   }, []);
 
+  //   useEffect(() => {
+  //     const test = async () => {
+  //       const data = await axios.get("http://135.181.199.78:3000/user/state/1");
+  //       console.log(data);
+  //     };
+
+  //     test();
+  //   }, []);
+
   return loading ? (
     <Initializing />
   ) : (
@@ -40,6 +50,7 @@ const App: React.FunctionComponent = () => {
           <EthereumAccountCard />
         </div>
       </div>
+      {/* <div>Test</div> */}
     </StoreProvider>
   );
 };
