@@ -1,4 +1,5 @@
 import axios from "axios";
+// import * as mcl from "react-hubble-bls/dist/mcl";
 
 interface IStateInfoResponse {
   balance: string;
@@ -26,6 +27,13 @@ interface ISendTxResponse {
   hash: string;
   status: number;
   type: number;
+}
+
+interface IStateInfoFromPubkey {
+  balance: number;
+  state_id: number;
+  token_id: number;
+  nonce: number;
 }
 
 interface IGetTxStatusResponse {
@@ -63,7 +71,25 @@ const useCommander = () => {
     return await axios.get(BASE_URL + `/account/${id}`);
   };
 
-  const getStateFromPubKey = async () => {};
+  const getStateFromPubKey = (pubkeyArray: string[]): any => {
+    // const res = await axios.post(BASE_URL + `/user/`, {
+    //   pubkey: pubkeyArray,
+    // });
+    return [
+      {
+        balance: 20,
+        state_id: 20,
+        token_id: 20,
+        nonce: 20,
+      },
+      {
+        balance: 11,
+        state_id: 11,
+        token_id: 11,
+        nonce: 11,
+      },
+    ];
+  };
 
   // Transaction related
   const getTxTypeList = async () => {};
@@ -90,6 +116,7 @@ const useCommander = () => {
     getStateInfo,
     getAccountInfo,
     getTxTypeList,
+    getStateFromPubKey,
     sendTx,
     getTxStatus,
     performTransfer,

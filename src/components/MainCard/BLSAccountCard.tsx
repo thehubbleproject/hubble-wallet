@@ -4,13 +4,13 @@ import React, { useEffect, useState } from "react";
 import { useStoreState } from "../../store/globalStore";
 
 // components, styles and UI
-import { Icon, Loader, Radio } from "semantic-ui-react";
+import { Icon, Loader } from "semantic-ui-react";
 import BurnAccountModal from "../Modals/BurnAccountModal";
 import NewAccountModal from "../Modals/NewAccountModal";
 import QRCodeGenerator from "../QRCode/QRCodeGenerator";
 import DropdownAccounts from "./DropdownAccounts";
 import useWalletAccounts from "../../hooks/useWalletAccounts";
-import PickModeOfSendingModal from "../Modals/PickModeOfSendingModal";
+import SendTokenModal from "../Modals/SendTokenModal";
 
 // interfaces
 export interface BLSAccountCardProps {}
@@ -20,15 +20,6 @@ const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
   const { checkExistingAccounts } = useWalletAccounts();
 
   const [loading, setLoading] = useState<boolean>(true); //eslint-disable-line
-  const [mode, setMode] = useState<string>("publicKey");
-
-  const handleChangeMode = () => {
-    if (mode === "publicKey") {
-      setMode("sequenceId");
-    } else {
-      setMode("publicKey");
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,26 +49,9 @@ const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
           <br />
           <DropdownAccounts />
 
-          <div className="toggle-container">
-            <Radio
-              toggle
-              label={`show ${
-                mode === "publicKey" ? "Sequence ID" : "Public Key"
-              }`}
-              value={mode}
-              className="toggle-mode"
-              onChange={handleChangeMode}
-            />
-          </div>
-          <QRCodeGenerator
-            address={
-              mode === "publicKey"
-                ? JSON.stringify(currentAccount.publicKey)
-                : "235"
-            }
-          />
+          <QRCodeGenerator address={JSON.stringify(currentAccount.publicKey)} />
 
-          <PickModeOfSendingModal />
+          <SendTokenModal />
           <div className="button-group">
             <NewAccountModal />
             <BurnAccountModal />
