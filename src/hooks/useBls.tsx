@@ -10,6 +10,21 @@ const useBls = () => {
     (state) => state.currentAccount.reducedSecretKey
   );
 
+  const solG2ToBytes = (keysArray: mcl.PublicKey | string[]): string => {
+    let first = keysArray[1];
+    let second = keysArray[0];
+    let third = keysArray[3];
+    let fourth = keysArray[2];
+
+    let finalString =
+      first.split("x")[1] +
+      second.split("x")[1] +
+      third.split("x")[1] +
+      fourth.split("x")[1];
+
+    return finalString;
+  };
+
   /**
    * hashes 4 public keys into a single hash so that
    * it is easier to verify addresses while sending and
@@ -18,7 +33,11 @@ const useBls = () => {
    * @param keysArray array of public keys
    */
   const combinePublicKeys = (keysArray: mcl.PublicKey | string[]): string => {
-    return keccak256(toUtf8Bytes(keysArray.join()));
+    return keccak256(toUtf8Bytes(solG2ToBytes(keysArray)));
+  };
+
+  const hashPublicKeysBytes = (keyString: string): string => {
+    return keccak256(toUtf8Bytes(keyString));
   };
 
   /**
@@ -78,7 +97,13 @@ const useBls = () => {
     };
   };
 
-  return { getNewKeyPair, signMessageString, combinePublicKeys };
+  return {
+    getNewKeyPair,
+    signMessageString,
+    combinePublicKeys,
+    solG2ToBytes,
+    hashPublicKeysBytes,
+  };
 };
 
 export default useBls;

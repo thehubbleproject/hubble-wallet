@@ -11,6 +11,7 @@ import QRCodeGenerator from "../QRCode/QRCodeGenerator";
 import DropdownAccounts from "./DropdownAccounts";
 import useWalletAccounts from "../../hooks/useWalletAccounts";
 import SendTokenModal from "../Modals/SendTokenModal";
+import useBls from "../../hooks/useBls";
 
 // interfaces
 export interface BLSAccountCardProps {}
@@ -20,6 +21,8 @@ const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
   const { checkExistingAccounts } = useWalletAccounts();
 
   const [loading, setLoading] = useState<boolean>(true); //eslint-disable-line
+
+  const { solG2ToBytes } = useBls();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +52,9 @@ const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
           <br />
           <DropdownAccounts />
 
-          <QRCodeGenerator address={JSON.stringify(currentAccount.publicKey)} />
+          <QRCodeGenerator
+            address={solG2ToBytes(currentAccount.publicKey || ["", "", "", ""])}
+          />
 
           <SendTokenModal />
           <div className="button-group">

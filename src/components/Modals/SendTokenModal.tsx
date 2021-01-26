@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import QrReader from "react-qr-reader";
-import { useStoreState } from "../../store/globalStore";
 
 // hooks and services
+import useBls from "../../hooks/useBls";
+import useCommander from "../../hooks/useCommander";
+// import { useStoreState } from "../../store/globalStore";
 
 // components, styles and UI
 import {
@@ -14,25 +16,17 @@ import {
   Input,
   Modal,
 } from "semantic-ui-react";
-import useBls from "../../hooks/useBls";
-import useCommander from "../../hooks/useCommander";
 
 // interfaces
 export interface SendTokenModalProps {}
 
 const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
-  const { combinePublicKeys } = useBls();
+  const { hashPublicKeysBytes } = useBls();
   const { getStateFromPubKey } = useCommander();
 
   // SCANNING STUFF
   const [scanSuccess, setScanSuccess] = useState<boolean>(false);
   const [scannedAddress, setScannedAddress] = useState<string>("");
-  const [scannedAddressArray, setScannedAddressArray] = useState<string[]>([
-    "",
-    "",
-    "",
-    "",
-  ]);
 
   const [amount, setAmount] = useState<any>("");
   const [token, setToken] = useState<any>("");
@@ -41,14 +35,12 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
     if (data) {
       setScanSuccess(true);
       setScannedAddress(data);
-      setScannedAddressArray(JSON.parse(data));
     }
   };
 
   const resetScan = () => {
     setScanSuccess(false);
     setScannedAddress("");
-    setScannedAddressArray([]);
   };
 
   const handleSubmit = () => {
@@ -79,8 +71,8 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   };
 
   // SENDER STUFF
-  const { currentAccount } = useStoreState((state) => state);
-  const [availableTokensSender, setAvailableTokensSender] = useState<any>([]);
+  //   const { currentAccount } = useStoreState((state) => state);
+  //   const [availableTokensSender, setAvailableTokensSender] = useState<any>([]);
 
   return (
     <Modal
@@ -122,8 +114,8 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
           <Form.Field>
             <label>Address Hash</label>
             <label>
-              {scannedAddressArray.length
-                ? combinePublicKeys(scannedAddressArray)
+              {scannedAddress
+                ? hashPublicKeysBytes(scannedAddress)
                 : "scan in progress..."}
             </label>
           </Form.Field>

@@ -1,6 +1,4 @@
 import axios from "axios";
-import * as mcl from "react-hubble-bls/dist/mcl";
-
 interface IStateInfoResponse {
   balance: string;
   account_id: number;
@@ -71,21 +69,8 @@ const useCommander = () => {
     return await axios.get(BASE_URL + `/account/${id}`);
   };
 
-  const getStateFromPubKey = async (
-    pubkeyArray: string[] | mcl.solG2
-  ): Promise<any> => {
-    let first = pubkeyArray[1];
-    let second = pubkeyArray[0];
-    let third = pubkeyArray[3];
-    let fourth = pubkeyArray[2];
-
-    let finalString =
-      first.split("x")[1] +
-      second.split("x")[1] +
-      third.split("x")[1] +
-      fourth.split("x")[1];
-
-    const res = await axios.get(BASE_URL + `/user/${finalString}`);
+  const getStateFromPubKey = async (pubkeyBytes: string): Promise<any> => {
+    const res = await axios.get(BASE_URL + `/user/${pubkeyBytes}`);
     return res.data;
   };
 
