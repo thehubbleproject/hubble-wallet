@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import useContracts from "../../hooks/useContracts";
-import { useStoreActions, useStoreState } from "../../store/globalStore";
 import { cleanDecimal } from "../../utils/utils";
-import DepositTokenForm from "../Forms/DepositTokenForm";
 
 // hooks and services
+import useContracts from "../../hooks/useContracts";
+import { useStoreActions, useStoreState } from "../../store/globalStore";
 
 // components, styles and UI
+import DepositTokenForm from "../Forms/DepositTokenForm";
 
 // interfaces
 export interface BalancesProps {}
@@ -17,7 +17,7 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
 
   const { checkAllowance, checkBalance } = useContracts();
 
-  const [balance, setBalance] = useState<number>(0);
+  const [balance, setBalance] = useState<number | string>(0);
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
 
   useEffect(() => {

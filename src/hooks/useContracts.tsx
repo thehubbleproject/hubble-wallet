@@ -59,7 +59,7 @@ const useContracts = () => {
     let allowance = await TestTokenContractInstance.methods
       .allowance(account, DepositManagerContract.address)
       .call();
-    console.log(allowance);
+    // console.log(allowance);
     if (allowance > 0) {
       return true;
     } else {

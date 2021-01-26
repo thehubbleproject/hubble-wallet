@@ -4,7 +4,7 @@ import QrReader from "react-qr-reader";
 // hooks and services
 import useBls from "../../hooks/useBls";
 import useCommander from "../../hooks/useCommander";
-// import { useStoreState } from "../../store/globalStore";
+import Web3 from "web3";
 
 // components, styles and UI
 import {
@@ -16,13 +16,14 @@ import {
   Input,
   Modal,
 } from "semantic-ui-react";
+import { useStoreState } from "../../store/globalStore";
 
 // interfaces
 export interface SendTokenModalProps {}
 
 const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
-  const { hashPublicKeysBytes } = useBls();
-  const { getStateFromPubKey } = useCommander();
+  const { hashPublicKeysBytes, solG2ToBytes } = useBls();
+  const { getStateFromPubKey, performTransfer } = useCommander();
 
   // SCANNING STUFF
   const [scanSuccess, setScanSuccess] = useState<boolean>(false);
@@ -43,17 +44,19 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
     setScannedAddress("");
   };
 
-  const handleSubmit = () => {
-    console.log(amount, token);
-  };
-
   // RECEIVER STUFF
-  const [receiverTokens, setReceiverTokens] = useState<any>([]);
+  const [receiverTokens, setReceiverTokens] = useState<any>(null);
+  const [receiverAccId, setReceiverAccID] = useState<any>("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const tokensArray = await getStateFromPubKey(JSON.parse(scannedAddress));
-      setReceiverTokens(getTokenDropdown(tokensArray.states));
+      try {
+        const tokensArray = await getStateFromPubKey(scannedAddress);
+        setReceiverTokens(getTokenDropdown(tokensArray.states));
+        setReceiverAccID(tokensArray.account_id);
+      } catch (error) {
+        setReceiverTokens([]);
+      }
     };
 
     if (scannedAddress) {
@@ -63,7 +66,12 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   }, [scannedAddress]);
 
   const getTokenDropdown = (states: any) => {
-    return states.map(({ token_id }: any) => ({
+    let statesUniqueTokens = states.filter(
+      (v: any, i: any, a: any) =>
+        a.findIndex((t: any) => t.token_id === v.token_id) === i
+    );
+
+    return statesUniqueTokens.map(({ token_id }: any) => ({
       key: token_id,
       value: token_id,
       text: token_id,
@@ -71,12 +79,137 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   };
 
   // SENDER STUFF
-  //   const { currentAccount } = useStoreState((state) => state);
-  //   const [availableTokensSender, setAvailableTokensSender] = useState<any>([]);
+  const { currentAccount } = useStoreState((state) => state);
+  const [senderTokens, setSenderTokens] = useState<any>(null);
+
+  const fetchSenderTokens = async () => {
+    const tokensArray = await getStateFromPubKey(
+      solG2ToBytes(currentAccount.publicKey || ["", "", "", ""])
+    );
+    setSenderTokens(tokensArray.states);
+  };
+
+  // FINAL STUFF
+  const handleSubmit = async () => {
+    if (amount !== "" && token !== "" && receiverAccId !== null) {
+      let nonce = senderTokens.filter(
+        (Sendertoken: any) => Sendertoken.token_id === token
+      )[0].nonce;
+
+      let finalBody = {
+        from: parseInt(currentAccount.accountId || ""),
+        to: receiverAccId,
+        nonce: nonce + 1,
+        amount: Web3.utils.toWei(amount),
+        token: token,
+        fee: 1,
+      };
+
+      const data = await performTransfer(finalBody);
+      console.log(data);
+    }
+  };
+
+  const showModalContent = (senderTokens: any) => {
+    if (senderTokens === null) {
+      return <Modal.Content>Preparing to send...</Modal.Content>;
+    } else if (senderTokens.length === 0) {
+      return <Modal.Content>Perform Deposit before sending...</Modal.Content>;
+    } else {
+      return (
+        <Modal.Content>
+          {scanSuccess ? (
+            <>
+              <Header color="green">
+                <Icon name="check" size="tiny" />
+                Scan Success
+              </Header>
+            </>
+          ) : (
+            <QrReader
+              style={{ maxHeight: "40rem", maxWidth: "40rem" }}
+              delay={1000}
+              onError={() => {
+                console.log("error");
+              }}
+              onScan={handleScanSuccess}
+            />
+          )}
+
+          <br />
+
+          <Form>
+            <Form.Field>
+              <label>Address Hash</label>
+              <label>
+                {scannedAddress
+                  ? hashPublicKeysBytes(scannedAddress)
+                  : "scan in progress..."}
+              </label>
+            </Form.Field>
+            <Form.Field>
+              <label>{"Address"}</label>
+              <Input
+                fluid
+                labelPosition="right"
+                type="text"
+                placeholder="scan"
+                value={receiverAccId}
+              />
+            </Form.Field>
+            {receiverTokens === null ? (
+              <p>Fetching Tokens...</p>
+            ) : receiverTokens.length === 0 ? (
+              <p>Invalid Receiver</p>
+            ) : (
+              <>
+                <Form.Field>
+                  <label>Token ID</label>
+                  <Dropdown
+                    placeholder="Select Token to send"
+                    fluid
+                    selection
+                    options={receiverTokens}
+                    onChange={(e, data) => setToken(data.value)}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Amount</label>
+                  <Input
+                    labelPosition="right"
+                    type="number"
+                    placeholder="100.00"
+                    fluid
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                </Form.Field>
+                <div className="ButtonContainer">
+                  <Button
+                    className="customButton"
+                    content="send"
+                    icon="send"
+                    labelPosition="left"
+                    size="large"
+                    fluid
+                    onClick={handleSubmit}
+                  />
+                </div>
+              </>
+            )}
+          </Form>
+        </Modal.Content>
+      );
+    }
+  };
 
   return (
     <Modal
       size="tiny"
+      onOpen={() => fetchSenderTokens()}
+      onClose={() => {
+        setSenderTokens(null);
+        setReceiverTokens(null);
+      }}
       trigger={
         <Button
           onClick={resetScan}
@@ -89,85 +222,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
         />
       }
     >
-      <Modal.Content>
-        {scanSuccess ? (
-          <>
-            <Header color="green">
-              <Icon name="check" size="tiny" />
-              Scan Success
-            </Header>
-          </>
-        ) : (
-          <QrReader
-            style={{ maxHeight: "40rem", maxWidth: "40rem" }}
-            delay={1000}
-            onError={() => {
-              console.log("error");
-            }}
-            onScan={handleScanSuccess}
-          />
-        )}
-
-        <br />
-
-        <Form>
-          <Form.Field>
-            <label>Address Hash</label>
-            <label>
-              {scannedAddress
-                ? hashPublicKeysBytes(scannedAddress)
-                : "scan in progress..."}
-            </label>
-          </Form.Field>
-          <Form.Field>
-            <label>{"Address"}</label>
-            <Input
-              fluid
-              labelPosition="right"
-              type="text"
-              placeholder="scan"
-              value={scannedAddress}
-            />
-          </Form.Field>
-          {receiverTokens.length === 0 ? (
-            <p>Fetching Tokens...</p>
-          ) : (
-            <>
-              <Form.Field>
-                <label>Token ID</label>
-                <Dropdown
-                  placeholder="Select Token to send"
-                  fluid
-                  selection
-                  options={receiverTokens}
-                  onChange={(e, data) => setToken(data.value)}
-                />
-              </Form.Field>
-              <Form.Field>
-                <label>Amount</label>
-                <Input
-                  labelPosition="right"
-                  type="number"
-                  placeholder="100.00"
-                  fluid
-                  onChange={(e) => setAmount(e.target.value)}
-                />
-              </Form.Field>
-              <div className="ButtonContainer">
-                <Button
-                  className="customButton"
-                  content="send"
-                  icon="send"
-                  labelPosition="left"
-                  size="large"
-                  fluid
-                  onClick={handleSubmit}
-                />
-              </div>
-            </>
-          )}
-        </Form>
-      </Modal.Content>
+      {showModalContent(senderTokens)}
     </Modal>
   );
 };

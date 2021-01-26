@@ -10,6 +10,9 @@ const useBls = () => {
     (state) => state.currentAccount.reducedSecretKey
   );
 
+  /**
+   * converts array of public key into single bytes string
+   */
   const solG2ToBytes = (keysArray: mcl.PublicKey | string[]): string => {
     let first = keysArray[1];
     let second = keysArray[0];
@@ -26,16 +29,12 @@ const useBls = () => {
   };
 
   /**
-   * hashes 4 public keys into a single hash so that
+   * hashes combined public keys into a single hash so that
    * it is easier to verify addresses while sending and
    * receiving tokens from the wallet
    *
-   * @param keysArray array of public keys
+   * @param keyString bytes from pubkey array
    */
-  const combinePublicKeys = (keysArray: mcl.PublicKey | string[]): string => {
-    return keccak256(toUtf8Bytes(solG2ToBytes(keysArray)));
-  };
-
   const hashPublicKeysBytes = (keyString: string): string => {
     return keccak256(toUtf8Bytes(keyString));
   };
@@ -87,7 +86,7 @@ const useBls = () => {
    */
   const getNewKeyPair = () => {
     const { pubkey, secret } = mcl.newKeyPair();
-    const hubbleAddress = combinePublicKeys(pubkey);
+    const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
     const reducedSecretKey = reduceSecretKey(secret);
 
     return {
@@ -100,7 +99,6 @@ const useBls = () => {
   return {
     getNewKeyPair,
     signMessageString,
-    combinePublicKeys,
     solG2ToBytes,
     hashPublicKeysBytes,
   };

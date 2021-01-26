@@ -1,4 +1,5 @@
 import axios from "axios";
+import useBls from "./useBls";
 interface IStateInfoResponse {
   balance: string;
   account_id: number;
@@ -49,7 +50,7 @@ interface IPerfromTransferRequest {
   from: number;
   to: number;
   nonce: number;
-  amount: number;
+  amount: any;
   fee: number;
 }
 interface IPerformTransferResponse {
@@ -60,6 +61,8 @@ interface IPerformTransferResponse {
 const useCommander = () => {
   // Info Getters
   const BASE_URL = "http://135.181.199.78:3000";
+
+  const { signMessageString } = useBls();
 
   const getStateInfo = async (id: number): Promise<IStateInfoResponse> => {
     return await axios.get(BASE_URL + `/state/${id}`);
@@ -81,19 +84,35 @@ const useCommander = () => {
     return await axios.get(BASE_URL + `/status/tx/${hash}`);
   };
 
-  const performTransfer = async (
-    body: IPerfromTransferRequest
-  ): Promise<IPerformTransferResponse> => {
-    return await axios.post(BASE_URL + "/sign", body);
+  const sendTx = async (body: ISendTxRequest): Promise<ISendTxResponse> => {
+    return await axios.post(BASE_URL + "/tx", body);
+  };
+
+  const performTransfer = async (body: IPerfromTransferRequest) => {
+    console.log(body);
+    // return await axios.post(BASE_URL + "/sign", body);
+    let response = {
+      type: 1,
+      message: "0xeewewdsds",
+    };
+
+    const signedMsg = signMessageString(response.message);
+    let signature = signedMsg.signature.getStr();
+
+    let txBody = {
+      type: response.type,
+      message: response.message,
+      sig: signature,
+    };
+
+    console.log(txBody);
+
+    return "ok";
   };
 
   const performCreate2Transfer = async () => {};
 
   const performMassMigration = async () => {};
-
-  const sendTx = async (body: ISendTxRequest): Promise<ISendTxResponse> => {
-    return await axios.post(BASE_URL + "/tx", body);
-  };
 
   return {
     getStateInfo,
