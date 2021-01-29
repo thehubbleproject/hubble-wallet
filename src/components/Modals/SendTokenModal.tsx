@@ -14,9 +14,11 @@ import {
   Header,
   Icon,
   Input,
+  Loader,
   Modal,
 } from "semantic-ui-react";
 import { useStoreState } from "../../store/globalStore";
+import useTransactions from "../../hooks/useTransactions";
 
 // interfaces
 export interface SendTokenModalProps {}
@@ -94,7 +96,12 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   };
 
   // FINAL STUFF
+  const [sendingTx, setSendingTx] = useState<boolean>(false);
+
+  const { createTransaction } = useTransactions();
+
   const handleSubmit = async () => {
+    setSendingTx(true);
     if (amount !== "" && token !== "" && receiverAccId !== null) {
       let nonce = senderTokens.filter(
         (Sendertoken: any) => Sendertoken.token_id === token
@@ -108,9 +115,16 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
         fee: 0,
       };
 
-      const data = await performTransfer(finalBody);
-      console.log(data);
+      try {
+        const data = await performTransfer(finalBody);
+        createTransaction(data.hash);
+      } catch (error) {
+        console.log(error);
+      }
     }
+    setAmount("");
+    setToken("");
+    setSendingTx(false);
   };
 
   const showModalContent = (senderTokens: any) => {
@@ -172,6 +186,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
                     placeholder="Select Token to send"
                     fluid
                     selection
+                    value={token}
                     options={receiverTokens}
                     onChange={(e, data) => setToken(data.value)}
                   />
@@ -183,19 +198,28 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
                     type="number"
                     placeholder="100.00"
                     fluid
+                    value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                   />
                 </Form.Field>
                 <div className="ButtonContainer">
                   <Button
+                    disabled={sendingTx}
                     className="customButton"
-                    content="send"
+                    content={
+                      <>
+                        send{" "}
+                        {sendingTx ? (
+                          <Loader active inline size="tiny" />
+                        ) : null}
+                      </>
+                    }
                     icon="send"
                     labelPosition="left"
                     size="large"
                     fluid
                     onClick={handleSubmit}
-                  />
+                  ></Button>
                 </div>
               </>
             )}

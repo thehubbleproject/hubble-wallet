@@ -169,7 +169,7 @@ body {
 }
 
 .main-card-right > .transactions {
-  padding: 2rem 3rem;
+  padding: 2rem 2rem;
   height: 30rem;
   overflow-y: scroll;
 }
@@ -179,12 +179,31 @@ body {
   flex-wrap: wrap;
   padding: 0.5rem 0;
   justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
 .main-card-right > .transactions > .records > .id {
-  max-width: 100%;
+  max-width: 80%;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.main-card-right > .transactions > .records > .hash {
+  overflow: hidden;
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+}
+
+.main-card-right > .transactions > .records > .date {
+  overflow: hidden;
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+}
+
+.main-card-right > .transactions > .records > .amount {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 
 .main-card-right > .balance > h5 {

@@ -83,29 +83,27 @@ const useCommander = () => {
   const getTxTypeList = async () => {};
 
   const getTxStatus = async (hash: string): Promise<IGetTxStatusResponse> => {
-    return await axios.get(BASE_URL + `/status/tx/${hash}`);
+    const res = await axios.get(BASE_URL + `/tx/${hash}`);
+    return res.data;
   };
 
   const sendTx = async (body: ISendTxRequest): Promise<ISendTxResponse> => {
-    return await axios.post(BASE_URL + "/tx", body);
+    const res = await axios.post(BASE_URL + "/tx", body);
+    return res.data;
   };
 
   const performTransfer = async (body: IPerfromTransferRequest) => {
-    try {
-      const resTransfer = await axios.post(BASE_URL + "/transfer", body);
-      const signature = signMessageString("0x" + resTransfer.data.message);
+    const resTransfer = await axios.post(BASE_URL + "/transfer", body);
+    const signature = signMessageString("0x" + resTransfer.data.message);
 
-      let txData = {
-        type: resTransfer.data.tx_type,
-        message: resTransfer.data.message,
-        sig: signature,
-      };
+    let txData = {
+      type: resTransfer.data.tx_type,
+      message: resTransfer.data.message,
+      sig: signature,
+    };
 
-      const resTx = await sendTx(txData);
-      return resTx;
-    } catch (error) {
-      console.log(error);
-    }
+    const resTx = await sendTx(txData);
+    return resTx;
   };
 
   const performCreate2Transfer = async () => {};

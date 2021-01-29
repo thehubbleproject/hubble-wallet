@@ -1,5 +1,6 @@
 import React from "react";
-import { Label } from "semantic-ui-react";
+import useTransactions from "../../hooks/useTransactions";
+import TransactionItem from "./TransactionItem";
 
 // hooks and services
 
@@ -9,25 +10,24 @@ import { Label } from "semantic-ui-react";
 export interface TransactionsProps {}
 
 const Transactions: React.FunctionComponent<TransactionsProps> = () => {
+  const { getTransactions } = useTransactions();
+
   return (
     <div className="transactions">
-      <h5>TRANSACTIONS</h5>
-      <div className="records">
-        <div className="date">
-          <strong>October 2, 2020</strong>
-        </div>
-        <div className="id">0xf8Ce662e52e8Ea6D7B17DFc2959C82D4f1144B69</div>
-        <div className="id">100DAI</div>
-        <div className="id">
-          <Label
-            style={{ width: "50px", textAlign: "center" }}
-            color="green"
-            size="tiny"
-          >
-            IN
-          </Label>
-        </div>
-      </div>
+      <h5>TRANSACTIONS (Latest 100)</h5>
+
+      {getTransactions()
+        .reverse()
+        .map((tx: any) => {
+          return (
+            <TransactionItem
+              hash={tx.hash}
+              timestamp={tx.timestamp}
+              amount={1}
+              key={tx.hash}
+            />
+          );
+        })}
     </div>
   );
 };
