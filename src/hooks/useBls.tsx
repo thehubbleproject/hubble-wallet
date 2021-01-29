@@ -1,5 +1,5 @@
 import * as mcl from "react-hubble-bls/dist/mcl";
-import { formatBytes32String, keccak256, toUtf8Bytes } from "ethers/lib/utils";
+import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
 
 const useBls = () => {
@@ -71,11 +71,11 @@ const useBls = () => {
    *
    * @param message any message string
    */
-  const signMessageString = (message: string): mcl.solG1 => {
+  const signMessageString = (message: string): string => {
     const secretKey = rebuildSecretKey(reducedSecretKey);
-    const signedArray = mcl.sign(formatBytes32String(message), secretKey);
-    let signature = mcl.g1ToHex(signedArray.signature);
-    return signature;
+    const signedArray = mcl.sign(message, secretKey);
+    let signatureArr = mcl.g1ToHex(signedArray.signature);
+    return signatureArr[0].split("x")[1] + signatureArr[1].split("x")[1];
   };
 
   /**

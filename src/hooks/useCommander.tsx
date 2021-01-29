@@ -62,7 +62,7 @@ interface IPerformTransferResponse {
 
 const useCommander = () => {
   // Info Getters
-  const BASE_URL = "http://135.181.199.78:3000";
+  const BASE_URL = "http://135.181.199.78";
 
   const { signMessageString } = useBls();
 
@@ -91,17 +91,17 @@ const useCommander = () => {
   };
 
   const performTransfer = async (body: IPerfromTransferRequest) => {
-    console.log({ body });
     try {
       const resTransfer = await axios.post(BASE_URL + "/transfer", body);
-      console.log({ resTransfer });
-      const signedMsg = signMessageString(resTransfer.data.message);
-      const resTx = await sendTx({
-        type: resTransfer.data.type,
+      const signature = signMessageString("0x" + resTransfer.data.message);
+
+      let txData = {
+        type: resTransfer.data.tx_type,
         message: resTransfer.data.message,
-        sig: signedMsg,
-      });
-      console.log({ resTx });
+        sig: signature,
+      };
+
+      const resTx = await sendTx(txData);
       return resTx;
     } catch (error) {
       console.log(error);
