@@ -4,7 +4,7 @@ import QrReader from "react-qr-reader";
 // hooks and services
 import useBls from "../../hooks/useBls";
 import useCommander from "../../hooks/useCommander";
-import Web3 from "web3";
+// import Web3 from "web3";
 
 // components, styles and UI
 import {
@@ -83,10 +83,14 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const [senderTokens, setSenderTokens] = useState<any>(null);
 
   const fetchSenderTokens = async () => {
-    const tokensArray = await getStateFromPubKey(
-      solG2ToBytes(currentAccount.publicKey || ["", "", "", ""])
-    );
-    setSenderTokens(tokensArray.states);
+    try {
+      const tokensArray = await getStateFromPubKey(
+        solG2ToBytes(currentAccount.publicKey || ["", "", "", ""])
+      );
+      setSenderTokens(tokensArray.states);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // FINAL STUFF
@@ -100,9 +104,8 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
         from: parseInt(currentAccount.accountId || ""),
         to: receiverAccId,
         nonce: nonce + 1,
-        amount: Web3.utils.toWei(amount),
-        token: token,
-        fee: 1,
+        amount: 1,
+        fee: 0,
       };
 
       const data = await performTransfer(finalBody);

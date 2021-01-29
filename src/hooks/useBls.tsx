@@ -71,14 +71,11 @@ const useBls = () => {
    *
    * @param message any message string
    */
-  const signMessageString = (
-    message: string
-  ): {
-    signature: mcl.Signature;
-    M: mcl.Message;
-  } => {
+  const signMessageString = (message: string): mcl.solG1 => {
     const secretKey = rebuildSecretKey(reducedSecretKey);
-    return mcl.sign(formatBytes32String(message), secretKey);
+    const signedArray = mcl.sign(formatBytes32String(message), secretKey);
+    let signature = mcl.g1ToHex(signedArray.signature);
+    return signature;
   };
 
   /**

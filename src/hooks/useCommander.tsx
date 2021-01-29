@@ -1,5 +1,7 @@
 import axios from "axios";
+import { mclG1 } from "react-hubble-bls/dist/mcl";
 import useBls from "./useBls";
+
 interface IStateInfoResponse {
   balance: string;
   account_id: number;
@@ -15,7 +17,7 @@ interface IAccountInfoResponse {
 interface ISendTxRequest {
   type: number;
   message: string;
-  sig: string;
+  sig: mclG1;
 }
 interface ISendTxResponse {
   ID: string;
@@ -89,25 +91,21 @@ const useCommander = () => {
   };
 
   const performTransfer = async (body: IPerfromTransferRequest) => {
-    console.log(body);
-    // return await axios.post(BASE_URL + "/sign", body);
-    let response = {
-      type: 1,
-      message: "0xeewewdsds",
-    };
-
-    const signedMsg = signMessageString(response.message);
-    let signature = signedMsg.signature.getStr();
-
-    let txBody = {
-      type: response.type,
-      message: response.message,
-      sig: signature,
-    };
-
-    console.log(txBody);
-
-    return "ok";
+    console.log({ body });
+    try {
+      const resTransfer = await axios.post(BASE_URL + "/transfer", body);
+      console.log({ resTransfer });
+      const signedMsg = signMessageString(resTransfer.data.message);
+      const resTx = await sendTx({
+        type: resTransfer.data.type,
+        message: resTransfer.data.message,
+        sig: signedMsg,
+      });
+      console.log({ resTx });
+      return resTx;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const performCreate2Transfer = async () => {};
