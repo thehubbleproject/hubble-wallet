@@ -5,8 +5,8 @@ import Web3 from "web3";
 // hooks and services
 import { Button } from "semantic-ui-react";
 import { formatAccountString } from "../../utils/utils";
-import Balances from "./Balances";
 import { useStoreActions, useStoreState } from "../../store/globalStore";
+import Tabs from "./Tabs";
 
 // components, styles and UI
 
@@ -92,7 +92,7 @@ const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = (
         />
       </div>
 
-      <Balances />
+      <Tabs />
     </div>
   );
 };
