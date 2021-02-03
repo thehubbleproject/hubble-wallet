@@ -47,10 +47,10 @@ const useContracts = () => {
     return bal;
   };
 
-  const checkAllowance = async () => {
+  const checkAllowance = async (tokenAddress: string) => {
     let TestTokenContractInstance = new web3.eth.Contract(
       TestTokenContract.abi,
-      TestTokenContract.address
+      tokenAddress
     );
 
     let allowance = await TestTokenContractInstance.methods

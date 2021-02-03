@@ -10,6 +10,7 @@ import DepositTokenForm from "../Forms/DepositTokenForm";
 import { Radio } from "semantic-ui-react";
 import useCommander from "../../hooks/useCommander";
 import useBls from "../../hooks/useBls";
+import tokenRepo from "../../utils/tokens";
 
 // interfaces
 export interface BalancesProps {}
@@ -25,10 +26,14 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
   const { getStateFromPubKey } = useCommander();
 
   const [balance, setBalance] = useState<number | string>(0);
-  const [l2balance, setL2Balance] = useState<number | string>(0);
+  const [l2balances, setL2Balances] = useState<any[]>([]);
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
 
   const [isL1, setisL1] = useState<boolean>(true);
+  const [selectedToken, setSelectedToken] = useState<string>(
+    tokenRepo[0].address
+  );
+  const [selectedL2Token, setSelectedL2Token] = useState<string>("0");
 
   const calculateTokenBalancesAtL2 = (
     allTokens: {
@@ -42,14 +47,21 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
       new Set(allTokens.map((item) => item.token_id))
     );
 
+    let balances: { symbol: string; balance: string }[] = [];
+
     uniqueTokens.forEach((uniqueToken) => {
       let balanceItems = allTokens.filter(
         (item) => item.token_id === uniqueToken
       );
 
       let sum = balanceItems.reduce((a: any, b: any) => a.balance + b.balance);
-      setL2Balance(Web3.utils.fromWei(sum.toString()));
+      balances.push({
+        symbol: uniqueToken.toString(),
+        balance: Web3.utils.fromWei(sum.toString()),
+      });
     });
+
+    setL2Balances(balances);
   };
 
   const fetchSenderTokens = async () => {
@@ -74,7 +86,7 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
     const checkStuff = async () => {
       if (connected) {
         let balance = await checkBalance();
-        let allowance = await checkAllowance();
+        let allowance = await checkAllowance(selectedToken);
 
         setBalance(balance);
         setIsAllowed(allowance);
@@ -89,7 +101,7 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
     const checkStuff = async () => {
       if (shouldUpdate) {
         let balance = await checkBalance();
-        let allowance = await checkAllowance();
+        let allowance = await checkAllowance(selectedToken);
 
         setBalance(balance);
         setIsAllowed(allowance);
@@ -119,20 +131,61 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
           </div>
 
           {isL1 ? (
-            <div className="amount">
-              <div className="value">
-                {parseFloat(balance.toString()).toFixed(2)}
+            <>
+              <div className="amount">
+                <div className="value">
+                  {parseFloat(balance.toString()).toFixed(2)}
+                </div>
+                <div className="">
+                  <select
+                    name="accounts"
+                    id="accounts"
+                    className="select"
+                    value={selectedToken}
+                    onChange={(e) => {
+                      setSelectedToken(e.target.value);
+                      setShouldUpdate(true);
+                    }}
+                  >
+                    {tokenRepo.map((token) => (
+                      <option key={token?.address} value={token?.address}>
+                        {token.symbol}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <div className="name">TEST_HUBBLE</div>
-            </div>
+            </>
           ) : (
             <div className="amount">
-              <div className="value">{l2balance}</div>
-              <div className="name">TEST_HUBBLE</div>
+              <div className="value">{selectedL2Token}</div>
+              <div className="">
+                <select
+                  name="accounts"
+                  id="accounts"
+                  className="select"
+                  value={selectedToken}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                  }}
+                >
+                  {l2balances.map((token) => (
+                    <option key={token?.symbol} value={token?.symbol}>
+                      {token.symbol}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           )}
 
-          <DepositTokenForm isAllowed={isAllowed} />
+          <DepositTokenForm
+            isAllowed={isAllowed}
+            symbol={
+              tokenRepo.filter((token) => token.address === selectedToken)[0]
+                .symbol
+            }
+          />
         </>
       )}
     </div>

@@ -10,10 +10,12 @@ import { useStoreState } from "../../store/globalStore";
 // interfaces
 export interface DepositTokenFormProps {
   isAllowed: boolean;
+  symbol: string;
 }
 
 const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
   isAllowed,
+  symbol,
 }) => {
   const { currentAccount, account } = useStoreState((state) => state);
 
@@ -42,7 +44,7 @@ const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
 
   return (
     <div className="deposit-form">
-      <h4>Deposit Tokens</h4>
+      <h4>Deposit {symbol} Tokens</h4>
       <Input
         fluid
         placeholder="Amount"

@@ -367,8 +367,7 @@ select {
   }
 
   .main-card-right > .balance {
-    max-height: none;
-    min-height: 30rem;
+    min-height: 40rem;
     overflow-y: hidden;
   }
 
