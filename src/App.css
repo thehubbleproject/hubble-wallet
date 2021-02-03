@@ -212,21 +212,15 @@ body {
 
 .main-card-right > .balance > .amount {
   display: flex;
-  padding: 1.4rem 0;
   color: #555555;
-  gap: 2rem;
+  margin-top: 1rem;
   align-items: center;
   justify-content: space-between;
 }
 
-.main-card-right > .balance > .amount > .name {
-  font-size: 1.6rem;
-  line-height: 2.2rem;
-}
-
 .main-card-right > .balance > .amount > .value {
-  font-size: 4rem;
-  line-height: 4rem;
+  font-size: 4.3rem;
+  line-height: 5rem;
 }
 
 .main-card-right > .balance > .deposit-form {
@@ -277,6 +271,17 @@ select {
   padding: 0 1rem;
   color: rgb(58, 58, 58);
   cursor: pointer;
+}
+
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dropdown-box {
+  min-width: 0 !important;
+  width: 8rem !important;
 }
 
 .button-group {
@@ -383,12 +388,8 @@ select {
     align-items: flex-start;
   }
 
-  .main-card-right > .balance > .amount > .name {
-    font-size: 2rem;
-  }
-
   .main-card-right > .balance > .amount > .value {
-    font-size: 6rem;
-    line-height: 6rem;
+    font-size: 4.5rem;
+    line-height: 4.5rem;
   }
 }
