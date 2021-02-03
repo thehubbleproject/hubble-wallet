@@ -233,6 +233,17 @@ body {
   padding-top: 3rem;
 }
 
+.main-card-right > .balance > .balance-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-card-right > .balance > .balance-header > .balance-toggle > span {
+  font-size: 1.2rem;
+  margin: 0 0.8rem;
+  font-weight: bold;
+}
+
 select {
   -webkit-appearance: none;
   -moz-appearance: none;
