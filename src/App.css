@@ -1,10 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Rubik&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;600;800&display=swap");
 
 :root {
   --theme-blue-dark: #0e1731;
   --theme-blue-dark-active: #1f2f63;
-  --theme-blue: #6177e5;
+  --theme-blue: #343f65;
   --theme-gray: #f7f8fc;
   --theme-black: rgb(100, 100, 100);
   --theme-black-darker: rgb(70, 70, 70);
@@ -19,7 +18,7 @@ h4,
 h5,
 h6,
 p {
-  font-family: "Rubik", sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
 }
 
 body {
@@ -27,7 +26,7 @@ body {
 }
 
 .initializing {
-  color: white;
+  color: var(--theme-gray);
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -50,7 +49,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--theme-blue-dark);
+  background: #4d5872;
 }
 
 .main-card {
@@ -62,13 +61,13 @@ body {
 
 .main-card-left {
   min-height: 40rem;
-  background: var(--theme-blue);
-  color: white;
+  background: #343f65;
+  color: var(--theme-gray);
   width: 27rem;
   padding: 2rem 2rem;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  /* box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22); */
   z-index: 100;
 }
 
@@ -84,7 +83,7 @@ body {
   width: 100%;
   padding: 2rem 0;
   margin: 2rem 0 2rem 0;
-  background: white;
+  background: var(--theme-gray);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,6 +93,8 @@ body {
 .main-card-left > .app-title {
   font-size: 2rem;
   line-height: 2rem;
+  font-weight: 600;
+  opacity: 0.8;
   display: flex;
   justify-content: space-between;
 }
@@ -107,14 +108,20 @@ body {
   justify-content: space-between;
 }
 
+.main-card-left > .dropdown-container > .dropdown-container-title > h4 {
+  font-weight: 300;
+  opacity: 0.7;
+}
+
 .main-card-left > .dropdown-container > .dropdown-container-title > .show-keys {
   cursor: pointer;
   color: yellow;
+  opacity: 0.7;
 }
 
 .main-card-right {
   width: 35rem;
-  min-height: 35rem;
+  min-height: 20rem;
   border-radius: 0 0.5rem 0.5rem 0;
   background: var(--theme-gray);
 }
@@ -127,6 +134,8 @@ body {
 }
 
 .main-card-right > .tabs > .tab {
+  font-weight: 200;
+  font-size: 90%;
   padding: 1rem 3rem;
   text-align: center;
   width: 100%;
@@ -134,6 +143,7 @@ body {
 
 .main-card-right > .tabs > .active {
   border-bottom: 3px solid var(--theme-blue);
+  font-weight: 600;
 }
 
 .main-card-right > .header {
@@ -144,12 +154,15 @@ body {
   align-items: center;
 }
 
-.main-card-right > .header > .account-details > p {
-  font-family: "Manrope" !important;
+.main-card-right > .header > .account-details > h4 {
   font-weight: 600;
+}
+
+.main-card-right > .header > .account-details > p {
+  font-weight: 300;
   margin: 0;
   padding: 0.2rem 0;
-  color: #747474;
+  color: #424242;
   font-size: 90%;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -164,7 +177,7 @@ body {
 .main-card-right > .balance {
   padding: 2rem 2rem;
   font-family: "Manrope";
-  height: 30rem;
+  min-height: 25rem;
   /* overflow-y: scroll; */
 }
 
@@ -221,21 +234,40 @@ body {
 .main-card-right > .balance > .amount > .value {
   font-size: 4.3rem;
   line-height: 5rem;
+  font-weight: 200;
 }
 
 .main-card-right > .balance > .deposit-form {
   padding-top: 3rem;
 }
 
+.main-card-right > .balance > .deposit-form > h4 {
+  font-weight: 600;
+  opacity: 0.7;
+}
+
 .main-card-right > .balance > .balance-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.main-card-right > .balance > .balance-header > span {
+  font-weight: 600;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+.main-card-right > .balance > .balance-header > .balance-toggle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .main-card-right > .balance > .balance-header > .balance-toggle > span {
-  font-size: 1.2rem;
-  margin: 0 0.8rem;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 select {
@@ -257,19 +289,19 @@ select::-ms-expand {
   position: relative;
   display: flex;
   width: 100%;
-  height: 2.5rem;
+  height: 2.7rem;
   line-height: 2.5;
   font-size: 90%;
-  font-weight: bold;
-  background: #fff;
+  font-weight: 200;
+  background: var(--theme-gray);
   overflow: hidden;
   text-overflow: ellipsis;
   border-radius: 0.25em;
 }
 select {
   flex: 1;
-  padding: 0 1rem;
-  color: rgb(58, 58, 58);
+  padding: 0.2rem 1rem;
+  color: rgb(85, 85, 85);
   cursor: pointer;
 }
 
@@ -285,15 +317,16 @@ select {
 }
 
 .button-group {
-  margin-top: 0.5rem;
+  margin-top: 0.8rem;
   display: flex;
+  gap: 0.8rem;
   justify-content: space-between;
 }
 
 .customButton {
-  font-family: "Rubik", sans-serif !important;
   font-size: 0.8rem !important;
-  padding: 0.8rem 1rem !important;
+  font-weight: 200 !important;
+  padding: 0.9rem 1rem !important;
   color: white !important;
   background: var(--theme-blue-dark) !important;
 }
@@ -307,11 +340,21 @@ select {
 }
 
 .burn {
-  background: #ff5147 !important;
+  background: #ee6969 !important;
+  color: #0e1731 !important;
 }
 
 .burn:active {
-  background: #ff392e !important;
+  background: #b95050 !important;
+}
+
+.new {
+  background: #a6eca8 !important;
+  color: #0e1731 !important;
+}
+
+.new:active {
+  background: #5a8f5c !important;
 }
 
 .modal-content-center {

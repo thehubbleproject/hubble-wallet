@@ -24,7 +24,7 @@ const NewAccountModal: React.FunctionComponent<NewAccountModalProps> = () => {
       open={modalOpen}
       trigger={
         <Button
-          className="customButton"
+          className="customButton new"
           content="new BLS account"
           icon="plus"
           fluid

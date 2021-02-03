@@ -24,7 +24,7 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
       ) : (
         <>
           <div className="balance-header">
-            <h5>BALANCE</h5>
+            <span>BALANCE</span>
             <div className="balance-toggle">
               <span>L1</span>
               <Radio toggle onChange={() => setisL1(!isL1)} />

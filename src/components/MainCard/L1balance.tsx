@@ -69,21 +69,23 @@ const L1balance: React.FunctionComponent<L1balanceProps> = () => {
         {balance === null ? (
           <Loader inline active />
         ) : (
-          <div className="value">
-            {parseFloat(balance.toString()).toFixed(2)}
-          </div>
+          <>
+            <div className="value">
+              {parseFloat(balance.toString()).toFixed(2)}
+            </div>
+            <div className="dropdown-container">
+              <label>Select Token</label>
+              <Dropdown
+                className="dropdown-box"
+                search
+                selection
+                options={parseBalancesForDropdown(tokenRepo)}
+                defaultValue={parseBalancesForDropdown(tokenRepo)[0].value}
+                onChange={(e, d) => setSelectedToken(`${d.value}`)}
+              />
+            </div>
+          </>
         )}
-        <div className="dropdown-container">
-          <label>Select Token</label>
-          <Dropdown
-            className="dropdown-box"
-            search
-            selection
-            options={parseBalancesForDropdown(tokenRepo)}
-            defaultValue={parseBalancesForDropdown(tokenRepo)[0].value}
-            onChange={(e, d) => setSelectedToken(`${d.value}`)}
-          />
-        </div>
       </div>
 
       <DepositTokenForm
