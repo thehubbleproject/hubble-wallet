@@ -1,8 +1,6 @@
 import { AbiCoder } from "ethers/lib/utils";
 import * as mcl from "react-hubble-bls/dist/mcl";
 
-import { cleanDecimal } from "../utils/utils";
-
 import { useStoreState, useStoreActions } from "../store/globalStore";
 
 import DepositManagerContract from "../contracts/DepositManagerContract.json";
@@ -45,8 +43,7 @@ const useContracts = () => {
     );
 
     let bal = await TestTokenContractInstance.methods.balanceOf(account).call();
-    bal = bal > 0 ? cleanDecimal(bal / 10 ** 8, 2) : 0;
-
+    bal = bal > 0 ? web3.utils.fromWei(bal.toString()) : 0;
     return bal;
   };
 
@@ -73,7 +70,7 @@ const useContracts = () => {
       DepositManagerContract.address
     );
 
-    let valueInWei = String((Number(amount) * 10 ** 18).toFixed(0));
+    let valueInWei = String(Number(amount) * 10 ** 18);
 
     DepositManagerContractInstance.methods
       .depositFor(blsAddress, valueInWei, 0)

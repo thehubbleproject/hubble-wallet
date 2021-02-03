@@ -73,6 +73,9 @@ const useBls = () => {
    */
   const signMessageString = (message: string): string => {
     const secretKey = rebuildSecretKey(reducedSecretKey);
+
+    console.log({ secretKey });
+
     const signedArray = mcl.sign(message, secretKey);
     let signatureArr = mcl.g1ToHex(signedArray.signature);
     return signatureArr[0].split("x")[1] + signatureArr[1].split("x")[1];

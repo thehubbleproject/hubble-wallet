@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { cleanDecimal } from "../../utils/utils";
 import Web3 from "web3";
 
 // hooks and services
@@ -68,7 +67,6 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
     if (isL1 === false) {
       fetchSenderTokens();
     }
-
     // eslint-disable-next-line
   }, [isL1]);
 
@@ -78,8 +76,7 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
         let balance = await checkBalance();
         let allowance = await checkAllowance();
 
-        let bal = balance > 0 ? cleanDecimal(balance / 10 ** 10, 3) : 0;
-        setBalance(bal);
+        setBalance(balance);
         setIsAllowed(allowance);
       }
     };
@@ -94,8 +91,7 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
         let balance = await checkBalance();
         let allowance = await checkAllowance();
 
-        let bal = balance > 0 ? cleanDecimal(balance / 10 ** 10, 3) : 0;
-        setBalance(bal);
+        setBalance(balance);
         setIsAllowed(allowance);
         setShouldUpdate(false);
       }
@@ -122,10 +118,19 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
             </div>
           </div>
 
-          <div className="amount">
-            <div className="value">{isL1 ? balance : l2balance}</div>
-            <div className="name">TEST_HUBBLE</div>
-          </div>
+          {isL1 ? (
+            <div className="amount">
+              <div className="value">
+                {parseFloat(balance.toString()).toFixed(2)}
+              </div>
+              <div className="name">TEST_HUBBLE</div>
+            </div>
+          ) : (
+            <div className="amount">
+              <div className="value">{l2balance}</div>
+              <div className="name">TEST_HUBBLE</div>
+            </div>
+          )}
 
           <DepositTokenForm isAllowed={isAllowed} />
         </>
