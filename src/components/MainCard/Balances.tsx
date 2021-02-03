@@ -167,6 +167,7 @@ const Balances: React.FunctionComponent<BalancesProps> = () => {
                   value={selectedToken}
                   onChange={(e) => {
                     console.log(e.target.value);
+                    setSelectedL2Token("1");
                   }}
                 >
                   {l2balances.map((token) => (

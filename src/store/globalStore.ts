@@ -1,5 +1,5 @@
 import { Action, action, createTypedHooks } from "easy-peasy";
-import * as mcl from "react-hubble-bls/dist/mcl";
+import * as mcl from "@thehubbleproject/bls/dist/mcl";
 
 export interface IWalletAccount {
   publicKey: mcl.PublicKey | null;

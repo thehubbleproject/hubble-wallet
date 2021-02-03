@@ -1,4 +1,4 @@
-import * as mcl from "react-hubble-bls/dist/mcl";
+import * as mcl from "@thehubbleproject/bls/dist/mcl";
 import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
 
@@ -76,7 +76,7 @@ const useBls = () => {
 
     console.log({ secretKey });
 
-    const signedArray = mcl.sign(message, secretKey);
+    const signedArray = mcl.sign(message, secretKey, new Uint8Array(4));
     let signatureArr = mcl.g1ToHex(signedArray.signature);
     return signatureArr[0].split("x")[1] + signatureArr[1].split("x")[1];
   };
@@ -85,7 +85,10 @@ const useBls = () => {
    * creates a new key pair for the user
    */
   const getNewKeyPair = () => {
-    const { pubkey, secret } = mcl.newKeyPair();
+    const { pubkey: pubkeyB, secret } = mcl.newKeyPair();
+
+    const pubkey = mcl.g2ToHex(pubkeyB);
+
     const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
     const reducedSecretKey = reduceSecretKey(secret);
 

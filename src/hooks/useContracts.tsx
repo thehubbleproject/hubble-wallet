@@ -1,5 +1,5 @@
 import { AbiCoder } from "ethers/lib/utils";
-import * as mcl from "react-hubble-bls/dist/mcl";
+import * as mcl from "@thehubbleproject/bls/dist/mcl";
 
 import { useStoreState, useStoreActions } from "../store/globalStore";
 

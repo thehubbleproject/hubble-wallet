@@ -1,5 +1,5 @@
 import axios from "axios";
-import { mclG1 } from "react-hubble-bls/dist/mcl";
+import { mclG1 } from "@thehubbleproject/bls/dist/mcl";
 import useBls from "./useBls";
 
 interface IStateInfoResponse {

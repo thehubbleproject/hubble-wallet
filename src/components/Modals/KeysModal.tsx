@@ -34,7 +34,7 @@ const KeysModal: React.FunctionComponent<KeysModalProps> = () => {
             <br />
             <pre className="pre">
               [
-              {currentAccount.publicKey?.map((key, index) => (
+              {currentAccount.publicKey?.map((key: any, index: number) => (
                 <div key={index}> {key},</div>
               ))}
               ]

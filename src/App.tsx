@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createStore, StoreProvider } from "easy-peasy";
-import * as mcl from "react-hubble-bls/dist/mcl";
-import { keccak256 } from "ethers/lib/utils";
+import * as mcl from "@thehubbleproject/bls/dist/mcl";
 // hooks and services
 
 // components, styles and UI
@@ -21,8 +20,6 @@ const App: React.FunctionComponent = () => {
   useEffect(() => {
     const initializeMcl = async () => {
       await mcl.init();
-      const DOMAIN_HEX = keccak256("0x1234ABCD");
-      mcl.setDomainHex(DOMAIN_HEX);
       setLoading(false);
     };
 
