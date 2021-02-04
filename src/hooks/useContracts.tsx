@@ -6,12 +6,22 @@ import { useStoreState, useStoreActions } from "../store/globalStore";
 import DepositManagerContract from "../contracts/DepositManagerContract.json";
 import BLSAccountRegistryContract from "../contracts/BLSAccountRegistryContract.json";
 import TestTokenContract from "../contracts/TestTokenContract.json";
+import Rollup from "../contracts/Rollup.json";
 
 const useContracts = () => {
   const { web3, account } = useStoreState((state) => state);
   const { updateCurrentAccount, setShouldUpdate } = useStoreActions(
     (action) => action
   );
+
+  const getAppId = async () => {
+    let RollupContractInstance = new web3.eth.Contract(
+      Rollup.abi,
+      Rollup.address
+    );
+
+    return await RollupContractInstance.methods.appID().call();
+  };
 
   const approveToken = async () => {
     let maxValue =
@@ -116,6 +126,7 @@ const useContracts = () => {
     performDeposit,
     createNewBLSAccountRegistry,
     checkBalance,
+    getAppId,
   };
 };
 

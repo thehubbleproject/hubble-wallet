@@ -1,0 +1,1433 @@
+{
+  "name": "rollup",
+  "address": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract Chooser",
+          "name": "_chooser",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IDepositManager",
+          "name": "_depositManager",
+          "type": "address"
+        },
+        {
+          "internalType": "contract BLSAccountRegistry",
+          "name": "_accountRegistry",
+          "type": "address"
+        },
+        {
+          "internalType": "contract Transfer",
+          "name": "_transfer",
+          "type": "address"
+        },
+        {
+          "internalType": "contract MassMigration",
+          "name": "_massMigration",
+          "type": "address"
+        },
+        {
+          "internalType": "contract Create2Transfer",
+          "name": "_create2Transfer",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "genesisStateRoot",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "stakeAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "blocksToFinalise",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minGasLeft",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxTxsPerCommit",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "depositSubTreeRoot",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "pathToSubTree",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepositsFinalised",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "committer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum Types.Usage",
+          "name": "batchType",
+          "type": "uint8"
+        }
+      ],
+      "name": "NewBatch",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "startID",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "nDeleted",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "completed",
+          "type": "bool"
+        }
+      ],
+      "name": "RollbackStatus",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "committed",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        }
+      ],
+      "name": "StakeWithdraw",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "ZERO_BYTES32",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "accountRegistry",
+      "outputs": [
+        {
+          "internalType": "contract BLSAccountRegistry",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "appID",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "batches",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "commitmentRoot",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "meta",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "chooser",
+      "outputs": [
+        {
+          "internalType": "contract Chooser",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "create2Transfer",
+      "outputs": [
+        {
+          "internalType": "contract Create2Transfer",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "depositManager",
+      "outputs": [
+        {
+          "internalType": "contract IDepositManager",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "deposits",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "bytes32",
+                      "name": "accountRoot",
+                      "type": "bytes32"
+                    },
+                    {
+                      "internalType": "uint256[2]",
+                      "name": "signature",
+                      "type": "uint256[2]"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "feeReceiver",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "txs",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct Types.TransferBody",
+                  "name": "body",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct Types.TransferCommitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.TransferCommitmentInclusionProof",
+          "name": "target",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "pubkeyID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nonce",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Types.UserState[]",
+              "name": "states",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "bytes32[][]",
+              "name": "stateWitnesses",
+              "type": "bytes32[][]"
+            },
+            {
+              "internalType": "uint256[4][]",
+              "name": "pubkeysSender",
+              "type": "uint256[4][]"
+            },
+            {
+              "internalType": "bytes32[][]",
+              "name": "pubkeyWitnessesSender",
+              "type": "bytes32[][]"
+            },
+            {
+              "internalType": "uint256[4][]",
+              "name": "pubkeysReceiver",
+              "type": "uint256[4][]"
+            },
+            {
+              "internalType": "bytes32[][]",
+              "name": "pubkeyWitnessesReceiver",
+              "type": "bytes32[][]"
+            }
+          ],
+          "internalType": "struct Types.SignatureProofWithReceiver",
+          "name": "signatureProof",
+          "type": "tuple"
+        }
+      ],
+      "name": "disputeSignatureCreate2Transfer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "bytes32",
+                      "name": "accountRoot",
+                      "type": "bytes32"
+                    },
+                    {
+                      "internalType": "uint256[2]",
+                      "name": "signature",
+                      "type": "uint256[2]"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "spokeID",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "bytes32",
+                      "name": "withdrawRoot",
+                      "type": "bytes32"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "tokenID",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "amount",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "feeReceiver",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "txs",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct Types.MassMigrationBody",
+                  "name": "body",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct Types.MassMigrationCommitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.MMCommitmentInclusionProof",
+          "name": "target",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "pubkeyID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nonce",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Types.UserState[]",
+              "name": "states",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "bytes32[][]",
+              "name": "stateWitnesses",
+              "type": "bytes32[][]"
+            },
+            {
+              "internalType": "uint256[4][]",
+              "name": "pubkeys",
+              "type": "uint256[4][]"
+            },
+            {
+              "internalType": "bytes32[][]",
+              "name": "pubkeyWitnesses",
+              "type": "bytes32[][]"
+            }
+          ],
+          "internalType": "struct Types.SignatureProof",
+          "name": "signatureProof",
+          "type": "tuple"
+        }
+      ],
+      "name": "disputeSignatureMassMigration",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "bytes32",
+                      "name": "accountRoot",
+                      "type": "bytes32"
+                    },
+                    {
+                      "internalType": "uint256[2]",
+                      "name": "signature",
+                      "type": "uint256[2]"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "feeReceiver",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "txs",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct Types.TransferBody",
+                  "name": "body",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct Types.TransferCommitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.TransferCommitmentInclusionProof",
+          "name": "target",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "pubkeyID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nonce",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Types.UserState[]",
+              "name": "states",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "bytes32[][]",
+              "name": "stateWitnesses",
+              "type": "bytes32[][]"
+            },
+            {
+              "internalType": "uint256[4][]",
+              "name": "pubkeys",
+              "type": "uint256[4][]"
+            },
+            {
+              "internalType": "bytes32[][]",
+              "name": "pubkeyWitnesses",
+              "type": "bytes32[][]"
+            }
+          ],
+          "internalType": "struct Types.SignatureProof",
+          "name": "signatureProof",
+          "type": "tuple"
+        }
+      ],
+      "name": "disputeSignatureTransfer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "bodyRoot",
+                  "type": "bytes32"
+                }
+              ],
+              "internalType": "struct Types.Commitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.CommitmentInclusionProof",
+          "name": "previous",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "bytes32",
+                      "name": "accountRoot",
+                      "type": "bytes32"
+                    },
+                    {
+                      "internalType": "uint256[2]",
+                      "name": "signature",
+                      "type": "uint256[2]"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "feeReceiver",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "txs",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct Types.TransferBody",
+                  "name": "body",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct Types.TransferCommitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.TransferCommitmentInclusionProof",
+          "name": "target",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "pubkeyID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nonce",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Types.UserState",
+              "name": "state",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.StateMerkleProof[]",
+          "name": "proofs",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "disputeTransitionCreate2Transfer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "bodyRoot",
+                  "type": "bytes32"
+                }
+              ],
+              "internalType": "struct Types.Commitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.CommitmentInclusionProof",
+          "name": "previous",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "bytes32",
+                      "name": "accountRoot",
+                      "type": "bytes32"
+                    },
+                    {
+                      "internalType": "uint256[2]",
+                      "name": "signature",
+                      "type": "uint256[2]"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "spokeID",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "bytes32",
+                      "name": "withdrawRoot",
+                      "type": "bytes32"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "tokenID",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "amount",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "feeReceiver",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "txs",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct Types.MassMigrationBody",
+                  "name": "body",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct Types.MassMigrationCommitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.MMCommitmentInclusionProof",
+          "name": "target",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "pubkeyID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nonce",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Types.UserState",
+              "name": "state",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.StateMerkleProof[]",
+          "name": "proofs",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "disputeTransitionMassMigration",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "bodyRoot",
+                  "type": "bytes32"
+                }
+              ],
+              "internalType": "struct Types.Commitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.CommitmentInclusionProof",
+          "name": "previous",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "bytes32",
+                      "name": "accountRoot",
+                      "type": "bytes32"
+                    },
+                    {
+                      "internalType": "uint256[2]",
+                      "name": "signature",
+                      "type": "uint256[2]"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "feeReceiver",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "txs",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct Types.TransferBody",
+                  "name": "body",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct Types.TransferCommitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.TransferCommitmentInclusionProof",
+          "name": "target",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "pubkeyID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenID",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nonce",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Types.UserState",
+              "name": "state",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.StateMerkleProof[]",
+          "name": "proofs",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "disputeTransitionTransfer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        }
+      ],
+      "name": "getBatch",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "commitmentRoot",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "meta",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct Types.Batch",
+          "name": "batch",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "invalidBatchMarker",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "keepRollingBack",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "massMigration",
+      "outputs": [
+        {
+          "internalType": "contract MassMigration",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nextBatchID",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paramBlocksToFinalise",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paramMaxTxsPerCommit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paramMinGasLeft",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paramStakeAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "stateRoots",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "uint256[2][]",
+          "name": "signatures",
+          "type": "uint256[2][]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "feeReceivers",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "txss",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "submitCreate2Transfer",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "stateRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "bodyRoot",
+                  "type": "bytes32"
+                }
+              ],
+              "internalType": "struct Types.Commitment",
+              "name": "commitment",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "path",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.CommitmentInclusionProof",
+          "name": "previous",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "depth",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pathAtDepth",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "witness",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct Types.SubtreeVacancyProof",
+          "name": "vacant",
+          "type": "tuple"
+        }
+      ],
+      "name": "submitDeposits",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "stateRoots",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "uint256[2][]",
+          "name": "signatures",
+          "type": "uint256[2][]"
+        },
+        {
+          "internalType": "uint256[4][]",
+          "name": "meta",
+          "type": "uint256[4][]"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "withdrawRoots",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "txss",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "submitMassMigration",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "stateRoots",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "uint256[2][]",
+          "name": "signatures",
+          "type": "uint256[2][]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "feeReceivers",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "txss",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "submitTransfer",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "transfer",
+      "outputs": [
+        {
+          "internalType": "contract Transfer",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "batchID",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdrawStake",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdrawalBitmap",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}

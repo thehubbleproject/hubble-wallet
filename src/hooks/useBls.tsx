@@ -1,6 +1,13 @@
 import * as mcl from "@thehubbleproject/bls/dist/mcl";
-import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
+import * as signer from "@thehubbleproject/bls/dist/signer";
+import {
+  keccak256,
+  arrayify,
+  formatBytes32String,
+  toUtf8Bytes,
+} from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
+import useContracts from "./useContracts";
 
 const useBls = () => {
   /**
@@ -9,6 +16,8 @@ const useBls = () => {
   const reducedSecretKey = useStoreState(
     (state) => state.currentAccount.reducedSecretKey
   );
+
+  const { getAppId } = useContracts();
 
   /**
    * converts array of public key into single bytes string
@@ -71,13 +80,24 @@ const useBls = () => {
    *
    * @param message any message string
    */
-  const signMessageString = (message: string): string => {
+  const signMessageString = async (message: string): Promise<string> => {
     const secretKey = rebuildSecretKey(reducedSecretKey);
+    const appId = await getAppId();
 
-    console.log({ secretKey });
+    // 0x4ea7799478a7af2a47ba555f04aec4ae4ba240bf410d7c859c34c310f0413892
+    console.log(message);
+    let messageA = btoa(message);
+    console.log(messageA);
 
-    const signedArray = mcl.sign(message, secretKey, new Uint8Array(4));
-    let signatureArr = mcl.g1ToHex(signedArray.signature);
+    const factory = await signer.BlsSignerFactory.new();
+    const signerF = factory.getSigner(arrayify(appId), secretKey);
+
+    // const signedArray = mcl.sign(messageA, secretKey, );
+    const signature = signerF.sign(message);
+    console.log(signature);
+
+    // let signatureArr = mcl.g1ToHex(signedArray.signature);
+    let signatureArr = ["0x1", "0x2"];
     return signatureArr[0].split("x")[1] + signatureArr[1].split("x")[1];
   };
 

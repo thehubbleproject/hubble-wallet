@@ -48,7 +48,11 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
         (item) => item.token_id === uniqueToken
       );
 
-      let sum = balanceItems.reduce((a: any, b: any) => a.balance + b.balance);
+      let sum = 0;
+      balanceItems.forEach((item) => {
+        sum += item.balance;
+      });
+
       balances.push({
         symbol: uniqueToken.toString(),
         balance: Web3.utils.fromWei(sum.toString()),
@@ -82,6 +86,8 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
       <div className="amount">
         {isFetching ? (
           <Loader inline active />
+        ) : balances.length === 0 ? (
+          <div className="value">No records</div>
         ) : (
           <>
             <div className="value">
