@@ -3,7 +3,8 @@ import * as signer from "@thehubbleproject/bls/dist/signer";
 import {
   keccak256,
   arrayify,
-  formatBytes32String,
+  hexlify,
+  randomBytes,
   toUtf8Bytes,
 } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
@@ -55,9 +56,9 @@ const useBls = () => {
    *
    * @param secretKey entire exports.Fr object
    */
-  const reduceSecretKey = (secretKey: mcl.SecretKey): string => {
-    return secretKey.getStr();
-  };
+  //   const reduceSecretKey = (secretKey: mcl.SecretKey): string => {
+  //     return secretKey.getStr();
+  //   };
 
   /**
    * takes in the reduced secret key and rebuilds the exports.Fr object
@@ -65,15 +66,15 @@ const useBls = () => {
    *
    * @param reducedSecretKey reduced secret key string
    */
-  const rebuildSecretKey = (reducedSecretKey: string): mcl.SecretKey => {
-    /**
-     * gets the current initialized instance of mcl-wasm
-     */
-    const mclwasm = mcl.getMclInstance();
-    const secretKey = new mclwasm.Fr();
-    secretKey.setStr(reducedSecretKey);
-    return secretKey;
-  };
+  //   const rebuildSecretKey = (reducedSecretKey: string): mcl.SecretKey => {
+  //     /**
+  //      * gets the current initialized instance of mcl-wasm
+  //      */
+  //     const mclwasm = mcl.getMclInstance();
+  //     const secretKey = new mclwasm.Fr();
+  //     secretKey.setStr(reducedSecretKey);
+  //     return secretKey;
+  //   };
 
   /**
    * returns a signed object using secret key
@@ -81,41 +82,37 @@ const useBls = () => {
    * @param message any message string
    */
   const signMessageString = async (message: string): Promise<string> => {
-    const secretKey = rebuildSecretKey(reducedSecretKey);
-    const appId = await getAppId();
-
-    // 0x4ea7799478a7af2a47ba555f04aec4ae4ba240bf410d7c859c34c310f0413892
-    console.log(message);
-    let messageA = btoa(message);
-    console.log(messageA);
-
+    const secret = reducedSecretKey;
+    console.log("secret key revived", secret);
+    // var DefaultDomain = [32]byte{0x00, 0x00, 0x00, 0x00}
+    // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const signerF = factory.getSigner(arrayify(appId), secretKey);
-
-    // const signedArray = mcl.sign(messageA, secretKey, );
-    const signature = signerF.sign(message);
-    console.log(signature);
-
-    // let signatureArr = mcl.g1ToHex(signedArray.signature);
-    let signatureArr = ["0x1", "0x2"];
-    return signatureArr[0].split("x")[1] + signatureArr[1].split("x")[1];
+    const user = factory.getSigner(arrayify("0x00000000"), secret);
+    console.log("pubkey", user.pubkey);
+    console.log("message", message);
+    const signature = user.sign("0x" + message);
+    console.log({ signature });
+    return signature[0].split("x")[1] + signature[1].split("x")[1];
   };
 
   /**
    * creates a new key pair for the user
    */
-  const getNewKeyPair = () => {
-    const { pubkey: pubkeyB, secret } = mcl.newKeyPair();
-
-    const pubkey = mcl.g2ToHex(pubkeyB);
+  const getNewKeyPair = async () => {
+    // const { pubkey: pubkeyB, secret } = mcl.newKeyPair();
+    const secret = hexlify(randomBytes(12));
+    console.log("Secret key created", secret);
+    const appId = await getAppId();
+    const factory = await signer.BlsSignerFactory.new();
+    const user = factory.getSigner(arrayify(appId), secret);
+    const pubkey = user.pubkey;
 
     const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
-    const reducedSecretKey = reduceSecretKey(secret);
 
     return {
       publicKey: pubkey,
       hubbleAddress,
-      reducedSecretKey,
+      reducedSecretKey: secret,
     };
   };
 

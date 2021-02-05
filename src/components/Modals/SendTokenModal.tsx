@@ -48,14 +48,14 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
 
   // RECEIVER STUFF
   const [receiverTokens, setReceiverTokens] = useState<any>(null);
-  const [receiverAccId, setReceiverAccID] = useState<any>("");
+  const [receiverAccStates, setReceiverAccStates] = useState<any>("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const tokensArray = await getStateFromPubKey(scannedAddress);
         setReceiverTokens(getTokenDropdown(tokensArray.states));
-        setReceiverAccID(tokensArray.account_id);
+        setReceiverAccStates(tokensArray.states);
       } catch (error) {
         setReceiverTokens([]);
       }
@@ -102,18 +102,28 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
 
   const handleSubmit = async () => {
     setSendingTx(true);
-    if (amount !== "" && token !== "" && receiverAccId !== null) {
+    if (amount !== "" && token !== "" && receiverAccStates !== null) {
       let nonce = senderTokens.filter(
         (Sendertoken: any) => Sendertoken.token_id === token
       )[0].nonce;
 
+      let from = senderTokens.filter(
+        (Sendertoken: any) => Sendertoken.token_id === token
+      )[0].state_id;
+
+      let to = receiverAccStates.filter(
+        (receiverTokens: any) => receiverTokens.token_id === token
+      )[0].state_id;
+
       let finalBody = {
-        from: parseInt(currentAccount.accountId || ""),
-        to: receiverAccId,
+        from: from,
+        to: to,
         nonce: nonce + 1,
         amount: 1,
         fee: 0,
       };
+
+      console.log(finalBody);
 
       try {
         const data = await performTransfer(finalBody);
@@ -164,16 +174,21 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
                   : "scan in progress..."}
               </label>
             </Form.Field>
-            <Form.Field>
+            {/* <Form.Field>
               <label>{"Address"}</label>
               <Input
                 fluid
                 labelPosition="right"
                 type="text"
+                disabled
                 placeholder="scan"
-                value={receiverAccId}
+                value={
+                    receiverAccStates === b receiverAccStates.filter(
+                    (receiverTokens: any) => receiverTokens.token_id === token
+                  )[0].state_id
+                }
               />
-            </Form.Field>
+            </Form.Field> */}
             {receiverTokens === null ? (
               <p>Fetching Tokens...</p>
             ) : receiverTokens.length === 0 ? (

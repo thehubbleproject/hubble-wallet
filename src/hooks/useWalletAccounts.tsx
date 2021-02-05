@@ -78,10 +78,10 @@ const useWalletAccounts = () => {
   /**
    * checks if an account exists locally
    */
-  const checkExistingAccounts = (): void => {
+  const checkExistingAccounts = async (): Promise<void> => {
     let walletAccounts = getLocalAccounts();
     if (walletAccounts.length === 0) {
-      createFirstAccount();
+      await createFirstAccount();
     } else {
       updateGlobalState(walletAccounts);
     }
@@ -91,8 +91,8 @@ const useWalletAccounts = () => {
    * If no account is already present in the local storage
    * a new account is created for the user
    */
-  const createFirstAccount = () => {
-    const newKeys = getNewKeyPair();
+  const createFirstAccount = async () => {
+    const newKeys = await getNewKeyPair();
     let newAccount: IWalletAccount = {
       publicKey: newKeys.publicKey,
       hubbleAddress: newKeys.hubbleAddress,
@@ -109,8 +109,8 @@ const useWalletAccounts = () => {
    * Explicitly creates a new account for the user on demand
    * @param walletAccount object with private and public key
    */
-  const createNewAccount = (): void => {
-    const newKeys = getNewKeyPair();
+  const createNewAccount = async (): Promise<void> => {
+    const newKeys = await getNewKeyPair();
     let newAccount: IWalletAccount = {
       publicKey: newKeys.publicKey,
       hubbleAddress: newKeys.hubbleAddress,
