@@ -107,7 +107,7 @@ const useCommander = () => {
     let txData = {
       type: resTransfer.data.tx_type,
       message: resTransfer.data.message,
-      sig: signature,
+      sig: signature.split("x")[1],
     };
 
     const resTx = await sendTx(txData);

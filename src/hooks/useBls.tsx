@@ -8,7 +8,7 @@ import {
   toUtf8Bytes,
 } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
-import useContracts from "./useContracts";
+// import useContracts from "./useContracts";
 
 const useBls = () => {
   /**
@@ -18,7 +18,7 @@ const useBls = () => {
     (state) => state.currentAccount.reducedSecretKey
   );
 
-  const { getAppId } = useContracts();
+  //   const { getAppId } = useContracts();
 
   /**
    * converts array of public key into single bytes string
@@ -94,6 +94,12 @@ const useBls = () => {
     let dump = mcl.dumpG1(signature);
     console.log("dumped", dump);
     console.log("loaded", mcl.loadG1(dump));
+
+    console.log(
+      "verfication",
+      user.verify(signature, user.pubkey, "0x" + message)
+    );
+
     return mcl.dumpG1(signature);
   };
 
@@ -102,11 +108,11 @@ const useBls = () => {
    */
   const getNewKeyPair = async () => {
     // const { pubkey: pubkeyB, secret } = mcl.newKeyPair();
-    const secret = hexlify(randomBytes(12));
+    const secret = hexlify(randomBytes(32));
     console.log("Secret key created", secret);
-    const appId = await getAppId();
+    // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(arrayify(appId), secret);
+    const user = factory.getSigner(arrayify("0x00000000"), secret);
     const pubkey = user.pubkey;
 
     const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
@@ -123,9 +129,9 @@ const useBls = () => {
    */
   const getNewKeyPairFromSecret = async (secret: string) => {
     console.log(secret);
-    const appId = await getAppId();
+    // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(arrayify(appId), secret);
+    const user = factory.getSigner(arrayify("0x00000000"), secret);
     const pubkey = user.pubkey;
 
     const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));

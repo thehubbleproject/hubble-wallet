@@ -9,7 +9,7 @@ import TestTokenContract from "../contracts/TestTokenContract.json";
 import Rollup from "../contracts/Rollup.json";
 
 const useContracts = () => {
-  const { web3, account } = useStoreState((state) => state);
+  const { account, web3 } = useStoreState((state) => state);
   const { updateCurrentAccount, setShouldUpdate } = useStoreActions(
     (action) => action
   );

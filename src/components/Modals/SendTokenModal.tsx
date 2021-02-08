@@ -120,7 +120,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
         from,
         to,
         nonce,
-        amount,
+        amount: parseInt(amount),
         fee: 0,
       };
 

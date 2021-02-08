@@ -82,7 +82,7 @@ const useWalletAccounts = () => {
    */
   const checkExistingAccounts = async (): Promise<void> => {
     let walletAccounts = getLocalAccounts();
-    if (walletAccounts.length === 0) {
+    if (walletAccounts && walletAccounts.length === 0) {
       await createFirstAccount();
     } else {
       updateGlobalState(walletAccounts);

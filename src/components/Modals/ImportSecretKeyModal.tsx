@@ -18,7 +18,7 @@ const ImportSecretKeyModal: React.FunctionComponent<ImportSecretKeyModalProps> =
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async () => {
-    if (key.length === 26) {
+    if (key.length === 66) {
       console.log(key);
 
       // check if account already present in local
