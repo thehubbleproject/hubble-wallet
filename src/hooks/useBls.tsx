@@ -91,8 +91,10 @@ const useBls = () => {
     console.log("pubkey", user.pubkey);
     console.log("message", message);
     const signature = user.sign("0x" + message);
-    console.log({ signature });
-    return signature[0].split("x")[1] + signature[1].split("x")[1];
+    let dump = mcl.dumpG1(signature);
+    console.log("dumped", dump);
+    console.log("loaded", mcl.loadG1(dump));
+    return mcl.dumpG1(signature);
   };
 
   /**
@@ -116,8 +118,28 @@ const useBls = () => {
     };
   };
 
+  /**
+   * creates a new key pair for the user
+   */
+  const getNewKeyPairFromSecret = async (secret: string) => {
+    console.log(secret);
+    const appId = await getAppId();
+    const factory = await signer.BlsSignerFactory.new();
+    const user = factory.getSigner(arrayify(appId), secret);
+    const pubkey = user.pubkey;
+
+    const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
+
+    return {
+      publicKey: pubkey,
+      hubbleAddress,
+      reducedSecretKey: secret,
+    };
+  };
+
   return {
     getNewKeyPair,
+    getNewKeyPairFromSecret,
     signMessageString,
     solG2ToBytes,
     hashPublicKeysBytes,

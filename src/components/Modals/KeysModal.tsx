@@ -4,6 +4,7 @@ import { Icon, Modal } from "semantic-ui-react";
 // hooks and services
 import { useStoreState } from "../../store/globalStore";
 import useBls from "../../hooks/useBls";
+import ImportSecretKeyModal from "./ImportSecretKeyModal";
 
 // components, styles and UI
 
@@ -26,7 +27,12 @@ const KeysModal: React.FunctionComponent<KeysModalProps> = () => {
         </span>
       }
     >
-      <Modal.Header>Account Keys</Modal.Header>
+      <Modal.Header>
+        <div className="account-import">
+          <div>Account Keys </div>
+          <ImportSecretKeyModal />
+        </div>
+      </Modal.Header>
       <Modal.Content>
         <Modal.Description>
           <div>

@@ -71,6 +71,11 @@ body {
   z-index: 100;
 }
 
+.account-import {
+  display: flex;
+  justify-content: space-between;
+}
+
 .main-card-left > .loading-bls {
   height: 20rem;
   display: flex;

@@ -82,6 +82,11 @@ const useCommander = () => {
   // Transaction related
   const getTxTypeList = async () => {};
 
+  const getNonce = async (state_id: number) => {
+    const res = await axios.get(BASE_URL + `/estimateNonce/${state_id}`);
+    return res.data.nonce;
+  };
+
   const getTxStatus = async (hash: string): Promise<IGetTxStatusResponse> => {
     const res = await axios.get(BASE_URL + `/tx/${hash}`);
     return res.data;
@@ -123,6 +128,7 @@ const useCommander = () => {
     performTransfer,
     performCreate2Transfer,
     performMassMigration,
+    getNonce,
   };
 };
 

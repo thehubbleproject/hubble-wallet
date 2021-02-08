@@ -5,6 +5,7 @@ import {
   useStoreState,
 } from "../store/globalStore";
 import useBls from "./useBls";
+import useCommander from "./useCommander";
 
 const useWalletAccounts = () => {
   const setCurrentAccountGlobal = useStoreActions(
@@ -15,7 +16,8 @@ const useWalletAccounts = () => {
   );
   const { walletAccounts } = useStoreState((state) => state);
 
-  const { getNewKeyPair } = useBls();
+  const { getNewKeyPair, getNewKeyPairFromSecret, solG2ToBytes } = useBls();
+  const { getStateFromPubKey } = useCommander();
 
   /**
    * fetches a list of accounts from the localstorage
@@ -109,6 +111,39 @@ const useWalletAccounts = () => {
    * Explicitly creates a new account for the user on demand
    * @param walletAccount object with private and public key
    */
+  const createNewAccountFromSecret = async (secret: string): Promise<void> => {
+    const newKeys = await getNewKeyPairFromSecret(secret);
+
+    let pubkeyBytes = solG2ToBytes(newKeys.publicKey);
+    let newAccount: IWalletAccount;
+    try {
+      const res = await getStateFromPubKey(pubkeyBytes);
+      newAccount = {
+        publicKey: newKeys.publicKey,
+        hubbleAddress: newKeys.hubbleAddress,
+        reducedSecretKey: newKeys.reducedSecretKey,
+        registered: true,
+        accountId: "0x" + res.account_id.toString(16),
+      };
+    } catch (error) {
+      newAccount = {
+        publicKey: newKeys.publicKey,
+        hubbleAddress: newKeys.hubbleAddress,
+        reducedSecretKey: newKeys.reducedSecretKey,
+        registered: false,
+        accountId: null,
+      };
+    }
+
+    let localAccounts = getLocalAccounts();
+    localAccounts.push(newAccount);
+    setLocalAccounts(localAccounts);
+  };
+
+  /**
+   * Explicitly creates a new account for the user on demand
+   * @param walletAccount object with private and public key
+   */
   const createNewAccount = async (): Promise<void> => {
     const newKeys = await getNewKeyPair();
     let newAccount: IWalletAccount = {
@@ -146,6 +181,7 @@ const useWalletAccounts = () => {
     createNewAccount,
     burnAccount,
     setCurrentAccountUser,
+    createNewAccountFromSecret,
   };
 };
 

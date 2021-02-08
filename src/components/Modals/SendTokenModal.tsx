@@ -4,7 +4,6 @@ import QrReader from "react-qr-reader";
 // hooks and services
 import useBls from "../../hooks/useBls";
 import useCommander from "../../hooks/useCommander";
-// import Web3 from "web3";
 
 // components, styles and UI
 import {
@@ -26,6 +25,7 @@ export interface SendTokenModalProps {}
 const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const { hashPublicKeysBytes, solG2ToBytes } = useBls();
   const { getStateFromPubKey, performTransfer } = useCommander();
+  //   const { getStateFromPubKey, performTransfer, getNonce } = useCommander();
 
   // SCANNING STUFF
   const [scanSuccess, setScanSuccess] = useState<boolean>(false);
@@ -106,6 +106,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
       let nonce = senderTokens.filter(
         (Sendertoken: any) => Sendertoken.token_id === token
       )[0].nonce;
+      //   let nonce = await getNonce(from);
 
       let from = senderTokens.filter(
         (Sendertoken: any) => Sendertoken.token_id === token
@@ -116,10 +117,10 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
       )[0].state_id;
 
       let finalBody = {
-        from: from,
-        to: to,
-        nonce: nonce + 1,
-        amount: 1,
+        from,
+        to,
+        nonce,
+        amount,
         fee: 0,
       };
 
