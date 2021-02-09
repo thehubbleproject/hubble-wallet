@@ -55,7 +55,7 @@ const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
       />
       {!currentAccount.registered && (
         <Button
-          className="customButton form-button"
+          className="custom-button form-button"
           fluid
           onClick={handleConnectL2}
         >
@@ -64,7 +64,7 @@ const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
       )}
       {!isAllowed && (
         <Button
-          className="customButton form-button"
+          className="custom-button form-button"
           fluid
           onClick={approveToken}
         >
@@ -72,7 +72,7 @@ const DepositTokenForm: React.FunctionComponent<DepositTokenFormProps> = ({
         </Button>
       )}
       <Button
-        className="customButton form-button"
+        className="custom-button form-button"
         fluid
         disabled={!isAllowed || !currentAccount.registered}
         onClick={handleDeposit}

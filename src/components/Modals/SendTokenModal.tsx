@@ -24,8 +24,8 @@ export interface SendTokenModalProps {}
 
 const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const { hashPublicKeysBytes, solG2ToBytes } = useBls();
-  const { getStateFromPubKey, performTransfer } = useCommander();
-  //   const { getStateFromPubKey, performTransfer, getNonce } = useCommander();
+  //   const { getStateFromPubKey, performTransfer } = useCommander();
+  const { getStateFromPubKey, performTransfer, getNonce } = useCommander();
 
   // SCANNING STUFF
   const [scanSuccess, setScanSuccess] = useState<boolean>(false);
@@ -103,10 +103,9 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const handleSubmit = async () => {
     setSendingTx(true);
     if (amount !== "" && token !== "" && receiverAccStates !== null) {
-      let nonce = senderTokens.filter(
-        (Sendertoken: any) => Sendertoken.token_id === token
-      )[0].nonce;
-      //   let nonce = await getNonce(from);
+      //   let nonce = senderTokens.filter(
+      //     (Sendertoken: any) => Sendertoken.token_id === token
+      //   )[0].nonce;
 
       let from = senderTokens.filter(
         (Sendertoken: any) => Sendertoken.token_id === token
@@ -115,6 +114,8 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
       let to = receiverAccStates.filter(
         (receiverTokens: any) => receiverTokens.token_id === token
       )[0].state_id;
+
+      let nonce = await getNonce(from);
 
       let finalBody = {
         from,
@@ -221,7 +222,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
                 <div className="ButtonContainer">
                   <Button
                     disabled={sendingTx}
-                    className="customButton"
+                    className="custom-button"
                     content={
                       <>
                         send{" "}
@@ -256,7 +257,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
       trigger={
         <Button
           onClick={resetScan}
-          className="customButton"
+          className="custom-button"
           size="large"
           content={"send tokens"}
           fluid

@@ -1,65 +1,44 @@
-import React, { useState } from "react";
-import { Button, Modal } from "semantic-ui-react";
-import useWalletAccounts from "../../hooks/useWalletAccounts";
-import { useStoreState } from "../../store/globalStore";
+import React from "react";
+import Swal from "sweetalert2";
 
 // hooks and services
+import { useStoreState } from "../../store/globalStore";
+import useWalletAccounts from "../../hooks/useWalletAccounts";
 
 // components, styles and UI
+import { Button } from "semantic-ui-react";
 
-// interfaces
-export interface BurnAccountModalProps {}
-
-const BurnAccountModal: React.FunctionComponent<BurnAccountModalProps> = () => {
+const BurnAccountModal: React.FunctionComponent = () => {
   const { burnAccount } = useWalletAccounts();
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const currentAccount = useStoreState((state) => state.currentAccount);
 
-  const closeAccountForUser = (): void => {
-    burnAccount(currentAccount.hubbleAddress);
-    setModalOpen(false);
+  const handleCloseAccountRequest = () => {
+    Swal.fire({
+      title: "Close local account",
+      text:
+        "You won't be able to recover the account or funds unless you copy the secret key",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, close it!",
+      cancelButtonText: "Abort",
+    }).then((result) => {
+      if (result.value) {
+        burnAccount(currentAccount.hubbleAddress);
+        Swal.fire("Account Deleted", "", "success");
+      }
+    });
   };
 
   return (
-    <Modal
-      open={modalOpen}
-      size="tiny"
-      trigger={
-        <Button
-          className="customButton burn"
-          content="delete account"
-          icon="close"
-          labelPosition="left"
-          fluid
-          size="large"
-          onClick={() => setModalOpen(true)}
-        />
-      }
-    >
-      <Modal.Content>
-        <Modal.Description>
-          <p>Are you sure you want to close this account?</p>
-
-          <strong>
-            The remaining value in the account will NEVER be recovered
-          </strong>
-        </Modal.Description>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button
-          content="Abort"
-          color="black"
-          onClick={() => setModalOpen(false)}
-        />
-        <Button
-          content="Yes, Close it"
-          labelPosition="right"
-          icon="fire"
-          color="red"
-          onClick={closeAccountForUser}
-        />
-      </Modal.Actions>
-    </Modal>
+    <Button
+      className="custom-button burn"
+      content="delete account"
+      icon="close"
+      labelPosition="left"
+      fluid
+      size="large"
+      onClick={handleCloseAccountRequest}
+    />
   );
 };
 

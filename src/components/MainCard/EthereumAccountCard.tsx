@@ -85,7 +85,7 @@ const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = (
 
         <Button
           onClick={connected ? resetApp : onConnect}
-          className="customButton"
+          className="custom-button"
           content={connected ? "Disconnect" : "connect wallet"}
           size="small"
           compact

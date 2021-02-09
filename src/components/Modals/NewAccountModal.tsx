@@ -1,63 +1,42 @@
-import React, { useState } from "react";
-import { Button, Modal } from "semantic-ui-react";
-import useWalletAccounts from "../../hooks/useWalletAccounts";
+import React from "react";
+import Swal from "sweetalert2";
 
 // hooks and services
+import useWalletAccounts from "../../hooks/useWalletAccounts";
 
 // components, styles and UI
+import { Button } from "semantic-ui-react";
 
-// interfaces
-export interface NewAccountModalProps {}
-
-const NewAccountModal: React.FunctionComponent<NewAccountModalProps> = () => {
+const NewAccountModal: React.FunctionComponent = () => {
   const { createNewAccount } = useWalletAccounts();
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const createNewAccountForUser = (): void => {
-    createNewAccount();
-    setModalOpen(false);
+  const handleNewAccountRequest = () => {
+    Swal.fire({
+      title: "Create new local account",
+      text:
+        "Do not store high volume on this wallet as it is volatile and risky",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, create it!",
+      cancelButtonText: "Abort",
+    }).then((result) => {
+      if (result.value) {
+        createNewAccount();
+        Swal.fire("Success!", "Add funds to your new account", "success");
+      }
+    });
   };
 
   return (
-    <Modal
-      size="tiny"
-      open={modalOpen}
-      trigger={
-        <Button
-          className="customButton new"
-          content="new BLS account"
-          icon="plus"
-          fluid
-          labelPosition="left"
-          size="large"
-          onClick={() => setModalOpen(true)}
-        />
-      }
-    >
-      <Modal.Content>
-        <Modal.Description>
-          <p>This will create a new account locally on your device</p>
-          <strong>
-            Please do not store high volume on this wallet as it is volatile and
-            risky
-          </strong>
-        </Modal.Description>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button
-          content="Abort"
-          color="black"
-          onClick={() => setModalOpen(false)}
-        />
-        <Button
-          content="Create new account"
-          labelPosition="right"
-          icon="address book"
-          color="green"
-          onClick={createNewAccountForUser}
-        />
-      </Modal.Actions>
-    </Modal>
+    <Button
+      className="custom-button new"
+      content="new BLS account"
+      icon="plus"
+      fluid
+      labelPosition="left"
+      size="large"
+      onClick={handleNewAccountRequest}
+    />
   );
 };
 

@@ -27,7 +27,7 @@ const SignWordsModal: React.FunctionComponent<SignWordsModalProps> = () => {
       trigger={
         <div className="ButtonContainer">
           <Button
-            className="customButton"
+            className="custom-button"
             content="sign"
             icon="pencil"
             labelPosition="left"
@@ -52,7 +52,7 @@ const SignWordsModal: React.FunctionComponent<SignWordsModalProps> = () => {
 
           <div className="ButtonContainer">
             <Button
-              className="customButton"
+              className="custom-button"
               content="sign"
               icon="pencil"
               labelPosition="left"

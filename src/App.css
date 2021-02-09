@@ -328,7 +328,7 @@ select {
   justify-content: space-between;
 }
 
-.customButton {
+.custom-button {
   font-size: 0.8rem !important;
   font-weight: 200 !important;
   padding: 0.9rem 1rem !important;
@@ -336,7 +336,7 @@ select {
   background: var(--theme-blue-dark) !important;
 }
 
-.customButton:active {
+.custom-button:active {
   background: var(--theme-blue-dark-active) !important;
 }
 
@@ -414,7 +414,7 @@ select {
     width: 100%;
   }
 
-  .customButton {
+  .custom-button {
     font-size: 0.9rem !important;
     padding: 1rem 0.5rem !important;
   }

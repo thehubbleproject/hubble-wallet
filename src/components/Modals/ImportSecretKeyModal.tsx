@@ -39,7 +39,7 @@ const ImportSecretKeyModal: React.FunctionComponent<ImportSecretKeyModalProps> =
       size="tiny"
       trigger={
         <Button
-          className="customButton"
+          className="custom-button"
           size="large"
           content={"import secret key"}
           icon={"key"}
@@ -60,7 +60,7 @@ const ImportSecretKeyModal: React.FunctionComponent<ImportSecretKeyModalProps> =
           </Form.Field>
           <div className="ButtonContainer">
             <Button
-              className="customButton"
+              className="custom-button"
               content={
                 <>
                   import account{" "}

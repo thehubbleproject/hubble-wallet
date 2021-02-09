@@ -24,10 +24,10 @@ const useBls = () => {
    * converts array of public key into single bytes string
    */
   const solG2ToBytes = (keysArray: mcl.PublicKey | string[]): string => {
-    let first = keysArray[1];
-    let second = keysArray[0];
-    let third = keysArray[3];
-    let fourth = keysArray[2];
+    let first = keysArray[0];
+    let second = keysArray[1];
+    let third = keysArray[2];
+    let fourth = keysArray[3];
 
     let finalString =
       first.split("x")[1] +
@@ -87,7 +87,12 @@ const useBls = () => {
     // var DefaultDomain = [32]byte{0x00, 0x00, 0x00, 0x00}
     // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(arrayify("0x00000000"), secret);
+    const user = factory.getSigner(
+      arrayify(
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
+      ),
+      secret
+    );
     console.log("pubkey", user.pubkey);
     console.log("message", message);
     const signature = user.sign("0x" + message);
@@ -112,7 +117,12 @@ const useBls = () => {
     console.log("Secret key created", secret);
     // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(arrayify("0x00000000"), secret);
+    const user = factory.getSigner(
+      arrayify(
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
+      ),
+      secret
+    );
     const pubkey = user.pubkey;
 
     const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
@@ -131,7 +141,12 @@ const useBls = () => {
     console.log(secret);
     // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(arrayify("0x00000000"), secret);
+    const user = factory.getSigner(
+      arrayify(
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
+      ),
+      secret
+    );
     const pubkey = user.pubkey;
 
     const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));

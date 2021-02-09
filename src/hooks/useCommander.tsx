@@ -84,7 +84,7 @@ const useCommander = () => {
 
   const getNonce = async (state_id: number) => {
     const res = await axios.get(BASE_URL + `/estimateNonce/${state_id}`);
-    return res.data.nonce;
+    return res.data.Nonce;
   };
 
   const getTxStatus = async (hash: string): Promise<IGetTxStatusResponse> => {
@@ -108,6 +108,7 @@ const useCommander = () => {
       type: resTransfer.data.tx_type,
       message: resTransfer.data.message,
       sig: signature.split("x")[1],
+      encoded_tx: resTransfer.data.encoded_tx,
     };
 
     const resTx = await sendTx(txData);
