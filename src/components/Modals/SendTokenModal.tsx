@@ -125,8 +125,6 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
         fee: 0,
       };
 
-      console.log(finalBody);
-
       try {
         const data = await performTransfer(finalBody);
         createTransaction(data.hash);

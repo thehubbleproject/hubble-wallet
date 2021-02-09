@@ -3,6 +3,45 @@ import { useStoreState } from "../store/globalStore";
 const useTransactions = () => {
   const currentAccount = useStoreState((state) => state.currentAccount);
 
+  const splitTransactions = (amount: number, states: any[]) => {
+    let transactions = [];
+    let remaininingAmount = amount;
+
+    try {
+      // 1. sort the state by ID
+      let states_sorted = states.sort((a, b) => b.balance - a.balance);
+
+      while (remaininingAmount > 0) {
+        // 2. check if the amount can be reduced from first account
+        let currentState = states_sorted[0];
+
+        let amountPossible = 0;
+        // 3.1 check if amount can be reduced
+        if (currentState.balance > amount) {
+          amountPossible = remaininingAmount;
+        } else {
+          amountPossible = Math.min(currentState.balance, remaininingAmount);
+          // 3.2 calculate difference
+        }
+
+        let transaction_N = {
+          amountPossible,
+          state_id: currentState.state_id,
+        };
+
+        transactions.push(transaction_N);
+        remaininingAmount -= amountPossible;
+
+        // 4. remove the current state from array
+        states_sorted.shift();
+      }
+      // 5. return if amount is 0
+      return transactions;
+    } catch (error) {
+      return [];
+    }
+  };
+
   const createTransaction = (hash: string) => {
     const transactionHistoryJSON = localStorage.getItem(
       "transactionHistoryJSON"
@@ -50,6 +89,7 @@ const useTransactions = () => {
   return {
     createTransaction,
     getTransactions,
+    splitTransactions,
   };
 };
 

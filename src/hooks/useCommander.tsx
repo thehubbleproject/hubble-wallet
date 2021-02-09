@@ -99,10 +99,7 @@ const useCommander = () => {
 
   const performTransfer = async (body: IPerfromTransferRequest) => {
     const resTransfer = await axios.post(BASE_URL + "/transfer", body);
-    console.log({ body });
-    console.log({ resData: resTransfer.data });
     const signature = await signMessageString(resTransfer.data.message);
-    console.log({ signature });
 
     let txData = {
       type: resTransfer.data.tx_type,

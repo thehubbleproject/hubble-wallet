@@ -19,8 +19,6 @@ const ImportSecretKeyModal: React.FunctionComponent<ImportSecretKeyModalProps> =
 
   const handleSubmit = async () => {
     if (key.length === 66) {
-      console.log(key);
-
       // check if account already present in local
       let accounts = walletAccounts.filter(
         (account) => account?.reducedSecretKey === key
