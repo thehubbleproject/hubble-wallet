@@ -14,13 +14,12 @@ import SendTokenModal from "../Modals/SendTokenModal";
 import useBls from "../../hooks/useBls";
 
 // interfaces
-export interface BLSAccountCardProps {}
 
-const BLSAccountCard: React.FunctionComponent<BLSAccountCardProps> = () => {
+const BLSAccountCard: React.FunctionComponent = () => {
   const { currentAccount, web3 } = useStoreState((state) => state);
   const { checkExistingAccounts } = useWalletAccounts();
 
-  const [loading, setLoading] = useState<boolean>(true); //eslint-disable-line
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { solG2ToBytes } = useBls();
 

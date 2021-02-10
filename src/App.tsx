@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
+
+// hooks and services
 import { createStore, StoreProvider } from "easy-peasy";
 import * as mcl from "@thehubbleproject/bls/dist/mcl";
-// hooks and services
 
 // components, styles and UI
-import "./App.css";
-import "semantic-ui-css/semantic.min.css";
-import BLSAccountCard from "./components/MainCard/BLSAccountCard";
+import Initializing from "./components/MainCard/Initializing";
 import EthereumAccountCard from "./components/MainCard/EthereumAccountCard";
+import BLSAccountCard from "./components/MainCard/BLSAccountCard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "semantic-ui-css/semantic.min.css";
+import "./App.css";
 
 // store
 import globalStore, { IGlobalStore } from "./store/globalStore";
-import Initializing from "./components/MainCard/Initializing";
 const store = createStore<IGlobalStore>(globalStore);
 
 const App: React.FunctionComponent = () => {
@@ -24,7 +25,6 @@ const App: React.FunctionComponent = () => {
       await mcl.init();
       setLoading(false);
     };
-
     initializeMcl();
   }, []);
 

@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import Web3Modal from "web3modal";
 import Web3 from "web3";
+import Authereum from "authereum";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 // hooks and services
 import { Button } from "semantic-ui-react";
@@ -20,7 +22,36 @@ const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = (
 
   const { web3, account, network, connected } = useStoreState((state) => state);
 
-  const providerOptions = {};
+  let providerOptions = {
+    metamask: {
+      id: "injected",
+      name: "MetaMask",
+      type: "injected",
+      check: "isMetaMask",
+      package: null,
+    },
+    walletconnect: {
+      package: WalletConnectProvider,
+      options: {
+        infuraId: "INFURA_ID",
+        network: "rinkeby",
+        qrcodeModalOptions: {
+          mobileLinks: [
+            "rainbow",
+            "metamask",
+            "argent",
+            "trust",
+            "imtoken",
+            "pillar",
+          ],
+        },
+      },
+    },
+    authereum: {
+      package: Authereum,
+    },
+  };
+
   const web3Modal = new Web3Modal({
     cacheProvider: true,
     providerOptions,

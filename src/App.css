@@ -67,8 +67,6 @@ body {
   padding: 2rem 2rem;
   border-radius: 0.5rem;
   overflow: hidden;
-  /* box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22); */
-  z-index: 100;
 }
 
 .account-import {
