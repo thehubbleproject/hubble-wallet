@@ -7,6 +7,8 @@ import DepositManagerContract from "../contracts/DepositManagerContract.json";
 import BLSAccountRegistryContract from "../contracts/BLSAccountRegistryContract.json";
 import TestTokenContract from "../contracts/TestTokenContract.json";
 import Rollup from "../contracts/Rollup.json";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const useContracts = () => {
   const { account, web3 } = useStoreState((state) => state);
@@ -38,10 +40,10 @@ const useContracts = () => {
         from: account,
       })
       .on("transactionHash", function (hash: any) {
-        console.log(hash);
+        Swal.fire("Tx Submitted", hash, "success");
       })
       .on("receipt", function (receipt: any) {
-        console.log(receipt);
+        toast(`Approve Token Tx confirmed`);
         setShouldUpdate(true);
       });
   };
@@ -88,10 +90,10 @@ const useContracts = () => {
         from: account,
       })
       .on("transactionHash", function (hash: any) {
-        console.log(hash);
+        Swal.fire("Tx Submitted", hash, "success");
       })
       .on("receipt", function (receipt: any) {
-        console.log(receipt);
+        toast(`Deposit Tx confirmed`);
         setShouldUpdate(true);
       });
   };
@@ -108,9 +110,10 @@ const useContracts = () => {
         from: account,
       })
       .on("transactionHash", function (hash: any) {
-        console.log(hash);
+        Swal.fire("Tx Submitted", hash, "success");
       })
       .on("receipt", function (receipt: any) {
+        toast(`New Account registration Tx confirmed`);
         let decoder = new AbiCoder();
         let decoded = decoder.decode(
           ["uint256[4]", "uint256"],

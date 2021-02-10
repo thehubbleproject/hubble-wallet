@@ -18,6 +18,7 @@ import {
 } from "semantic-ui-react";
 import { useStoreState } from "../../store/globalStore";
 import useTransactions from "../../hooks/useTransactions";
+import Swal from "sweetalert2";
 
 // interfaces
 export interface SendTokenModalProps {}
@@ -128,6 +129,11 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
       try {
         const data = await performTransfer(finalBody);
         createTransaction(data.hash);
+        Swal.fire(
+          "Amount sent!",
+          "check status in Transactions tab",
+          "success"
+        );
       } catch (error) {
         console.log(error);
       }

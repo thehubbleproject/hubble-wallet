@@ -91,10 +91,9 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
         ) : (
           <>
             <div className="value">
-              {
-                balances.filter((tokens) => tokens.symbol === selectedToken)[0]
-                  .balance
-              }
+              {balances
+                .filter((tokens) => tokens.symbol === selectedToken)[0]
+                .balance.substring(0, 6)}
             </div>
 
             <div className="dropdown-container">

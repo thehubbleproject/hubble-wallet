@@ -8,6 +8,8 @@ import "./App.css";
 import "semantic-ui-css/semantic.min.css";
 import BLSAccountCard from "./components/MainCard/BLSAccountCard";
 import EthereumAccountCard from "./components/MainCard/EthereumAccountCard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // store
 import globalStore, { IGlobalStore } from "./store/globalStore";
@@ -35,6 +37,7 @@ const App: React.FunctionComponent = () => {
           <BLSAccountCard />
           <EthereumAccountCard />
         </div>
+        <ToastContainer />
       </div>
     </StoreProvider>
   );

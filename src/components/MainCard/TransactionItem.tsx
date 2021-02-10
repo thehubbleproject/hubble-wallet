@@ -99,10 +99,10 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
         <strong>{formatAccountString(hash)}</strong>
       </div>
       <div className="date">{formatDate(timestamp)}</div>
-      <div className="amount">{amount}</div>
+      <div className="amount"></div>
       <div className="id">
         <Label
-          style={{ width: "5rem", textAlign: "center", opacity: "0.7" }}
+          style={{ width: "5.5rem", textAlign: "center", opacity: "0.7" }}
           color={getStatusColor(status)}
           size="tiny"
         >

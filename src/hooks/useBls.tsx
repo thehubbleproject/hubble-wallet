@@ -8,7 +8,7 @@ import {
   toUtf8Bytes,
 } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
-// import useContracts from "./useContracts";
+import useContracts from "./useContracts";
 
 const useBls = () => {
   /**
@@ -18,7 +18,7 @@ const useBls = () => {
     (state) => state.currentAccount.reducedSecretKey
   );
 
-  //   const { getAppId } = useContracts();
+  const { getAppId } = useContracts();
 
   /**
    * converts array of public key into single bytes string
@@ -56,15 +56,9 @@ const useBls = () => {
    */
   const signMessageString = async (message: string): Promise<string> => {
     const secret = reducedSecretKey;
-    // var DefaultDomain = [32]byte{0x00, 0x00, 0x00, 0x00}
-    // const appId = await getAppId();
+    const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(
-      arrayify(
-        "0x0000000000000000000000000000000000000000000000000000000000000000"
-      ),
-      secret
-    );
+    const user = factory.getSigner(arrayify(appId), secret);
     const signature = user.sign("0x" + message);
     return mcl.dumpG1(signature);
   };
@@ -74,14 +68,9 @@ const useBls = () => {
    */
   const getNewKeyPair = async () => {
     const secret = hexlify(randomBytes(32));
-    // const appId = await getAppId();
+    const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(
-      arrayify(
-        "0x0000000000000000000000000000000000000000000000000000000000000000"
-      ),
-      secret
-    );
+    const user = factory.getSigner(arrayify(appId), secret);
     const pubkey = user.pubkey;
     const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
 
@@ -96,14 +85,9 @@ const useBls = () => {
    * creates a new key pair for the user
    */
   const getNewKeyPairFromSecret = async (secret: string) => {
-    // const appId = await getAppId();
+    const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(
-      arrayify(
-        "0x0000000000000000000000000000000000000000000000000000000000000000"
-      ),
-      secret
-    );
+    const user = factory.getSigner(arrayify(appId()), secret);
     const pubkey = user.pubkey;
     const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
 
