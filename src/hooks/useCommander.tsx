@@ -112,7 +112,20 @@ const useCommander = () => {
     return resTx;
   };
 
-  const performCreate2Transfer = async () => {};
+  const performCreate2Transfer = async (body: IPerfromTransferRequest) => {
+    const resTransfer = await axios.post(BASE_URL + "/transfer", body);
+    const signature = await signMessageString(resTransfer.data.message);
+
+    let txData = {
+      type: resTransfer.data.tx_type,
+      message: resTransfer.data.message,
+      sig: signature.split("x")[1],
+      encoded_tx: resTransfer.data.encoded_tx,
+    };
+
+    const resTx = await sendTx(txData);
+    return resTx;
+  };
 
   const performMassMigration = async () => {};
 

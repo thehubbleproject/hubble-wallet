@@ -25,12 +25,18 @@ export interface SendTokenModalProps {}
 
 const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const { hashPublicKeysBytes, solG2ToBytes } = useBls();
-  //   const { getStateFromPubKey, performTransfer } = useCommander();
-  const { getStateFromPubKey, performTransfer, getNonce } = useCommander();
+  const {
+    getStateFromPubKey,
+    performTransfer,
+    performCreate2Transfer,
+    getNonce,
+  } = useCommander();
 
   // SCANNING STUFF
   const [scanSuccess, setScanSuccess] = useState<boolean>(false);
   const [scannedAddress, setScannedAddress] = useState<string>("");
+  const [isCreate2Mode, setIsCreate2Mode] = useState<boolean>(false);
+  const [create2Address, setCreate2Address] = useState("");
 
   const [amount, setAmount] = useState<any>("");
   const [token, setToken] = useState<any>("");
@@ -39,6 +45,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
     if (data) {
       setScanSuccess(true);
       setScannedAddress(data);
+      console.log(data);
     }
   };
 
@@ -58,6 +65,10 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
         setReceiverTokens(getTokenDropdown(tokensArray.states));
         setReceiverAccStates(tokensArray.states);
       } catch (error) {
+        if (error.response.data.error === "Could not get account by pubkey") {
+          setIsCreate2Mode(true);
+          setCreate2Address(scannedAddress);
+        }
         setReceiverTokens([]);
       }
     };
@@ -99,44 +110,114 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   // FINAL STUFF
   const [sendingTx, setSendingTx] = useState<boolean>(false);
 
-  const { createTransaction } = useTransactions();
+  const { createTransaction, splitTransactions } = useTransactions();
 
   const handleSubmit = async () => {
     setSendingTx(true);
     if (amount !== "" && token !== "" && receiverAccStates !== null) {
-      //   let nonce = senderTokens.filter(
-      //     (Sendertoken: any) => Sendertoken.token_id === token
-      //   )[0].nonce;
+      let amountInWei = amount * 10 ** 18;
+      let splitTx = splitTransactions(amountInWei, senderTokens);
 
-      let from = senderTokens.filter(
-        (Sendertoken: any) => Sendertoken.token_id === token
-      )[0].state_id;
+      if (splitTx.length === 0) {
+        Swal.fire(
+          "Insufficient Funds",
+          "Please add more balance in your wallet",
+          "error"
+        );
+        return;
+      }
 
       let to = receiverAccStates.filter(
         (receiverTokens: any) => receiverTokens.token_id === token
       )[0].state_id;
 
-      let nonce = await getNonce(from);
+      for (let index = 0; index < splitTx.length; index++) {
+        const Tx = splitTx[index];
 
-      let finalBody = {
-        from,
-        to,
-        nonce,
-        amount: parseInt(amount),
-        fee: 0,
-      };
+        let from = Tx.state_id;
+        let amountPossible = Tx.amountPossible;
 
-      try {
-        const data = await performTransfer(finalBody);
-        createTransaction(data.hash);
-        Swal.fire(
-          "Amount sent!",
-          "check status in Transactions tab",
-          "success"
-        );
-      } catch (error) {
-        console.log(error);
+        let nonce = await getNonce(from);
+
+        let finalBody = {
+          from,
+          to,
+          nonce,
+          amount: amountPossible,
+          fee: 0,
+        };
+
+        console.log(finalBody);
+
+        try {
+          const data = await performTransfer(finalBody);
+          createTransaction(data.hash);
+        } catch (error) {
+          console.log(error);
+        }
       }
+
+      Swal.fire(
+        `Amount sent in ${splitTx.length} Txs`,
+        "check status in Transactions tab",
+        "success"
+      );
+    }
+    setAmount("");
+    setToken("");
+    setSendingTx(false);
+  };
+
+  const handleSubmitCreate2 = async () => {
+    setSendingTx(true);
+    if (amount !== "" && token !== "" && receiverAccStates !== null) {
+      let amountInWei = amount * 10 ** 18;
+      let splitTx = splitTransactions(amountInWei, senderTokens);
+
+      if (splitTx.length === 0) {
+        Swal.fire(
+          "Insufficient Funds",
+          "Please add more balance in your wallet",
+          "error"
+        );
+        return;
+      }
+
+      let to = receiverAccStates.filter(
+        (receiverTokens: any) => receiverTokens.token_id === token
+      )[0].state_id;
+
+      for (let index = 0; index < splitTx.length; index++) {
+        const Tx = splitTx[index];
+
+        let from = Tx.state_id;
+        let amountPossible = Tx.amountPossible;
+
+        let nonce = await getNonce(from);
+
+        let finalBody = {
+          from,
+          to,
+          nonce,
+          amount: amountPossible,
+          fee: 0,
+        };
+
+        console.log(finalBody);
+
+        // try {
+        //   const data = await performTransfer(finalBody);
+        //   createTransaction(data.hash);
+        // } catch (error) {
+        //   console.log(error);
+        // }
+      }
+
+      //   Swal.fire(
+      //     `Amount sent in ${splitTx.length} Txs`,
+      //     "check status in Transactions tab",
+      //     "success"
+      //   );
     }
     setAmount("");
     setToken("");
@@ -180,26 +261,12 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
                   : "scan in progress..."}
               </label>
             </Form.Field>
-            {/* <Form.Field>
-              <label>{"Address"}</label>
-              <Input
-                fluid
-                labelPosition="right"
-                type="text"
-                disabled
-                placeholder="scan"
-                value={
-                    receiverAccStates === b receiverAccStates.filter(
-                    (receiverTokens: any) => receiverTokens.token_id === token
-                  )[0].state_id
-                }
-              />
-            </Form.Field> */}
+
             {receiverTokens === null ? (
               <p>Fetching Tokens...</p>
-            ) : receiverTokens.length === 0 ? (
+            ) : receiverTokens.length === 0 && isCreate2Mode === false ? (
               <p>Invalid Receiver</p>
-            ) : (
+            ) : isCreate2Mode === false ? (
               <>
                 <Form.Field>
                   <label>Token ID</label>
@@ -243,6 +310,56 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
                   ></Button>
                 </div>
               </>
+            ) : (
+              <>
+                <p>
+                  No Accounts found linked to this public key but sending a
+                  transaction will create an account for this public key.
+                  Proceed with caution and make sure to send the tokens to this
+                  address only if you think this address exists
+                </p>
+                <Form.Field>
+                  <Form.Field>
+                    <label>Token ID</label>
+                    <Dropdown
+                      placeholder="Select Token to send"
+                      fluid
+                      selection
+                      value={token}
+                      options={getTokenDropdown(senderTokens)}
+                      onChange={(e, data) => setToken(data.value)}
+                    />
+                  </Form.Field>
+                  <label>Amount</label>
+                  <Input
+                    labelPosition="right"
+                    type="number"
+                    placeholder="100.00"
+                    fluid
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                </Form.Field>
+                <div className="ButtonContainer">
+                  <Button
+                    disabled={sendingTx}
+                    className="custom-button"
+                    content={
+                      <>
+                        send{" "}
+                        {sendingTx ? (
+                          <Loader active inline size="tiny" />
+                        ) : null}
+                      </>
+                    }
+                    icon="send"
+                    labelPosition="left"
+                    size="large"
+                    fluid
+                    onClick={handleSubmitCreate2}
+                  ></Button>
+                </div>
+              </>
             )}
           </Form>
         </Modal.Content>
@@ -253,7 +370,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   return (
     <Modal
       size="tiny"
-      onOpen={() => fetchSenderTokens()}
+      onOpen={async () => fetchSenderTokens()}
       onClose={() => {
         setSenderTokens(null);
         setReceiverTokens(null);

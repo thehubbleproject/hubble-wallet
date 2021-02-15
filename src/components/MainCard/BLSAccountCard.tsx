@@ -16,7 +16,7 @@ import useBls from "../../hooks/useBls";
 // interfaces
 
 const BLSAccountCard: React.FunctionComponent = () => {
-  const { currentAccount, web3 } = useStoreState((state) => state);
+  const { currentAccount } = useStoreState((state) => state);
   const { checkExistingAccounts } = useWalletAccounts();
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,11 +30,9 @@ const BLSAccountCard: React.FunctionComponent = () => {
       setLoading(false);
     };
 
-    if (web3 !== null) {
-      fetchData();
-    }
+    fetchData();
     // eslint-disable-next-line
-  }, [web3]);
+  }, []);
 
   return (
     <div className="main-card-left">

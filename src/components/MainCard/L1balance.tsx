@@ -63,7 +63,9 @@ const L1balance: React.FunctionComponent<L1balanceProps> = () => {
     // eslint-disable-next-line
   }, [shouldUpdate]);
 
-  return (
+  return !connected ? (
+    <p>Connect wallet to see L1 balance and make deposits</p>
+  ) : (
     <>
       <div className="amount">
         {balance === null ? (
