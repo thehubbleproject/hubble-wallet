@@ -9,17 +9,24 @@ import {
 } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
 
+/**
+ * provides utilities to use the BLS encryption algorithm
+ */
 const useBls = () => {
+  /**
+   * app Id is the same app ID as used by the commander
+   * use this same appID to stay in sync and have correct
+   * signatures when generating transactions
+   */
   const appId =
     "0x4ea7799478a7af2a47ba555f04aec4ae4ba240bf410d7c859c34c310f0413892";
+
   /**
    * gets the reduced secret key from the current selected account
    */
   const reducedSecretKey = useStoreState(
     (state) => state.currentAccount.reducedSecretKey
   );
-
-  //   const { getAppId } = useContracts();
 
   /**
    * converts array of public key into single bytes string
@@ -57,7 +64,6 @@ const useBls = () => {
    */
   const signMessageString = async (message: string): Promise<string> => {
     const secret = reducedSecretKey;
-    // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
     const user = factory.getSigner(arrayify(appId), secret);
     const signature = user.sign("0x" + message);
@@ -69,7 +75,6 @@ const useBls = () => {
    */
   const getNewKeyPair = async () => {
     const secret = hexlify(randomBytes(32));
-    // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
     const user = factory.getSigner(arrayify(appId), secret);
     const pubkey = user.pubkey;
@@ -86,7 +91,6 @@ const useBls = () => {
    * creates a new key pair for the user
    */
   const getNewKeyPairFromSecret = async (secret: string) => {
-    // const appId = await getAppId();
     const factory = await signer.BlsSignerFactory.new();
     const user = factory.getSigner(arrayify(appId), secret);
     const pubkey = user.pubkey;

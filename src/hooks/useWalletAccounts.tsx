@@ -7,6 +7,9 @@ import {
 import useBls from "./useBls";
 import useCommander from "./useCommander";
 
+/**
+ * utilities to perform operations on L2 burner wallet
+ */
 const useWalletAccounts = () => {
   const setCurrentAccountGlobal = useStoreActions(
     (actions) => actions.setCurrentAccount
@@ -14,8 +17,11 @@ const useWalletAccounts = () => {
   const setWalletAccountsGlobal = useStoreActions(
     (actions) => actions.setWalletAccounts
   );
-  const { walletAccounts } = useStoreState((state) => state);
 
+  /**
+   * external hooks
+   */
+  const { walletAccounts } = useStoreState((state) => state);
   const { getNewKeyPair, getNewKeyPairFromSecret, solG2ToBytes } = useBls();
   const { getStateFromPubKey } = useCommander();
 
@@ -63,6 +69,10 @@ const useWalletAccounts = () => {
     });
   };
 
+  /**
+   * picks up the current account in use and saves to state
+   * @param hubbleAddress hashed public keys
+   */
   const setCurrentAccountUser = (hubbleAddress: string): void => {
     let localAccounts = getLocalAccounts();
     const newAccount = localAccounts.filter(

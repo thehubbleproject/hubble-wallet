@@ -30,13 +30,6 @@ interface ISendTxResponse {
   type: number;
 }
 
-interface IStateInfoFromPubkey {
-  balance: number;
-  state_id: number;
-  token_id: number;
-  nonce: number;
-}
-
 interface IGetTxStatusResponse {
   ID: string;
   to: number;
@@ -55,15 +48,19 @@ interface IPerfromTransferRequest {
   amount: any;
   fee: number;
 }
-interface IPerformTransferResponse {
-  type: number;
-  message: string;
-}
 
+/**
+ * provides utilities to interact with the "Hubble commander" backend.
+ */
 const useCommander = () => {
-  // Info Getters
+  /**
+   * The url of the commander APIs
+   */
   const BASE_URL = "http://135.181.199.78";
 
+  /**
+   * external hooks
+   */
   const { signMessageString } = useBls();
 
   const getStateInfo = async (id: number): Promise<IStateInfoResponse> => {
@@ -80,23 +77,58 @@ const useCommander = () => {
   };
 
   // Transaction related
+
+  /**
+   * returns an integer for the type of Tx
+   * 1 - transfer
+   * 2 -
+   * 3 -
+   */
   const getTxTypeList = async () => {};
 
+  /**
+   * returns the latest nonce value for a particular state
+   * IMPORTANT - the returned nonce value is already +1
+   * so need not increment nonce again while sending the Tx
+   * @param state_id stateId
+   */
   const getNonce = async (state_id: number) => {
     const res = await axios.get(BASE_URL + `/estimateNonce/${state_id}`);
     return res.data.Nonce;
   };
 
+  /**
+   * returns the status code of the submitted transaction
+   * - 100 - submitted
+   * - 200 - accepted
+   * - 300 - approved
+   * - 400 - reverted
+   *
+   * @param hash hash of the transaction as returned while submitting Tx
+   */
   const getTxStatus = async (hash: string): Promise<IGetTxStatusResponse> => {
     const res = await axios.get(BASE_URL + `/tx/${hash}`);
     return res.data;
   };
 
+  /**
+   * sends the signed message to the commander for submission
+   * returns Tx hash once submitted
+   * @param body
+   */
   const sendTx = async (body: ISendTxRequest): Promise<ISendTxResponse> => {
     const res = await axios.post(BASE_URL + "/tx", body);
     return res.data;
   };
 
+  /**
+   * hits the api to perform "transfer" operation
+   * - transfers amount from a stateId to another stateId
+   * - Does not work if the receiver haven't deposited tokens to L2
+   * - use create2Transfer for the 2nd point
+   *
+   * @param body
+   */
   const performTransfer = async (body: IPerfromTransferRequest) => {
     const resTransfer = await axios.post(BASE_URL + "/transfer", body);
     const signature = await signMessageString(resTransfer.data.message);
@@ -112,6 +144,16 @@ const useCommander = () => {
     return resTx;
   };
 
+  /**
+   * hits the api to perform "transfer" operation when the receiver
+   * has not deposited tokens to L2
+   *
+   * - creates an address for the receiver
+   * - sends the tokens
+   * - use performTransfer if receiver account already exists
+   *
+   * @param body
+   */
   const performCreate2Transfer = async (body: IPerfromTransferRequest) => {
     const resTransfer = await axios.post(BASE_URL + "/transfer", body);
     const signature = await signMessageString(resTransfer.data.message);
@@ -127,6 +169,9 @@ const useCommander = () => {
     return resTx;
   };
 
+  /**
+   * used to migrate funds from L2 to L1
+   */
   const performMassMigration = async () => {};
 
   return {

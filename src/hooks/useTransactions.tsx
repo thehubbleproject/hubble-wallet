@@ -1,8 +1,31 @@
 import { useStoreState } from "../store/globalStore";
 
+/**
+ * provides utilities to create transaction objects to submit
+ */
 const useTransactions = () => {
   const currentAccount = useStoreState((state) => state.currentAccount);
 
+  /**
+   * splits the amount among different states and
+   * returns a mapping state -> balance
+   *
+   * - case 1 - enough balance in single state:
+   *
+   * returns a single mapping of state and balance
+   *
+   * - case 2 - enough balance in multiple states:
+   *
+   * returns an array of mappings which includes how much
+   * amount should be taken from which state
+   *
+   * - case 3 - amount exceeds the total balance of all the states combined:
+   *
+   * returns empty array
+   *
+   * @param amount amount to send
+   * @param states array of states with respective balances
+   */
   const splitTransactions = (amount: number, states: any[]) => {
     let transactions = [];
     let remaininingAmount = amount;
@@ -42,7 +65,15 @@ const useTransactions = () => {
     }
   };
 
-  const createTransaction = (hash: string) => {
+  /**
+   * saves transaction hashes to localstorage
+   * the list is then fetched to show the status of the tx
+   *
+   * saves a maximum of 100 latest transactions performed
+   *
+   * @param hash transaction hash from API
+   */
+  const saveTransactionToLocalStorage = (hash: string) => {
     const transactionHistoryJSON = localStorage.getItem(
       "transactionHistoryJSON"
     );
@@ -71,6 +102,9 @@ const useTransactions = () => {
     );
   };
 
+  /**
+   * fetches the list of transaction hashes saved in the localstorage
+   */
   const getTransactions = () => {
     const transactionHistoryJSON = localStorage.getItem(
       "transactionHistoryJSON"
@@ -87,7 +121,7 @@ const useTransactions = () => {
   };
 
   return {
-    createTransaction,
+    saveTransactionToLocalStorage,
     getTransactions,
     splitTransactions,
   };

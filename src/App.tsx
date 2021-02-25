@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "semantic-ui-css/semantic.min.css";
 import "./App.css";
 
-// store
+// redux store
 import globalStore, { IGlobalStore } from "./store/globalStore";
 const store = createStore<IGlobalStore>(globalStore);
 
@@ -29,12 +29,16 @@ const App: React.FunctionComponent = () => {
   }, []);
 
   return loading ? (
+    //   placeholder component while the actual components load up
     <Initializing />
   ) : (
     <StoreProvider store={store}>
       <div className="App">
         <div className="main-card">
+          {/* L2 related stuff */}
           <BLSAccountCard />
+
+          {/* L1 related stuff */}
           <EthereumAccountCard />
         </div>
         <ToastContainer />

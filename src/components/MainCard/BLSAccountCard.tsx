@@ -13,8 +13,6 @@ import useWalletAccounts from "../../hooks/useWalletAccounts";
 import SendTokenModal from "../Modals/SendTokenModal";
 import useBls from "../../hooks/useBls";
 
-// interfaces
-
 const BLSAccountCard: React.FunctionComponent = () => {
   const { currentAccount } = useStoreState((state) => state);
   const { checkExistingAccounts } = useWalletAccounts();

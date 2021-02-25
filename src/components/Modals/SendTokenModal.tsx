@@ -110,7 +110,10 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   // FINAL STUFF
   const [sendingTx, setSendingTx] = useState<boolean>(false);
 
-  const { createTransaction, splitTransactions } = useTransactions();
+  const {
+    saveTransactionToLocalStorage,
+    splitTransactions,
+  } = useTransactions();
 
   const handleSubmit = async () => {
     setSendingTx(true);
@@ -151,7 +154,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
 
         try {
           const data = await performTransfer(finalBody);
-          createTransaction(data.hash);
+          saveTransactionToLocalStorage(data.hash);
         } catch (error) {
           console.log(error);
         }
@@ -207,7 +210,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
 
         // try {
         //   const data = await performTransfer(finalBody);
-        //   createTransaction(data.hash);
+        //   saveTransactionToLocalStorage(data.hash);
         // } catch (error) {
         //   console.log(error);
         // }
