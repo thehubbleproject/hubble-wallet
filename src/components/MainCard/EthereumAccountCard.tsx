@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Web3Modal from "web3modal";
-import Web3 from "web3";
 import Authereum from "authereum";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
@@ -9,123 +8,127 @@ import { Button } from "semantic-ui-react";
 import { formatAccountString } from "../../utils/utils";
 import { useStoreActions, useStoreState } from "../../store/globalStore";
 import Tabs from "./Tabs";
+import { ethers } from "ethers";
 
 // components, styles and UI
 
 // interfaces
 export interface EthereumAccountCardProps {}
 
-const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> = () => {
-  const { setAccount, setNetwork, setWeb3, setConnected } = useStoreActions(
-    (actions) => actions
-  );
+const EthereumAccountCard: React.FunctionComponent<EthereumAccountCardProps> =
+  () => {
+    const { setAccount, setNetwork, setConnected } = useStoreActions(
+      (actions) => actions
+    );
 
-  const { web3, account, network, connected } = useStoreState((state) => state);
+    const { network, connected } = useStoreState((state) => state);
 
-  let providerOptions = {
-    metamask: {
-      id: "injected",
-      name: "MetaMask",
-      type: "injected",
-      check: "isMetaMask",
-      package: null,
-    },
-    walletconnect: {
-      package: WalletConnectProvider,
-      options: {
-        infuraId: "INFURA_ID",
-        network: "rinkeby",
-        qrcodeModalOptions: {
-          mobileLinks: [
-            "rainbow",
-            "metamask",
-            "argent",
-            "trust",
-            "imtoken",
-            "pillar",
-          ],
+    const [address, setAddress] = useState<string>("");
+
+    let provider;
+
+    let providerOptions = {
+      metamask: {
+        id: "injected",
+        name: "MetaMask",
+        type: "injected",
+        check: "isMetaMask",
+        package: null,
+      },
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          infuraId: "INFURA_ID",
+          network: "rinkeby",
+          qrcodeModalOptions: {
+            mobileLinks: [
+              "rainbow",
+              "metamask",
+              "argent",
+              "trust",
+              "imtoken",
+              "pillar",
+            ],
+          },
         },
       },
-    },
-    authereum: {
-      package: Authereum,
-    },
-  };
+      authereum: {
+        package: Authereum,
+      },
+    };
 
-  const web3Modal = new Web3Modal({
-    cacheProvider: true,
-    providerOptions,
-  });
-
-  const resetApp = async () => {
-    if (web3 && web3.currentProvider && web3.currentProvider.close) {
-      await web3.currentProvider.close();
-    }
-    await web3Modal.clearCachedProvider();
-    setAccount("");
-    setWeb3(null);
-    setNetwork("");
-    setConnected(false);
-  };
-
-  const subscribeProvider = async (provider: any) => {
-    if (!provider.on) {
-      return;
-    }
-    provider.on("close", () => resetApp());
-    provider.on("accountsChanged", async (accounts: string[]) => {
-      await setAccount(accounts[0]);
+    const web3Modal = new Web3Modal({
+      cacheProvider: true,
+      providerOptions,
     });
-  };
 
-  const onConnect = async () => {
-    const provider = await web3Modal.connect();
-    await subscribeProvider(provider);
-    const web3: any = new Web3(provider);
+    const resetApp = async () => {
+      await web3Modal.clearCachedProvider();
+      setAccount(new ethers.VoidSigner(""));
+      setNetwork("");
+      setConnected(false);
+    };
 
-    const accounts = await web3.eth.getAccounts();
-    const address = accounts[0];
-    const network = await web3.eth.net.getNetworkType();
+    const subscribeProvider = async (provider: any) => {
+      if (!provider.on) {
+        return;
+      }
+      provider.on("close", () => resetApp());
+      provider.on("accountsChanged", async (accounts: string[]) => {
+        const web3provider = new ethers.providers.Web3Provider(provider);
+        const account = await web3provider.getSigner();
+        await setAccount(account);
+        setAddress(await account.getAddress());
+      });
+    };
 
-    await setWeb3(web3);
-    await setAccount(address);
-    await setNetwork(network);
-    await setConnected(true);
-  };
+    const onConnect = async () => {
+      provider = await web3Modal.connect();
+      await subscribeProvider(provider);
+      const web3provider = new ethers.providers.Web3Provider(provider);
 
-  useEffect(() => {
-    if (web3Modal.cachedProvider) {
-      onConnect();
-    }
-    // eslint-disable-next-line
-  }, []);
+      const account = await web3provider.getSigner();
+      const network = await web3provider.getNetwork();
 
-  return (
-    <div className="main-card-right">
-      <div className="header">
-        <div className="account-details">
-          <h4>Ethereum Account</h4>
-          {connected ? (
-            <p>
-              ({network}) {formatAccountString(account)}
-            </p>
-          ) : (
-            <p>Wallet not connected</p>
-          )}
+      await setAccount(account);
+      setAddress(await account.getAddress());
+      await setNetwork(network.name);
+      await setConnected(true);
+    };
+
+    useEffect(() => {
+      if (web3Modal.cachedProvider) {
+        onConnect();
+      }
+      // eslint-disable-next-line
+    }, []);
+
+    return (
+      <div className="main-card-right">
+        <div className="header">
+          <div className="account-details">
+            <h4>Ethereum Account</h4>
+            {connected ? (
+              <p>
+                ({network}) {formatAccountString(address)}
+              </p>
+            ) : (
+              <p>Wallet not connected</p>
+            )}
+          </div>
+
+          <Button
+            onClick={connected ? resetApp : onConnect}
+            className="custom-button"
+            content={connected ? "Disconnect" : "connect wallet"}
+            size="small"
+            compact
+          />
         </div>
 
-        <Button
-          onClick={connected ? resetApp : onConnect}
-          className="custom-button"
-          content={connected ? "Disconnect" : "connect wallet"}
-          size="small"
-          compact
-        />
+        <Tabs />
       </div>
-
-      <Tabs />
-    </div>
-  );
-};
+    );
+  };
 
 export default EthereumAccountCard;

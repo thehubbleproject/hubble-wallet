@@ -1,5 +1,6 @@
+import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
-import Web3 from "web3";
+// import Web3 from "web3";
 import { Dropdown, Loader } from "semantic-ui-react";
 import useBls from "../../hooks/useBls";
 import useCommander from "../../hooks/useCommander";
@@ -55,7 +56,7 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
 
       balances.push({
         symbol: uniqueToken.toString(),
-        balance: Web3.utils.fromWei(sum.toString()),
+        balance: ethers.utils.formatEther(sum).toString(),
       });
     });
 

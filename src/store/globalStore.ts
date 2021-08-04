@@ -1,5 +1,6 @@
 import { Action, action, createTypedHooks } from "easy-peasy";
 import * as mcl from "@thehubbleproject/bls/dist/mcl";
+import { ethers, Signer } from "ethers";
 
 export interface IWalletAccount {
   publicKey: mcl.PublicKey | null;
@@ -10,8 +11,7 @@ export interface IWalletAccount {
 }
 
 export interface IGlobalStore {
-  web3: any;
-  account: string;
+  account: Signer;
   network: string;
   connected: boolean;
   walletAccounts: (IWalletAccount | null)[];
@@ -19,8 +19,7 @@ export interface IGlobalStore {
   shouldUpdate: boolean;
 
   // actions
-  setWeb3: Action<IGlobalStore, any>;
-  setAccount: Action<IGlobalStore, string>;
+  setAccount: Action<IGlobalStore, Signer>;
   setNetwork: Action<IGlobalStore, string>;
   setConnected: Action<IGlobalStore, boolean>;
   setWalletAccounts: Action<IGlobalStore, IWalletAccount[]>;
@@ -30,8 +29,7 @@ export interface IGlobalStore {
 }
 
 const globalStore: IGlobalStore = {
-  web3: null,
-  account: "",
+  account: new ethers.VoidSigner(""),
   network: "",
   connected: false,
   walletAccounts: [],
@@ -45,11 +43,7 @@ const globalStore: IGlobalStore = {
   shouldUpdate: false,
 
   // actions
-  setWeb3: action((state, payload: any) => {
-    state.web3 = payload;
-  }),
-
-  setAccount: action((state, payload: string) => {
+  setAccount: action((state, payload: Signer) => {
     state.account = payload;
   }),
 

@@ -8,6 +8,8 @@ import tokenRepo from "../../utils/tokens";
 // components, styles and UI
 import DepositTokenForm from "../Forms/DepositTokenForm";
 import { Dropdown, Loader } from "semantic-ui-react";
+import { ethers } from "ethers";
+import { millify } from "millify";
 
 // interfaces
 export interface L1balanceProps {}
@@ -21,7 +23,7 @@ const L1balance: React.FunctionComponent<L1balanceProps> = () => {
   const [selectedToken, setSelectedToken] = useState<string>(
     tokenRepo[0].address
   );
-  const [balance, setBalance] = useState<number | string | null>(null);
+  const [balance, setBalance] = useState<ethers.BigNumber | null>(null);
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
 
   const parseBalancesForDropdown = (tokenRepo: any) => {
@@ -73,7 +75,9 @@ const L1balance: React.FunctionComponent<L1balanceProps> = () => {
         ) : (
           <>
             <div className="value">
-              {parseFloat(balance.toString()).toFixed(2)}
+              {millify(parseFloat(ethers.utils.formatEther(balance)), {
+                precision: 4,
+              })}
             </div>
             <div className="dropdown-container">
               <label>Select Token</label>
