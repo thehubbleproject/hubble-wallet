@@ -9,7 +9,7 @@
     "USE_BURN_AUCTION": true,
     "DONATION_ADDRESS": "0x00000000000000000000000000000000000000d0",
     "DONATION_NUMERATOR": 7500,
-    "GENESIS_STATE_ROOT": "0xbfef011dd64abe7707cee7b3b74a00b86689c8451f548371073ce3c935e09984"
+    "GENESIS_STATE_ROOT": "0xcf277fb80a82478460e8988570b718f1e083ceb76f7e271a1a1497e5975f53ae"
   },
   "addresses": {
     "frontendGeneric": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
@@ -31,8 +31,8 @@
   },
   "auxiliary": {
     "domain": "0xa55113725973fc2327a8621e22cf3c050cf559e6feb795b83c2b24e28bdf842c",
-    "genesisEth1Block": 4,
-    "version": "df8c8c3984b2a258f5628782b6c5c7548d09d59f",
+    "genesisEth1Block": 3,
+    "version": "3e3857a2dacf0e509662e34da8fc687f696cc9c2",
     "chainid": 1337
   }
 }

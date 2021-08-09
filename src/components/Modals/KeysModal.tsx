@@ -3,7 +3,6 @@ import { Icon, Modal } from "semantic-ui-react";
 
 // hooks and services
 import { useStoreState } from "../../store/globalStore";
-import useBls from "../../hooks/useBls";
 import ImportSecretKeyModal from "./ImportSecretKeyModal";
 
 // components, styles and UI
@@ -13,8 +12,6 @@ export interface KeysModalProps {}
 
 const KeysModal: React.FunctionComponent<KeysModalProps> = () => {
   const currentAccount = useStoreState((state) => state.currentAccount);
-
-  const { solG2ToBytes } = useBls();
 
   return (
     <Modal
@@ -44,13 +41,6 @@ const KeysModal: React.FunctionComponent<KeysModalProps> = () => {
                 <div key={index}> {key},</div>
               ))}
               ]
-            </pre>
-          </div>
-          <div>
-            <strong>Public Keys Bytes</strong>
-            <br />
-            <pre className="pre">
-              {solG2ToBytes(currentAccount.publicKey || ["", "", "", ""])}
             </pre>
           </div>
           <div>

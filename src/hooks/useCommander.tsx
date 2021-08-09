@@ -56,7 +56,7 @@ const useCommander = () => {
   /**
    * The url of the commander APIs
    */
-  const BASE_URL = "http://135.181.199.78";
+  const BASE_URL = "http://localhost:3000";
 
   /**
    * external hooks
@@ -72,7 +72,7 @@ const useCommander = () => {
   };
 
   const getStateFromPubKey = async (pubkeyBytes: string): Promise<any> => {
-    const res = await axios.get(BASE_URL + `/user/${pubkeyBytes}`);
+    const res = await axios.get(BASE_URL + `/user/state/pubkey/${pubkeyBytes}`);
     return res.data;
   };
 

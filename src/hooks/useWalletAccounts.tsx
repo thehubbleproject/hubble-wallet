@@ -22,7 +22,7 @@ const useWalletAccounts = () => {
    * external hooks
    */
   const { walletAccounts } = useStoreState((state) => state);
-  const { getNewKeyPair, getNewKeyPairFromSecret, solG2ToBytes } = useBls();
+  const { getNewKeyPair, getNewKeyPairFromSecret, hashPublicKeys } = useBls();
   const { getStateFromPubKey } = useCommander();
 
   /**
@@ -124,10 +124,9 @@ const useWalletAccounts = () => {
   const createNewAccountFromSecret = async (secret: string): Promise<void> => {
     const newKeys = await getNewKeyPairFromSecret(secret);
 
-    let pubkeyBytes = solG2ToBytes(newKeys.publicKey);
     let newAccount: IWalletAccount;
     try {
-      const res = await getStateFromPubKey(pubkeyBytes);
+      const res = await getStateFromPubKey(hashPublicKeys(newKeys.publicKey));
       newAccount = {
         publicKey: newKeys.publicKey,
         hubbleAddress: newKeys.hubbleAddress,

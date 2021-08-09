@@ -15,7 +15,7 @@ export interface L2balanceProps {}
 
 const L2balance: React.FunctionComponent<L2balanceProps> = () => {
   const { currentAccount } = useStoreState((state) => state);
-  const { solG2ToBytes } = useBls();
+  const { hashPublicKeys } = useBls();
   const { getStateFromPubKey } = useCommander();
 
   const [balances, setBalances] = useState<any[]>([]);
@@ -68,7 +68,7 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
     setIsFetching(true);
     try {
       const tokensArray = await getStateFromPubKey(
-        solG2ToBytes(currentAccount.publicKey || ["", "", "", ""])
+        hashPublicKeys(currentAccount.publicKey)
       );
       calculateTokenBalancesAtL2(tokensArray.states);
     } catch (error) {

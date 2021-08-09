@@ -8,6 +8,8 @@ import {
   toUtf8Bytes,
 } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
+import genesis from "../genesis.json";
+import { ethers } from "ethers";
 
 /**
  * provides utilities to use the BLS encryption algorithm
@@ -18,8 +20,7 @@ const useBls = () => {
    * use this same appID to stay in sync and have correct
    * signatures when generating transactions
    */
-  const appId =
-    "0x4ea7799478a7af2a47ba555f04aec4ae4ba240bf410d7c859c34c310f0413892";
+  const appId = genesis.auxiliary.domain;
 
   /**
    * gets the reduced secret key from the current selected account
@@ -29,32 +30,17 @@ const useBls = () => {
   );
 
   /**
-   * converts array of public key into single bytes string
-   */
-  const solG2ToBytes = (keysArray: mcl.PublicKey | string[]): string => {
-    let first = keysArray[0];
-    let second = keysArray[1];
-    let third = keysArray[2];
-    let fourth = keysArray[3];
-
-    let finalString =
-      first.split("x")[1] +
-      second.split("x")[1] +
-      third.split("x")[1] +
-      fourth.split("x")[1];
-
-    return finalString;
-  };
-
-  /**
    * hashes combined public keys into a single hash so that
    * it is easier to verify addresses while sending and
    * receiving tokens from the wallet
    *
    * @param keyString bytes from pubkey array
    */
-  const hashPublicKeysBytes = (keyString: string): string => {
-    return keccak256(toUtf8Bytes(keyString));
+  const hashPublicKeys = (pubkey: mcl.solG2): string => {
+    return ethers.utils.solidityKeccak256(
+      ["uint256", "uint256", "uint256", "uint256"],
+      pubkey
+    );
   };
 
   /**
@@ -78,7 +64,7 @@ const useBls = () => {
     const factory = await signer.BlsSignerFactory.new();
     const user = factory.getSigner(arrayify(appId), secret);
     const pubkey = user.pubkey;
-    const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
+    const hubbleAddress = hashPublicKeys(pubkey);
 
     return {
       publicKey: pubkey,
@@ -94,7 +80,7 @@ const useBls = () => {
     const factory = await signer.BlsSignerFactory.new();
     const user = factory.getSigner(arrayify(appId), secret);
     const pubkey = user.pubkey;
-    const hubbleAddress = hashPublicKeysBytes(solG2ToBytes(pubkey));
+    const hubbleAddress = hashPublicKeys(pubkey);
 
     return {
       publicKey: pubkey,
@@ -107,8 +93,7 @@ const useBls = () => {
     getNewKeyPair,
     getNewKeyPairFromSecret,
     signMessageString,
-    solG2ToBytes,
-    hashPublicKeysBytes,
+    hashPublicKeys,
   };
 };
 

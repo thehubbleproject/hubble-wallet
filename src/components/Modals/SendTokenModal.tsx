@@ -24,7 +24,7 @@ import Swal from "sweetalert2";
 export interface SendTokenModalProps {}
 
 const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
-  const { hashPublicKeysBytes, solG2ToBytes } = useBls();
+  const { hashPublicKeys } = useBls();
   const {
     getStateFromPubKey,
     performTransfer,
@@ -99,7 +99,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const fetchSenderTokens = async () => {
     try {
       const tokensArray = await getStateFromPubKey(
-        solG2ToBytes(currentAccount.publicKey || ["", "", "", ""])
+        hashPublicKeys(currentAccount.publicKey)
       );
       setSenderTokens(tokensArray.states);
     } catch (error) {
@@ -110,10 +110,8 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   // FINAL STUFF
   const [sendingTx, setSendingTx] = useState<boolean>(false);
 
-  const {
-    saveTransactionToLocalStorage,
-    splitTransactions,
-  } = useTransactions();
+  const { saveTransactionToLocalStorage, splitTransactions } =
+    useTransactions();
 
   const handleSubmit = async () => {
     setSendingTx(true);
@@ -258,11 +256,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
           <Form>
             <Form.Field>
               <label>Address Hash</label>
-              <label>
-                {scannedAddress
-                  ? hashPublicKeysBytes(scannedAddress)
-                  : "scan in progress..."}
-              </label>
+              <label>{scannedAddress || "scan in progress..."}</label>
             </Form.Field>
 
             {receiverTokens === null ? (

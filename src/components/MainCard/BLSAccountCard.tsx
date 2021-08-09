@@ -16,10 +16,9 @@ import useBls from "../../hooks/useBls";
 const BLSAccountCard: React.FunctionComponent = () => {
   const { currentAccount } = useStoreState((state) => state);
   const { checkExistingAccounts } = useWalletAccounts();
+  const { hashPublicKeys } = useBls();
 
   const [loading, setLoading] = useState<boolean>(true);
-
-  const { solG2ToBytes } = useBls();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,9 +48,7 @@ const BLSAccountCard: React.FunctionComponent = () => {
           <br />
           <DropdownAccounts />
 
-          <QRCodeGenerator
-            address={solG2ToBytes(currentAccount.publicKey || ["", "", "", ""])}
-          />
+          <QRCodeGenerator address={hashPublicKeys(currentAccount.publicKey)} />
 
           <SendTokenModal />
           <div className="button-group">

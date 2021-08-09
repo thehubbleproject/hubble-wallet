@@ -11,7 +11,7 @@ import {
   DepositManager__factory,
 } from "../contracts/types/";
 
-import genesis from "../contracts/genesis.json";
+import genesis from "../genesis.json";
 
 /**
  * provides utilities to interact with the rollup contract
@@ -48,17 +48,17 @@ const useContracts = () => {
   /**
    * deposits tokens from L1 account into the L2 account
    *
-   * @param blsAddress reduced public key of the L2 account
+   * @param pubkeyId index received from contract when registering pubkey
    * @param amount amount of tokens to deposit
    */
-  const performDeposit = async (blsAddress: string, amount: number) => {
+  const performDeposit = async (pubkeyId: string, amount: number) => {
     let DepositManager = new DepositManager__factory(account).attach(
       genesis.addresses.depositManager
     );
 
     let depositAmount = ethers.utils.parseEther(amount.toString());
 
-    const tx = await DepositManager.depositFor(blsAddress, depositAmount, 0);
+    const tx = await DepositManager.depositFor(pubkeyId, depositAmount, 0);
     Swal.fire("Tx Submitted", tx.hash, "success");
 
     await tx.wait(1);
