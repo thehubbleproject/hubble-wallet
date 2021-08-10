@@ -1,4 +1,5 @@
 import { useStoreState } from "../store/globalStore";
+import { State } from "../utils/interfaces";
 
 /**
  * provides utilities to create transaction objects to submit
@@ -26,13 +27,15 @@ const useTransactions = () => {
    * @param amount amount to send
    * @param states array of states with respective balances
    */
-  const splitTransactions = (amount: number, states: any[]) => {
+  const splitTransactions = (amount: number, states: State[]) => {
     let transactions = [];
     let remaininingAmount = amount;
 
     try {
       // 1. sort the state by ID
-      let states_sorted = states.sort((a, b) => b.balance - a.balance);
+      let states_sorted = states.sort(
+        (a, b) => Number(b.balance) - Number(a.balance)
+      );
 
       while (remaininingAmount > 0) {
         // 2. check if the amount can be reduced from first account
@@ -40,16 +43,20 @@ const useTransactions = () => {
 
         let amountPossible = 0;
         // 3.1 check if amount can be reduced
-        if (currentState.balance > amount) {
+        if (Number(currentState.balance) > amount) {
           amountPossible = remaininingAmount;
         } else {
-          amountPossible = Math.min(currentState.balance, remaininingAmount);
+          amountPossible = Math.min(
+            Number(currentState.balance),
+            remaininingAmount
+          );
           // 3.2 calculate difference
         }
 
         let transaction_N = {
           amountPossible,
-          state_id: currentState.state_id,
+          stateId: currentState.stateId,
+          nonce: currentState.nonce,
         };
 
         transactions.push(transaction_N);
@@ -59,6 +66,7 @@ const useTransactions = () => {
         states_sorted.shift();
       }
       // 5. return if amount is 0
+
       return transactions;
     } catch (error) {
       return [];

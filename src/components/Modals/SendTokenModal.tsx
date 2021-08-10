@@ -19,23 +19,21 @@ import {
 import { useStoreState } from "../../store/globalStore";
 import useTransactions from "../../hooks/useTransactions";
 import Swal from "sweetalert2";
+import { TransferOffchainTx } from "../../utils/transfer";
+import { ethers } from "ethers";
 
 // interfaces
 export interface SendTokenModalProps {}
 
 const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const { hashPublicKeys } = useBls();
-  const {
-    getStateFromPubKey,
-    performTransfer,
-    performCreate2Transfer,
-    getNonce,
-  } = useCommander();
+  const { getStatesFromPubKey, performTransfer } = useCommander();
 
   // SCANNING STUFF
   const [scanSuccess, setScanSuccess] = useState<boolean>(false);
   const [scannedAddress, setScannedAddress] = useState<string>("");
   const [isCreate2Mode, setIsCreate2Mode] = useState<boolean>(false);
+  // eslint-disable-next-line
   const [create2Address, setCreate2Address] = useState("");
 
   const [amount, setAmount] = useState<any>("");
@@ -61,7 +59,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tokensArray = await getStateFromPubKey(scannedAddress);
+        const tokensArray = await getStatesFromPubKey(scannedAddress);
         setReceiverTokens(getTokenDropdown(tokensArray.states));
         setReceiverAccStates(tokensArray.states);
       } catch (error) {
@@ -82,13 +80,13 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const getTokenDropdown = (states: any) => {
     let statesUniqueTokens = states.filter(
       (v: any, i: any, a: any) =>
-        a.findIndex((t: any) => t.token_id === v.token_id) === i
+        a.findIndex((t: any) => t.tokenId === v.tokenId) === i
     );
 
-    return statesUniqueTokens.map(({ token_id }: any) => ({
-      key: token_id,
-      value: token_id,
-      text: token_id,
+    return statesUniqueTokens.map(({ tokenId }: any) => ({
+      key: tokenId,
+      value: tokenId,
+      text: tokenId,
     }));
   };
 
@@ -98,7 +96,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
 
   const fetchSenderTokens = async () => {
     try {
-      const tokensArray = await getStateFromPubKey(
+      const tokensArray = await getStatesFromPubKey(
         hashPublicKeys(currentAccount.publicKey)
       );
       setSenderTokens(tokensArray.states);
@@ -116,7 +114,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
   const handleSubmit = async () => {
     setSendingTx(true);
     if (amount !== "" && token !== "" && receiverAccStates !== null) {
-      let amountInWei = amount * 10 ** 18;
+      let amountInWei = amount * 10 ** 9;
       let splitTx = splitTransactions(amountInWei, senderTokens);
 
       if (splitTx.length === 0) {
@@ -129,30 +127,23 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
       }
 
       let to = receiverAccStates.filter(
-        (receiverTokens: any) => receiverTokens.token_id === token
-      )[0].state_id;
+        (receiverTokens: any) => receiverTokens.tokenId === token
+      )[0].stateId;
 
       for (let index = 0; index < splitTx.length; index++) {
         const Tx = splitTx[index];
 
-        let from = Tx.state_id;
-        let amountPossible = Tx.amountPossible;
-
-        let nonce = await getNonce(from);
-
-        let finalBody = {
-          from,
-          to,
-          nonce,
-          amount: amountPossible,
-          fee: 0,
-        };
-
-        console.log(finalBody);
+        const tx = new TransferOffchainTx(
+          ethers.BigNumber.from(Tx.stateId),
+          ethers.BigNumber.from(to),
+          ethers.BigNumber.from(Tx.amountPossible),
+          ethers.BigNumber.from(1),
+          ethers.BigNumber.from(Tx.nonce)
+        );
 
         try {
-          const data = await performTransfer(finalBody);
-          saveTransactionToLocalStorage(data.hash);
+          const data = await performTransfer(tx);
+          saveTransactionToLocalStorage(data.txHash);
         } catch (error) {
           console.log(error);
         }
@@ -163,62 +154,6 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
         "check status in Transactions tab",
         "success"
       );
-    }
-    setAmount("");
-    setToken("");
-    setSendingTx(false);
-  };
-
-  const handleSubmitCreate2 = async () => {
-    setSendingTx(true);
-    if (amount !== "" && token !== "" && receiverAccStates !== null) {
-      let amountInWei = amount * 10 ** 18;
-      let splitTx = splitTransactions(amountInWei, senderTokens);
-
-      if (splitTx.length === 0) {
-        Swal.fire(
-          "Insufficient Funds",
-          "Please add more balance in your wallet",
-          "error"
-        );
-        return;
-      }
-
-      let to = receiverAccStates.filter(
-        (receiverTokens: any) => receiverTokens.token_id === token
-      )[0].state_id;
-
-      for (let index = 0; index < splitTx.length; index++) {
-        const Tx = splitTx[index];
-
-        let from = Tx.state_id;
-        let amountPossible = Tx.amountPossible;
-
-        let nonce = await getNonce(from);
-
-        let finalBody = {
-          from,
-          to,
-          nonce,
-          amount: amountPossible,
-          fee: 0,
-        };
-
-        console.log(finalBody);
-
-        // try {
-        //   const data = await performTransfer(finalBody);
-        //   saveTransactionToLocalStorage(data.hash);
-        // } catch (error) {
-        //   console.log(error);
-        // }
-      }
-
-      //   Swal.fire(
-      //     `Amount sent in ${splitTx.length} Txs`,
-      //     "check status in Transactions tab",
-      //     "success"
-      //   );
     }
     setAmount("");
     setToken("");
@@ -353,7 +288,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
                     labelPosition="left"
                     size="large"
                     fluid
-                    onClick={handleSubmitCreate2}
+                    onClick={handleSubmit}
                   ></Button>
                 </div>
               </>

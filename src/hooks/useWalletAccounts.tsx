@@ -23,7 +23,7 @@ const useWalletAccounts = () => {
    */
   const { walletAccounts } = useStoreState((state) => state);
   const { getNewKeyPair, getNewKeyPairFromSecret, hashPublicKeys } = useBls();
-  const { getStateFromPubKey } = useCommander();
+  const { getPubkeyIdFromHash } = useCommander();
 
   /**
    * fetches a list of accounts from the localstorage
@@ -126,13 +126,13 @@ const useWalletAccounts = () => {
 
     let newAccount: IWalletAccount;
     try {
-      const res = await getStateFromPubKey(hashPublicKeys(newKeys.publicKey));
+      const res = await getPubkeyIdFromHash(hashPublicKeys(newKeys.publicKey));
       newAccount = {
         publicKey: newKeys.publicKey,
         hubbleAddress: newKeys.hubbleAddress,
         reducedSecretKey: newKeys.reducedSecretKey,
         registered: true,
-        accountId: "0x" + res.account_id.toString(16),
+        accountId: res.id.toString(),
       };
     } catch (error) {
       newAccount = {

@@ -1,4 +1,4 @@
-interface Itokens {
+export interface Itokens {
   address: string;
   symbol: string;
 }

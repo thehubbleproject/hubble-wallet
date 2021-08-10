@@ -1,15 +1,34 @@
 import * as mcl from "@thehubbleproject/bls/dist/mcl";
-import * as signer from "@thehubbleproject/bls/dist/signer";
-import {
-  keccak256,
-  arrayify,
-  hexlify,
-  randomBytes,
-  toUtf8Bytes,
-} from "ethers/lib/utils";
+import { arrayify, hexlify, randomBytes } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
 import genesis from "../genesis.json";
 import { ethers } from "ethers";
+import { SignatureInterface } from "../utils/interfaces";
+
+class BlsSigner {
+  static new(domain?: mcl.Domain, privKey?: string) {
+    const secret = privKey ? mcl.parseFr(privKey) : mcl.randFr();
+    return new this(secret, domain);
+  }
+  private _pubkey: mcl.PublicKey;
+  constructor(private secret: mcl.SecretKey, private domain?: mcl.Domain) {
+    this._pubkey = mcl.getPubkey(secret);
+  }
+  get pubkey(): mcl.solG2 {
+    return mcl.g2ToHex(this._pubkey);
+  }
+
+  setDomain(domain: mcl.Domain) {
+    this.domain = domain;
+  }
+
+  public sign(message: string): SignatureInterface {
+    if (!this.domain) throw new Error("No domain is set");
+    const { signature } = mcl.sign(message, this.secret, this.domain);
+    const sol = mcl.g1ToHex(signature);
+    return { mcl: signature, sol };
+  }
+}
 
 /**
  * provides utilities to use the BLS encryption algorithm
@@ -48,12 +67,10 @@ const useBls = () => {
    *
    * @param message any message string
    */
-  const signMessageString = async (message: string): Promise<string> => {
+  const signMessageString = (message: string): SignatureInterface => {
     const secret = reducedSecretKey;
-    const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(arrayify(appId), secret);
-    const signature = user.sign("0x" + message);
-    return mcl.dumpG1(signature);
+    const signer = BlsSigner.new(arrayify(appId), secret);
+    return signer.sign(message);
   };
 
   /**
@@ -61,8 +78,7 @@ const useBls = () => {
    */
   const getNewKeyPair = async () => {
     const secret = hexlify(randomBytes(32));
-    const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(arrayify(appId), secret);
+    const user = BlsSigner.new(arrayify(appId), secret);
     const pubkey = user.pubkey;
     const hubbleAddress = hashPublicKeys(pubkey);
 
@@ -77,8 +93,7 @@ const useBls = () => {
    * creates a new key pair for the user
    */
   const getNewKeyPairFromSecret = async (secret: string) => {
-    const factory = await signer.BlsSignerFactory.new();
-    const user = factory.getSigner(arrayify(appId), secret);
+    const user = BlsSigner.new(arrayify(appId), secret);
     const pubkey = user.pubkey;
     const hubbleAddress = hashPublicKeys(pubkey);
 

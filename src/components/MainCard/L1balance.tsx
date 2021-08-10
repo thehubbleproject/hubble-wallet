@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 // hooks and services
 import { useStoreActions, useStoreState } from "../../store/globalStore";
 import useContracts from "../../hooks/useContracts";
-import tokenRepo from "../../utils/tokens";
+import tokenRepo, { Itokens } from "../../utils/tokens";
 
 // components, styles and UI
 import DepositTokenForm from "../Forms/DepositTokenForm";
@@ -26,8 +26,10 @@ const L1balance: React.FunctionComponent<L1balanceProps> = () => {
   const [balance, setBalance] = useState<ethers.BigNumber | null>(null);
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
 
-  const parseBalancesForDropdown = (tokenRepo: any) => {
-    return tokenRepo.map((token: any) => ({
+  const parseBalancesForDropdown = (tokenRepo: Itokens[]) => {
+    console.log(tokenRepo);
+
+    return tokenRepo.map((token: Itokens) => ({
       key: token.address,
       text: token.symbol,
       value: token.address,

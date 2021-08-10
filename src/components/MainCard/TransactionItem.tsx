@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Label } from "semantic-ui-react";
 import useCommander from "../../hooks/useCommander";
+import { Status } from "../../utils/interfaces";
 import { formatAccountString } from "../../utils/utils";
 
 // hooks and services
@@ -24,14 +25,14 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
 
   const { getTxStatus } = useCommander();
 
-  const getStatusString = (statusCode: number) => {
-    if (statusCode === 100) {
+  const getStatusString = (statusCode: Status) => {
+    if (statusCode === Status.Pending) {
       return "pending";
-    } else if (statusCode === 200) {
+    } else if (statusCode === Status.Submitted) {
       return "pending";
-    } else if (statusCode === 300) {
+    } else if (statusCode === Status.Finalized) {
       return "processed";
-    } else if (statusCode === 400) {
+    } else if (statusCode === Status.Failed) {
       return "reverted";
     }
     return "pending";
@@ -76,21 +77,16 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   const formatDate = (timestamp: number) => {
     var dt = new Date(timestamp);
 
-    return `${(dt.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}/${dt
+    return `${(dt.getMonth() + 1).toString().padStart(2, "0")}/${dt
       .getDate()
       .toString()
-      .padStart(2, "0")}/${dt
-      .getFullYear()
-      .toString()
-      .padStart(4, "0")} ${dt
+      .padStart(2, "0")}/${dt.getFullYear().toString().padStart(4, "0")} ${dt
       .getHours()
       .toString()
-      .padStart(2, "0")}:${dt
-      .getMinutes()
+      .padStart(2, "0")}:${dt.getMinutes().toString().padStart(2, "0")}:${dt
+      .getSeconds()
       .toString()
-      .padStart(2, "0")}:${dt.getSeconds().toString().padStart(2, "0")}`;
+      .padStart(2, "0")}`;
   };
 
   return (

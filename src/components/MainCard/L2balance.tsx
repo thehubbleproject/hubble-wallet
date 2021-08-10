@@ -12,18 +12,22 @@ import { useStoreState } from "../../store/globalStore";
 
 // interfaces
 export interface L2balanceProps {}
+export interface Balance {
+  symbol: string;
+  balance: string;
+}
 
 const L2balance: React.FunctionComponent<L2balanceProps> = () => {
   const { currentAccount } = useStoreState((state) => state);
   const { hashPublicKeys } = useBls();
-  const { getStateFromPubKey } = useCommander();
+  const { getStatesFromPubKey } = useCommander();
 
-  const [balances, setBalances] = useState<any[]>([]);
+  const [balances, setBalances] = useState<Balance[]>([]);
   const [selectedToken, setSelectedToken] = useState<string>("");
   const [isFetching, setIsFetching] = useState<boolean>(true);
 
-  const parseBalancesForDropdown = (balances: any) => {
-    return balances.map((balance: any) => ({
+  const parseBalancesForDropdown = (balances: Balance[]) => {
+    return balances.map((balance: Balance) => ({
       key: balance.symbol,
       text: balance.symbol,
       value: balance.symbol,
@@ -32,31 +36,31 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
 
   const calculateTokenBalancesAtL2 = (
     allTokens: {
-      balance: number;
+      balance: string;
       nonce: number;
-      state_id: number;
-      token_id: number;
+      stateId: number;
+      tokenId: number;
     }[]
   ) => {
     const uniqueTokens = Array.from(
-      new Set(allTokens.map((item) => item.token_id))
+      new Set(allTokens.map((item) => item.tokenId))
     );
 
-    let balances: { symbol: string; balance: string }[] = [];
+    let balances: Balance[] = [];
 
     uniqueTokens.forEach((uniqueToken) => {
       let balanceItems = allTokens.filter(
-        (item) => item.token_id === uniqueToken
+        (item) => item.tokenId === uniqueToken
       );
 
-      let sum = 0;
+      let sum = ethers.BigNumber.from("0");
       balanceItems.forEach((item) => {
-        sum += item.balance;
+        sum = sum.add(ethers.BigNumber.from(item.balance));
       });
 
       balances.push({
         symbol: uniqueToken.toString(),
-        balance: ethers.utils.formatEther(sum).toString(),
+        balance: sum.toString(),
       });
     });
 
@@ -67,7 +71,7 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
   const fetchSenderTokens = async () => {
     setIsFetching(true);
     try {
-      const tokensArray = await getStateFromPubKey(
+      const tokensArray = await getStatesFromPubKey(
         hashPublicKeys(currentAccount.publicKey)
       );
       calculateTokenBalancesAtL2(tokensArray.states);
@@ -92,9 +96,14 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
         ) : (
           <>
             <div className="value">
-              {balances
-                .filter((tokens) => tokens.symbol === selectedToken)[0]
-                .balance.substring(0, 6)}
+              {ethers.utils
+                .formatUnits(
+                  balances.filter(
+                    (tokens) => tokens.symbol === selectedToken
+                  )[0].balance,
+                  9
+                )
+                .toString()}
             </div>
 
             <div className="dropdown-container">
