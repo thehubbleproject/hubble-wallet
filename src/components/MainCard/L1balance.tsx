@@ -27,8 +27,6 @@ const L1balance: React.FunctionComponent<L1balanceProps> = () => {
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
 
   const parseBalancesForDropdown = (tokenRepo: Itokens[]) => {
-    console.log(tokenRepo);
-
     return tokenRepo.map((token: Itokens) => ({
       key: token.address,
       text: token.symbol,

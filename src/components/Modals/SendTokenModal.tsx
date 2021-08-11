@@ -137,7 +137,7 @@ const SendTokenModal: React.FunctionComponent<SendTokenModalProps> = () => {
           ethers.BigNumber.from(Tx.stateId),
           ethers.BigNumber.from(to),
           ethers.BigNumber.from(Tx.amountPossible),
-          ethers.BigNumber.from(1),
+          ethers.BigNumber.from(0),
           ethers.BigNumber.from(Tx.nonce)
         );
 

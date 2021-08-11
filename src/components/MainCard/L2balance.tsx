@@ -5,6 +5,7 @@ import { Dropdown, Loader } from "semantic-ui-react";
 import useBls from "../../hooks/useBls";
 import useCommander from "../../hooks/useCommander";
 import { useStoreState } from "../../store/globalStore";
+import { millify } from "millify";
 
 // hooks and services
 
@@ -96,14 +97,17 @@ const L2balance: React.FunctionComponent<L2balanceProps> = () => {
         ) : (
           <>
             <div className="value">
-              {ethers.utils
-                .formatUnits(
-                  balances.filter(
-                    (tokens) => tokens.symbol === selectedToken
-                  )[0].balance,
-                  9
-                )
-                .toString()}
+              {millify(
+                parseFloat(
+                  ethers.utils.formatUnits(
+                    balances.filter(
+                      (tokens) => tokens.symbol === selectedToken
+                    )[0].balance,
+                    9
+                  )
+                ),
+                { precision: 4 }
+              )}
             </div>
 
             <div className="dropdown-container">
