@@ -81,7 +81,7 @@ const useTransactions = () => {
    *
    * @param hash transaction hash from API
    */
-  const saveTransactionToLocalStorage = (hash: string) => {
+  const saveTransactionToLocalStorage = (hash: string, message: string) => {
     const transactionHistoryJSON = localStorage.getItem(
       "transactionHistoryJSON"
     );
@@ -100,6 +100,7 @@ const useTransactions = () => {
 
     transactionHistory.push({
       hash,
+      message,
       publicKey: currentAccount.hubbleAddress,
       timestamp: +new Date(),
     });

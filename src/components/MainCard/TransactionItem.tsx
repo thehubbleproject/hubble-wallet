@@ -11,12 +11,14 @@ import { formatAccountString } from "../../utils/utils";
 // interfaces
 export interface TransactionItemProps {
   hash: string;
+  message: string;
   timestamp: number;
   amount: number;
 }
 
 const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
   hash,
+  message,
   timestamp,
   amount,
 }) => {
@@ -29,7 +31,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
     if (statusCode === Status.Pending) {
       return "pending";
     } else if (statusCode === Status.Submitted) {
-      return "pending";
+      return "submitted";
     } else if (statusCode === Status.Finalized) {
       return "processed";
     } else if (statusCode === Status.Failed) {
@@ -53,7 +55,7 @@ const TransactionItem: React.FunctionComponent<TransactionItemProps> = ({
     const fetchStatus = async () => {
       setShouldFetch(false);
       try {
-        const status = await getTxStatus(hash);
+        const status = await getTxStatus(message);
         setStatus(getStatusString(status.status));
       } catch (error) {}
     };

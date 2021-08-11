@@ -2,6 +2,7 @@ import axios from "axios";
 import useBls from "./useBls";
 import { TransferOffchainTx } from "../utils/transfer";
 import { State, StateRaw, TransactionStatus } from "../utils/interfaces";
+import useTransactions from "./useTransactions";
 
 /**
  * provides utilities to interact with the "Hubble commander" backend.
@@ -11,6 +12,8 @@ const useCommander = () => {
    * The url of the commander APIs
    */
   const BASE_URL = "http://localhost:3000";
+
+  const { saveTransactionToLocalStorage } = useTransactions();
 
   /**
    * external hooks
@@ -71,8 +74,10 @@ const useCommander = () => {
   const performTransfer = async (
     tx: TransferOffchainTx
   ): Promise<{ txHash: string }> => {
+    console.log(tx.message());
     tx.signature = signMessageString(tx.message());
     const res = await axios.post(BASE_URL + "/tx", { bytes: tx.serialize() });
+    saveTransactionToLocalStorage(res.data.txHash, tx.message());
     return res.data;
   };
 

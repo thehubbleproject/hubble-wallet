@@ -22,6 +22,7 @@ const Transactions: React.FunctionComponent<TransactionsProps> = () => {
           return (
             <TransactionItem
               hash={tx.hash}
+              message={tx.message}
               timestamp={tx.timestamp}
               amount={1}
               key={tx.hash}
