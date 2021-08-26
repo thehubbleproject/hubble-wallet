@@ -3,6 +3,7 @@ import useBls from "./useBls";
 import { TransferOffchainTx } from "../utils/transfer";
 import { State, StateRaw, TransactionStatus } from "../utils/interfaces";
 import useTransactions from "./useTransactions";
+import config from "../config";
 
 /**
  * provides utilities to interact with the "Hubble commander" backend.
@@ -11,7 +12,7 @@ const useCommander = () => {
   /**
    * The url of the commander APIs
    */
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = config.BASE_URL;
 
   const { saveTransactionToLocalStorage } = useTransactions();
 

@@ -10,8 +10,9 @@ import {
   CustomToken__factory,
   DepositManager__factory,
 } from "../contracts/types/";
+import config from "../config";
 
-import genesis from "../genesis.json";
+
 
 /**
  * provides utilities to interact with the rollup contract
@@ -28,7 +29,7 @@ const useContracts = () => {
    */
   const createNewBLSAccountRegistry = async (pubkey: mcl.PublicKey) => {
     const BLSAccountRegistry = new BLSAccountRegistry__factory(account).attach(
-      genesis.addresses.blsAccountRegistry
+      config.GENESIS.addresses.blsAccountRegistry
     );
 
     const tx = await BLSAccountRegistry.register(pubkey);
@@ -53,7 +54,7 @@ const useContracts = () => {
    */
   const performDeposit = async (pubkeyId: string, amount: number) => {
     let DepositManager = new DepositManager__factory(account).attach(
-      genesis.addresses.depositManager
+      config.GENESIS.addresses.depositManager
     );
 
     let depositAmount = ethers.utils.parseEther(amount.toString());
@@ -73,12 +74,12 @@ const useContracts = () => {
    */
   const checkAllowance = async (tokenAddress: string) => {
     let Token = new CustomToken__factory(account).attach(
-      genesis.addresses.exampleToken
+      config.GENESIS.addresses.exampleToken
     );
 
     let allowance = await Token.allowance(
       await account.getAddress(),
-      genesis.addresses.depositManager
+      config.GENESIS.addresses.depositManager
     );
     if (allowance.gt(0)) {
       return true;
@@ -93,11 +94,11 @@ const useContracts = () => {
    */
   const approveToken = async () => {
     let Token = new CustomToken__factory(account).attach(
-      genesis.addresses.exampleToken
+      config.GENESIS.addresses.exampleToken
     );
 
     const tx = await Token.approve(
-      genesis.addresses.depositManager,
+      config.GENESIS.addresses.depositManager,
       ethers.constants.MaxUint256
     );
     Swal.fire("Tx Submitted", tx.hash, "success");
@@ -112,7 +113,7 @@ const useContracts = () => {
    */
   const checkBalance = async () => {
     let Token = new CustomToken__factory(account).attach(
-      genesis.addresses.exampleToken
+      config.GENESIS.addresses.exampleToken
     );
 
     let bal = await Token.balanceOf(await account.getAddress());

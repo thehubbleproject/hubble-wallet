@@ -1,9 +1,9 @@
 import * as mcl from "@thehubbleproject/bls/dist/mcl";
 import { arrayify, hexlify, randomBytes } from "ethers/lib/utils";
 import { useStoreState } from "../store/globalStore";
-import genesis from "../genesis.json";
 import { ethers } from "ethers";
 import { SignatureInterface } from "../utils/interfaces";
+import config from "../config";
 
 class BlsSigner {
   static new(domain?: mcl.Domain, privKey?: string) {
@@ -39,7 +39,7 @@ const useBls = () => {
    * use this same appID to stay in sync and have correct
    * signatures when generating transactions
    */
-  const appId = genesis.auxiliary.domain;
+  const appId = config.GENESIS.auxiliary.domain;
 
   /**
    * gets the reduced secret key from the current selected account
